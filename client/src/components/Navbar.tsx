@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -32,15 +33,31 @@ export function Navbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-background/80 backdrop-blur-md border-b border-border py-4" : "bg-transparent py-6"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b border-border py-4" : "bg-transparent py-6"
+        }`}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/">
-          <span className="text-xl md:text-2xl font-display font-bold tracking-wider cursor-pointer select-none text-foreground">
-            PRAGENX <span className="text-primary">AI</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <img src="/logo-icon.png" alt="Pragenx AI Logo" className="h-8 w-8 object-contain" />
+            <span className="text-xl md:text-2xl font-display font-bold tracking-wider cursor-pointer select-none text-foreground flex items-center">
+              <AnimatePresence>
+                {!scrolled && (
+                  <motion.span
+                    key="brand-name"
+                    initial={{ opacity: 0, width: 0 }}
+                    animate={{ opacity: 1, width: "auto" }}
+                    exit={{ opacity: 0, width: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="overflow-hidden whitespace-nowrap"
+                  >
+                    PRAGENX&nbsp;
+                  </motion.span>
+                )}
+              </AnimatePresence>
+              <span className="text-primary">AI</span>
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}
@@ -52,7 +69,7 @@ export function Navbar() {
               </a>
             </Link>
           ))}
-          <Button 
+          <Button
             onClick={() => {
               const el = document.getElementById("join");
               el?.scrollIntoView({ behavior: "smooth" });
@@ -61,15 +78,19 @@ export function Navbar() {
           >
             Get Started
           </Button>
+          <ModeToggle />
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="md:hidden text-foreground"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? <X /> : <Menu />}
         </button>
+        <div className="md:hidden ml-2">
+          <ModeToggle />
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -89,7 +110,7 @@ export function Navbar() {
                   </a>
                 </Link>
               ))}
-              <Button 
+              <Button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   const el = document.getElementById("join");

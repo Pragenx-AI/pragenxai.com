@@ -19,14 +19,14 @@ function ComparisonSection() {
             <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
               Pragenx learns your lifestyle without intrusive tracking. It synthesizes your digital footprint to provide high-fidelity assistance.
             </p>
-            
+
             <div className="space-y-6">
               {[
                 { old: "Passive Observation", new: "Active Anticipation" },
                 { old: "Manual Coordination", new: "Automated Orchestration" },
                 { old: "Basic Retrieval", new: "Strategic Insight" },
               ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-6 rounded-2xl bg-white border border-border shadow-sm">
+                <div key={i} className="flex items-center justify-between p-6 rounded-2xl bg-card border border-border shadow-sm">
                   <div className="flex items-center gap-4 opacity-40">
                     <X className="w-5 h-5 text-foreground" />
                     <span className="text-base line-through">{item.old}</span>
@@ -39,30 +39,30 @@ function ComparisonSection() {
               ))}
             </div>
           </div>
-          
+
           <div className="order-1 md:order-2 relative">
-             <div className="absolute inset-0 bg-primary/5 blur-[100px] -z-10" />
-             <div className="bg-white p-10 rounded-3xl border border-border shadow-2xl relative">
-                <div className="absolute -top-4 -right-4 bg-primary text-white text-xs font-bold px-6 py-2 rounded-full shadow-lg">
-                  AUTONOMOUS AGENT
-                </div>
-                
-                <div className="space-y-8">
-                  <div className="flex gap-5">
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                      <span className="text-primary font-bold">P</span>
-                    </div>
-                    <div className="bg-secondary/50 p-6 rounded-2xl rounded-tl-none border border-border flex-1">
-                      <p className="text-base text-foreground font-medium">I've noticed your focus time is usually at 10 AM, but your calendar has 3 conflicts. I've drafted reschedule requests for the non-essential ones. Shall I send?</p>
-                      
-                      <div className="flex gap-3 mt-6">
-                        <Button size="sm" className="bg-primary text-white font-bold">Execute</Button>
-                        <Button size="sm" variant="outline">Dismiss</Button>
-                      </div>
+            <div className="absolute inset-0 bg-primary/5 blur-[100px] -z-10" />
+            <div className="bg-card p-10 rounded-3xl border border-border shadow-2xl relative">
+              <div className="absolute -top-4 -right-4 bg-primary text-white text-xs font-bold px-6 py-2 rounded-full shadow-lg">
+                AUTONOMOUS AGENT
+              </div>
+
+              <div className="space-y-8">
+                <div className="flex gap-5">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-primary font-bold">P</span>
+                  </div>
+                  <div className="bg-secondary/50 p-6 rounded-2xl rounded-tl-none border border-border flex-1">
+                    <p className="text-base text-foreground font-medium">I've noticed your focus time is usually at 10 AM, but your calendar has 3 conflicts. I've drafted reschedule requests for the non-essential ones. Shall I send?</p>
+
+                    <div className="flex gap-3 mt-6">
+                      <Button size="sm" className="bg-primary text-white font-bold">Execute</Button>
+                      <Button size="sm" variant="outline">Dismiss</Button>
                     </div>
                   </div>
                 </div>
-             </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -75,10 +75,41 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <main>
-        <Hero />
-        <Features />
-        <ComparisonSection />
-        <WaitlistSection />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <Hero />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <Features />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <ComparisonSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <WaitlistSection />
+        </motion.div>
       </main>
       <Footer />
     </div>
