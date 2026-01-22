@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://pragenxai.com/sitemap.xml
