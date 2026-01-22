@@ -1,0 +1,137 @@
+You are a senior product designer + frontend engineer. Build a modern, futuristic, unique landing page for an AI product called “PRAGENX AI”.
+
+References for vibe (not copying):
+- aquadev.site → immersive sections, depth, smooth scroll feel, subtle parallax, fluid gradients
+- metamusic.ca → premium futuristic minimalism, elegant typography, soft glow accents, cinematic transitions
+
+Goal:
+Make visitors instantly feel: “This understands my life problems — I need this.”
+Primary conversion: email waitlist signup.
+Secondary goals: trust (privacy), clear free vs premium, strong “proactive intelligence” differentiation.
+
+Tech Requirements:
+- Use Next.js (App Router) + TypeScript
+- Tailwind CSS for styling
+- No heavy libraries; keep it fast
+- Use Framer Motion for subtle animations and scroll reveals (lightweight usage)
+- Must be mobile-first and fully responsive
+- Must be accessible (good contrast, focus states, aria labels)
+- Must include SEO (title, description, OpenGraph, favicon)
+- Must have a working waitlist form with frontend validation and success/error toast
+  - For now store email submissions in localStorage + console.log
+  - Provide a clean place to later wire in Resend / API endpoint
+
+Project Structure:
+- /app/page.tsx (landing)
+- /app/layout.tsx (global styles, metadata)
+- /components/* (Navbar, Hero, Sections, Pricing, FAQ, Footer, Toast)
+- /public/logo.png (I will upload the PRAGENX AI logo here)
+
+Visual Style (must look premium + futuristic but not neon/crypto):
+- Background: soft deep-charcoal gradient OR off-white + subtle noise texture (choose one cohesive theme)
+- Use ONE accent color (electric blue/indigo) + optional subtle gold highlight
+- Use glassmorphism sparingly (blur cards, soft border)
+- Use large, elegant typography and generous whitespace
+- Add subtle animated gradient orb(s) in background
+- Add a refined grid overlay / starfield dots at low opacity (very minimal)
+- Smooth section transitions and microinteractions
+
+Landing Page Sections (must be in this order):
+1) Sticky Navbar
+   - Left: logo (from /public/logo.png) + “PRAGENX AI”
+   - Links (anchors): Product, How it Works, Examples, Pricing, Privacy, FAQ
+   - Primary CTA button: “Join Early Access”
+   - Mobile hamburger menu with slide-down panel
+
+2) Hero (full viewport, cinematic)
+   - Headline: “An AI That Thinks Ahead for You.”
+   - Subheading:
+     “PRAGENX AI is a proactive personal assistant that predicts, reminds, and protects you from everyday stress — bills, meetings, travel, habits, and records.”
+   - Email input + CTA “Join Early Access”
+   - Microtrust: “Privacy-first. You control what Pragenx can access.”
+   - Right side: futuristic “assistant console” mock (no screenshots needed)
+     - Show 4 animated notification cards:
+       • “EMI due in 3 days — risk detected”
+       • “Two meetings overlap tomorrow at 3 PM”
+       • “Trip in 5 days — rain expected Day 2”
+       • “Water intake low — want reminders?”
+   - Subtle motion: cards float gently, reveal on load, parallax on scroll (very subtle)
+
+3) Problem Section
+   - Title: “Life is busy. Your mind is overloaded.”
+   - 6 pain cards:
+     - Forgetting EMI & utility bills
+     - Too many apps to manage life
+     - Missed meetings & deadlines
+     - No clear view of finances
+     - Health habits slipping quietly
+     - Stress from “what did I forget?”
+   - Closing line: “Humans shouldn’t have to remember everything.”
+
+4) Solution Section (“Why Pragenx AI”)
+   - Title: “Meet Pragenx AI — Your Proactive Intelligence”
+   - Comparison block:
+     - Instead of: “Remind me to pay a bill”
+     - Pragenx AI: “Your bill is due in 3 days, and your balance may fall short. Want help?”
+   - Feature grid (6):
+     Bills & EMI tracking, Smart reminders, Financial insights, Health nudges, Travel awareness, Meeting intelligence
+
+5) How It Works (3 steps)
+   - Connect (secure), Learn (patterns), Act (predict + alert)
+   - Use icons and short copy (no jargon)
+   - Animate step cards on scroll (Framer Motion)
+
+6) Proactive Examples (notification gallery)
+   - Display as interactive cards (hover expands)
+   - Each has actions: “Fix now”, “Remind me”, “Dismiss”
+   - Add a subtle “Premium” badge on predictive insights cards
+
+7) Pricing (Free vs Premium)
+   - Two-tier card layout + optional monthly/annual toggle (UI only)
+   - Free:
+     Basic chat, Manual reminders, Alarms, Limited history
+   - Premium:
+     Smart bill tracking, Predictive alerts, Financial insights, Health/habit intelligence, Monthly reports, Priority AI
+   - Add gentle conversion nudge: “Upgrade when life gets serious.”
+
+8) Privacy & Trust
+   - Title: “Your Data. Your Control.”
+   - Bullets:
+     - No data selling
+     - Permission-based connections
+     - Clear deletion controls
+     - Encryption where applicable
+   - Add “Trust badges” style row (minimal)
+
+9) FAQ
+   - 6 questions with accordion interaction:
+     - What is Pragenx AI?
+     - What does it connect to?
+     - Is my data safe?
+     - What’s free vs premium?
+     - When does early access launch?
+     - Can I cancel anytime?
+
+10) Final CTA
+   - Title: “Stop remembering everything. Start living.”
+   - Email input + button
+   - Small line: “Be among the first to experience proactive AI.”
+
+11) Footer
+   - Links: About, Privacy, Terms, Contact, Social
+   - Minimal, premium look
+
+Functional Requirements:
+- Smooth anchor scrolling
+- Toast notifications:
+  - On waitlist submit success: “You’re on the waitlist!”
+  - On invalid email: “Please enter a valid email.”
+- Form should not reload the page
+- Use localStorage to store submitted emails (for demo)
+- Add a clean placeholder function to later send to Resend API
+
+Deliverables:
+- Provide complete code (Next.js App Router)
+- Ensure it runs on Replit with npm install + npm run dev
+- Keep performance excellent (no huge images, no heavy libs)
+- Ensure the UI looks futuristic and unique but trustworthy and minimal
