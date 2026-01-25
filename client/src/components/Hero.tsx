@@ -1,44 +1,43 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowRight, Bell, Calendar, CreditCard, ShieldCheck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  ChevronDown,
+  Lock,
+  Zap,
+  CreditCard
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useJoinWaitlist } from "@/hooks/use-waitlist";
-import { z } from "zod";
-
-// Floating card component for the right side visual
-const FloatingCard = ({ icon: Icon, title, desc, delay, color }: any) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20, x: -20 }}
-    animate={{ opacity: 1, y: 0, x: 0 }}
-    transition={{ delay, duration: 0.8, ease: "easeOut" }}
-    className="absolute glass-card p-4 rounded-xl flex items-start gap-3 w-64 md:w-72 pointer-events-none select-none"
-    style={{
-      top: `${Math.random() * 60 + 10}%`,
-      right: `${Math.random() * 20}%`,
-      zIndex: Math.floor(Math.random() * 10)
-    }}
-  >
-    <div className={`p-2 rounded-lg ${color} bg-opacity-5`}>
-      <Icon className={`w-5 h-5 ${color.replace('bg-', 'text-')}`} />
-    </div>
-    <div>
-      <h4 className="font-medium text-sm text-foreground">{title}</h4>
-      <p className="text-xs text-muted-foreground mt-1">{desc}</p>
-    </div>
-  </motion.div>
-);
 
 export function Hero() {
   const [email, setEmail] = useState("");
   const joinWaitlist = useJoinWaitlist();
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [wordIndex, setWordIndex] = useState(0);
+
+  const words = [
+    { text: "Thinks Ahead", color: "text-primary" },
+    { text: "Anticipates", color: "text-primary" },
+    { text: "Simplifies", color: "text-primary" },
+    { text: "Protects", color: "text-primary" }
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e;
     const { innerWidth, innerHeight } = window;
-    const x = (clientX - innerWidth / 2) / 25;
-    const y = (clientY - innerHeight / 2) / 25;
+    const x = (clientX - innerWidth / 2) / 40;
+    const y = (clientY - innerHeight / 2) / 40;
     setMousePos({ x, y });
   };
 
@@ -54,114 +53,97 @@ export function Hero() {
       onMouseMove={handleMouseMove}
       className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-background"
     >
-      {/* Futuristic Grid Overlay */}
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(#800000 1px, transparent 1px), linear-gradient(90deg, #800000 1px, transparent 1px)',
-          backgroundSize: '40px 40px'
-        }}
-      />
+      {/* RICH ANIMATED BACKGROUND */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Base Gradient */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-background to-background opacity-80" />
 
-      {/* Interactive Background Glows */}
-      <motion.div
-        animate={{ x: mousePos.x * 2, y: mousePos.y * 2 }}
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 mix-blend-screen"
-      />
-      <motion.div
-        animate={{ x: -mousePos.x * 1.5, y: -mousePos.y * 1.5 }}
-        className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[150px] -z-10 mix-blend-screen"
-      />
-
-      {/* Optimized Futuristic Particles */}
-      {[...Array(8)].map((_, i) => (
+        {/* Moving Blobs - BOLDER and MORE VISIBLE */}
         <motion.div
-          key={i}
-          className="absolute rounded-full bg-primary/20 blur-[1px]"
-          initial={{
-            opacity: 0,
-            x: Math.random() * 100 + "%",
-            y: Math.random() * 100 + "%",
-          }}
           animate={{
-            opacity: [0.1, 0.3, 0.1],
-            y: ["0%", "-20%"], // Simpler movement
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+            scale: [1, 1.2, 1]
           }}
-          transition={{
-            duration: Math.random() * 10 + 15,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-          style={{
-            width: Math.random() * 3 + 1 + "px",
-            height: Math.random() * 3 + 1 + "px",
-          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply"
         />
-      ))}
+
+        <motion.div
+          animate={{
+            x: [0, -100, 0],
+            y: [0, 100, 0],
+            scale: [1, 1.3, 1]
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply"
+        />
+
+        <motion.div
+          animate={{
+            x: [0, 50, 0],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply"
+        />
+
+        {/* Noise overlay for premium texture */}
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150 mix-blend-overlay" />
+
+        {/* Subtle Grid - White/Grey for structure */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]" />
+      </div>
 
       <div className="container mx-auto px-4 md:px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
 
-        {/* Left Content */}
-        <motion.div
-          className="max-w-2xl"
-        >
+        {/* Left Content - Glass backing for readability */}
+        <motion.div className="max-w-2xl relative">
+          {/* Spotlight effect behind text */}
+          <div className="absolute -inset-10 bg-white/40 blur-3xl -z-10 rounded-full opacity-0 lg:opacity-100" />
+
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 border border-primary/10 mb-8 backdrop-blur-md shadow-sm"
           >
-            <span className="relative flex h-2 w-2">
+            <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
             </span>
             <span className="text-xs font-bold text-primary uppercase tracking-widest">Next-Gen Intelligence</span>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, staggerChildren: 0.1 }}
-            className="text-6xl md:text-9xl font-display font-bold leading-[1] mb-8 text-foreground"
-          >
-            {["An", "AI", "That"].map((word, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: i * 0.1, ease: "easeOut" }}
-                className="inline-block mr-2 md:mr-4"
-              >
-                {word}
-              </motion.span>
-            ))}
-            <br />
-            <motion.span
-              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              transition={{ duration: 1, delay: 0.5, type: "spring" }}
-              className="text-primary inline-block"
-            >
-              Thinks Ahead
-            </motion.span> <br />
-            <motion.span
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-            >
-              for You.
-            </motion.span>
-          </motion.h1>
+          <h1 className="text-6xl md:text-8xl font-display font-bold leading-[1.1] mb-8 text-foreground tracking-tight drop-shadow-sm">
+            An AI That<br />
+            <div className="h-[1.1em] overflow-hidden relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={wordIndex}
+                  initial={{ y: 50, opacity: 0, filter: "blur(10px)" }}
+                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                  exit={{ y: -50, opacity: 0, filter: "blur(10px)" }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className={`${words[wordIndex].color} drop-shadow-sm`}
+                >
+                  {words[wordIndex].text}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            for You.
+          </h1>
 
-          <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed max-w-xl font-light">
-            PRAGENX AI is a proactive personal assistant that predicts, reminds, and protects you from everyday stress.
+          <p className="text-xl md:text-2xl text-muted-foreground mb-10 leading-relaxed max-w-lg font-light">
+            More than just automation. A proactive partner that understands your intent and secures your digital life.
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col sm:row gap-4 max-w-md mb-12">
             <div className="relative group flex-1">
               <Input
                 type="email"
-                placeholder="Secure access via email"
-                className="h-16 bg-background border-border text-lg px-6 focus:ring-2 focus:ring-primary/20 transition-all shadow-sm rounded-xl"
+                placeholder="Enter your email for access"
+                className="h-16 bg-white/60 border-white/40 text-lg px-6 focus:ring-2 focus:ring-primary/20 transition-all shadow-lg rounded-2xl backdrop-blur-xl hover:bg-white/80"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -170,92 +152,132 @@ export function Hero() {
             <Button
               type="submit"
               size="lg"
-              className="h-16 px-10 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-xl shadow-xl hover:shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="h-16 px-8 bg-primary hover:bg-primary/90 text-white font-bold text-lg rounded-2xl shadow-xl hover:shadow-primary/25 transition-all hover:scale-[1.02] active:scale-[0.98] animate-pulse-slow"
               disabled={joinWaitlist.isPending}
             >
               {joinWaitlist.isPending ? "Connecting..." : "Get Access"}
+              <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </form>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground/60 font-medium">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-primary" />
-              <span>Zero-Knowledge Encryption</span>
+          <div className="flex items-center gap-6 text-sm text-muted-foreground/80 font-medium">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-primary" />
+              <span>Bank-Grade Security</span>
             </div>
             <div className="w-1.5 h-1.5 rounded-full bg-border" />
-            <span>Invite-only Beta</span>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              <span>Invite-only Beta</span>
+            </div>
           </div>
         </motion.div>
 
-        {/* Right Visuals - Futuristic Wireframe Console */}
-        <div className="relative h-[700px] hidden lg:flex items-center justify-center">
+        {/* Right Visuals - Interactive Brain/Dashboard */}
+        <div className="relative h-[700px] hidden lg:flex items-center justify-center perspective-1000">
           <motion.div
-            style={{ x: mousePos.x, y: mousePos.y }}
-            className="relative w-full h-full flex items-center justify-center"
+            style={{
+              rotateX: mousePos.y * 2,
+              rotateY: mousePos.x * 2,
+            }}
+            className="relative w-full h-full flex items-center justify-center transition-transform duration-200 ease-out"
           >
-            {/* Wireframe Circles */}
+            {/* Orbital Rings - Enhanced visibility */}
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[550px] h-[550px] border border-dashed border-primary/10 rounded-full"
+              transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[600px] h-[600px] border border-dashed border-primary/20 rounded-full shadow-[0_0_40px_rgba(128,0,0,0.05)]"
             />
             <motion.div
               animate={{ rotate: -360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[450px] h-[450px] border border-primary/5 rounded-full"
+              transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
+              className="absolute w-[500px] h-[500px] border border-primary/10 rounded-full"
             />
 
-            {/* Minimal Dashboard Mock */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.5 }}
-              className="relative z-10 w-[400px] aspect-square bg-card/40 backdrop-blur-3xl rounded-3xl border border-border/50 shadow-2xl p-8 flex flex-col gap-6"
-            >
-              <div className="flex items-center justify-between">
+            {/* Glass Dashboard Card - More Pop */}
+            <div className="relative z-10 w-[420px] bg-white/60 dark:bg-black/40 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 shadow-2xl overflow-hidden ring-1 ring-white/50">
+              {/* Header */}
+              <div className="p-8 border-b border-white/20 flex justify-between items-center bg-white/20">
                 <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-primary/20" />
-                  <div className="w-3 h-3 rounded-full bg-border" />
-                  <div className="w-3 h-3 rounded-full bg-border" />
+                  <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
+                  <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-sm" />
+                  <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-sm" />
                 </div>
-                <div className="h-6 w-20 bg-primary/5 rounded-full" />
+                <div className="h-2 w-20 bg-primary/10 rounded-full" />
               </div>
 
-              <div className="space-y-4 flex-1">
+              {/* Content - Live Cards */}
+              <div className="p-8 space-y-4">
                 {[
-                  { icon: CreditCard, title: "Risk Detected", label: "EMI due in 3 days", color: "text-red-500", bg: "bg-red-500/10" },
-                  { icon: Calendar, title: "Overlap", label: "Two meetings tomorrow", color: "text-primary", bg: "bg-primary/10" },
-                  { icon: Bell, title: "Travel", label: "Rain expected on Day 2", color: "text-amber-500", bg: "bg-amber-500/10" },
-                  { icon: ArrowRight, title: "Health", label: "Water intake low", color: "text-blue-500", bg: "bg-blue-500/10" },
+                  { icon: Zap, title: "Proactive Action", label: "Meeting rescheduled to avoid conflict", color: "text-amber-500", bg: "bg-amber-500/10" },
+                  { icon: ShieldCheck, title: "Security Alert", label: "Phishing attempt blocked", color: "text-primary", bg: "bg-primary/10" },
+                  { icon: CreditCard, title: "Finance", label: "Subscription optimized: Saved $45", color: "text-emerald-500", bg: "bg-emerald-500/10" },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                    className={`flex items-center gap-4 p-4 rounded-2xl ${item.bg} border border-white/50 shadow-sm`}
+                    whileHover={{ scale: 1.02, x: 5, backgroundColor: "rgba(255,255,255,0.8)" }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.2 }}
+                    className={`flex items-center gap-4 p-4 rounded-2xl ${item.bg} border border-transparent hover:border-white/40 transition-all cursor-pointer group shadow-sm hover:shadow-md`}
                   >
-                    <item.icon className={`w-5 h-5 ${item.color}`} />
-                    <div className="flex-1">
-                      <div className="text-[10px] font-bold uppercase tracking-tighter opacity-50">{item.title}</div>
-                      <div className="text-sm font-bold text-foreground">{item.label}</div>
+                    <div className={`p-2 rounded-xl bg-white/60 ${item.color} shadow-sm`}>
+                      <item.icon className="w-5 h-5" />
                     </div>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider opacity-60 mb-0.5">{item.title}</div>
+                      <div className="font-semibold text-sm text-foreground">{item.label}</div>
+                    </div>
+                    <ChevronDown className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-50 transition-opacity -rotate-90" />
                   </motion.div>
                 ))}
               </div>
 
-              <div className="h-2 w-full bg-border/20 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: "65%" }}
-                  transition={{ duration: 2, delay: 1 }}
-                  className="h-full bg-primary"
-                />
+              {/* Bottom Activity Bar */}
+              <div className="px-8 pb-8 pt-4">
+                <div className="text-xs font-medium text-muted-foreground mb-3 flex justify-between">
+                  <span>System Load</span>
+                  <span className="text-primary font-bold">Optimal</span>
+                </div>
+                <div className="h-1.5 w-full bg-muted/40 rounded-full overflow-hidden">
+                  <motion.div
+                    animate={{ width: ["30%", "45%", "35%"] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                    className="h-full bg-gradient-to-r from-primary to-amber-500 rounded-full shadow-[0_0_10px_rgba(128,0,0,0.3)]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Floating Elements */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -right-8 top-20 glass-card p-4 rounded-2xl flex items-center gap-3 pr-8 shadow-xl bg-white/80 border border-white/50"
+            >
+              <div className="bg-green-500/20 p-2 rounded-full text-green-500">
+                <Lock className="w-4 h-4" />
+              </div>
+              <div>
+                <div className="text-xs font-bold text-green-500">Encrypted</div>
+                <div className="text-xs font-semibold">256-bit AES</div>
               </div>
             </motion.div>
+
           </motion.div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: [0, 10, 0] }}
+        transition={{ delay: 2, duration: 2, repeat: Infinity }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground/50"
+      >
+        <ChevronDown className="w-6 h-6" />
+      </motion.div>
+
     </section>
   );
 }

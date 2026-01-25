@@ -16,9 +16,9 @@ export function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Product", id: "product", path: "/product" },
-    { name: "Company", id: "company", path: "/company" },
-    { name: "Legal", id: "legal", path: "/legal" },
+    { name: "Product", id: "product", path: "/product/vision" },
+    { name: "Company", id: "company", path: "/company/about" },
+    { name: "Legal", id: "legal", path: "/legal/privacy" },
   ];
 
   return (

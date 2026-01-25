@@ -131,11 +131,3 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground/50;
 }
-
-/* Hide default cursor */
-body,
-a,
-button,
-[role="button"] {
-  cursor: none !important;
-}
