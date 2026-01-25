@@ -18,7 +18,7 @@ export function DetailedComparison() {
                     <h2 className="text-3xl md:text-5xl font-display font-bold mb-6 text-foreground">
                         Beyond the <span className="text-primary">Status Quo.</span>
                     </h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-lg text-muted-foreground dark:text-foreground/80 max-w-2xl mx-auto">
                         See how Pragenx stacks up against traditional assistants and standard AI chatbots.
                     </p>
                 </div>

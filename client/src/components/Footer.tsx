@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export function Footer() {
   return (
-    <footer className="relative pt-32 pb-12 overflow-hidden">
+    <footer className="relative pt-32 pb-12 overflow-hidden bg-background">
       {/* Horizon Glow Effect */}
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50 shadow-[0_0_50px_rgba(var(--primary),0.8)]" />
       <motion.div
@@ -20,19 +20,19 @@ export function Footer() {
           <div className="col-span-1 md:col-span-1">
             <Link href="/">
               <a className="inline-block">
-                <h3 className="text-xl font-display font-bold mb-4 text-foreground hover:opacity-80 transition-opacity">
+                <h3 className="text-xl font-display font-bold mb-4 text-foreground dark:text-white hover:opacity-80 transition-opacity">
                   PRAGENX <span className="text-primary">AI</span>
                 </h3>
               </a>
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed">
+            <p className="text-muted-foreground dark:text-gray-400 text-sm leading-relaxed">
               Leading the autonomous revolution. Proactive intelligence for the modern individual.
             </p>
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-foreground">Product</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-4 text-foreground dark:text-white">Product</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground dark:text-gray-400">
               <li><Link href="/product/vision" className="hover:text-primary transition-colors">Vision</Link></li>
               <li><Link href="/product/technology" className="hover:text-primary transition-colors">Technology</Link></li>
               <li><Link href="/product/security" className="hover:text-primary transition-colors">Security</Link></li>
@@ -40,8 +40,8 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-foreground">Company</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-4 text-foreground dark:text-white">Company</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground dark:text-gray-400">
               <li><Link href="/company/about" className="hover:text-primary transition-colors">About</Link></li>
               <li><Link href="/company/manifesto" className="hover:text-primary transition-colors">Manifesto</Link></li>
               <li><Link href="/company/careers" className="hover:text-primary transition-colors">Careers</Link></li>
@@ -49,8 +49,8 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-foreground">Legal</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h4 className="font-semibold mb-4 text-foreground dark:text-white">Legal</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground dark:text-gray-400">
               <li><Link href="/legal/privacy" className="hover:text-primary transition-colors">Privacy</Link></li>
               <li><Link href="/legal/terms" className="hover:text-primary transition-colors">Terms</Link></li>
               <li><Link href="/legal/ethics" className="hover:text-primary transition-colors">Ethics</Link></li>
@@ -59,7 +59,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground dark:text-gray-500">
             © {new Date().getFullYear()} Pragenx AI Inc. • United Kingdom
           </p>
 
