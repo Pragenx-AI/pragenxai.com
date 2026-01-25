@@ -21,9 +21,9 @@ export function Hero() {
 
   const words = [
     { text: "Thinks Ahead", color: "text-primary" },
-    { text: "Anticipates", color: "text-primary" },
-    { text: "Simplifies", color: "text-primary" },
-    { text: "Protects", color: "text-primary" }
+    { text: "Anticipates", color: "text-primary dark:text-rose-500" },
+    { text: "Simplifies", color: "text-primary dark:text-rose-500" },
+    { text: "Protects", color: "text-primary dark:text-rose-500" }
   ];
 
   useEffect(() => {
@@ -55,10 +55,11 @@ export function Hero() {
     >
       {/* RICH ANIMATED BACKGROUND */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-        {/* Base Gradient */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-background to-background opacity-80" />
+        {/* Base Gradient - Light/Dark support */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100 via-background to-background opacity-80 dark:from-slate-900 dark:via-background dark:to-background" />
 
-        {/* Moving Blobs - BOLDER and MORE VISIBLE */}
+        {/* Moving Blobs - Adjusted for Dark Mode */}
+        {/* We use mix-blend-multiply for light mode (subtractive) and mix-blend-screen for dark mode (additive) */}
         <motion.div
           animate={{
             x: [0, 100, 0],
@@ -66,7 +67,7 @@ export function Hero() {
             scale: [1, 1.2, 1]
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply"
+          className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/30 dark:via-rose-600/10"
         />
 
         <motion.div
@@ -76,7 +77,7 @@ export function Hero() {
             scale: [1, 1.3, 1]
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply"
+          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-indigo-500/20 dark:via-purple-500/10"
         />
 
         <motion.div
@@ -85,14 +86,14 @@ export function Hero() {
             rotate: [0, 180, 360]
           }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply"
+          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-amber-600/15 dark:via-orange-600/10"
         />
 
         {/* Noise overlay for premium texture */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150 mix-blend-overlay" />
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] brightness-100 contrast-150 mix-blend-overlay" />
 
         {/* Subtle Grid - White/Grey for structure */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px] dark:bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)]" />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
@@ -100,13 +101,13 @@ export function Hero() {
         {/* Left Content - Glass backing for readability */}
         <motion.div className="max-w-2xl relative">
           {/* Spotlight effect behind text */}
-          <div className="absolute -inset-10 bg-white/40 blur-3xl -z-10 rounded-full opacity-0 lg:opacity-100" />
+          <div className="absolute -inset-10 bg-white/40 dark:bg-black/40 blur-3xl -z-10 rounded-full opacity-0 lg:opacity-100" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 border border-primary/10 mb-8 backdrop-blur-md shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/50 dark:bg-white/5 border border-primary/10 mb-8 backdrop-blur-md shadow-sm"
           >
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
@@ -115,7 +116,7 @@ export function Hero() {
             <span className="text-xs font-bold text-primary uppercase tracking-widest">Next-Gen Intelligence</span>
           </motion.div>
 
-          <h1 className="text-6xl md:text-8xl font-display font-bold leading-[1.1] mb-8 text-foreground tracking-tight drop-shadow-sm">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.1] mb-8 text-foreground tracking-tight drop-shadow-sm">
             An AI That<br />
             <div className="h-[1.1em] overflow-hidden relative">
               <AnimatePresence mode="wait">
@@ -143,7 +144,7 @@ export function Hero() {
               <Input
                 type="email"
                 placeholder="Enter your email for access"
-                className="h-16 bg-white/60 border-white/40 text-lg px-6 focus:ring-2 focus:ring-primary/20 transition-all shadow-lg rounded-2xl backdrop-blur-xl hover:bg-white/80"
+                className="h-16 bg-white/60 dark:bg-white/5 border-white/40 dark:border-white/10 text-lg px-6 focus:ring-2 focus:ring-primary/20 transition-all shadow-lg rounded-2xl backdrop-blur-xl hover:bg-white/80 dark:hover:bg-white/10 dark:text-white"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -195,15 +196,15 @@ export function Hero() {
             />
 
             {/* Glass Dashboard Card - More Pop */}
-            <div className="relative z-10 w-[420px] bg-white/60 dark:bg-black/40 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 shadow-2xl overflow-hidden ring-1 ring-white/50">
+            <div className="relative z-10 w-[420px] bg-white/60 dark:bg-black/60 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 dark:border-white/10 shadow-2xl overflow-hidden ring-1 ring-white/50 dark:ring-white/10">
               {/* Header */}
-              <div className="p-8 border-b border-white/20 flex justify-between items-center bg-white/20">
+              <div className="p-8 border-b border-white/20 dark:border-white/5 flex justify-between items-center bg-white/20 dark:bg-white/5">
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
                   <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-sm" />
                   <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-sm" />
                 </div>
-                <div className="h-2 w-20 bg-primary/10 rounded-full" />
+                <div className="h-2 w-20 bg-primary/10 dark:bg-white/10 rounded-full" />
               </div>
 
               {/* Content - Live Cards */}
@@ -215,13 +216,13 @@ export function Hero() {
                 ].map((item, i) => (
                   <motion.div
                     key={i}
-                    whileHover={{ scale: 1.02, x: 5, backgroundColor: "rgba(255,255,255,0.8)" }}
+                    whileHover={{ scale: 1.02, x: 5, backgroundColor: "rgba(255,255,255,0.1)" }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + i * 0.2 }}
-                    className={`flex items-center gap-4 p-4 rounded-2xl ${item.bg} border border-transparent hover:border-white/40 transition-all cursor-pointer group shadow-sm hover:shadow-md`}
+                    className={`flex items-center gap-4 p-4 rounded-2xl ${item.bg} border border-transparent hover:border-white/40 dark:hover:border-white/20 transition-all cursor-pointer group shadow-sm hover:shadow-md`}
                   >
-                    <div className={`p-2 rounded-xl bg-white/60 ${item.color} shadow-sm`}>
+                    <div className={`p-2 rounded-xl bg-white/60 dark:bg-white/10 ${item.color} shadow-sm`}>
                       <item.icon className="w-5 h-5" />
                     </div>
                     <div>
@@ -253,7 +254,7 @@ export function Hero() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-8 top-20 glass-card p-4 rounded-2xl flex items-center gap-3 pr-8 shadow-xl bg-white/80 border border-white/50"
+              className="absolute -right-8 top-20 glass-card p-4 rounded-2xl flex items-center gap-3 pr-8 shadow-xl bg-white/80 dark:bg-black/50 border border-white/50 dark:border-white/10"
             >
               <div className="bg-green-500/20 p-2 rounded-full text-green-500">
                 <Lock className="w-4 h-4" />
