@@ -4,13 +4,13 @@ import { Hero } from "@/components/Hero";
 import { Button } from "@/components/ui/button";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Check, X } from "lucide-react";
+import { Features } from "@/components/Features";
+import { WhyPragenx } from "@/components/WhyPragenx";
+import { DetailedComparison } from "@/components/DetailedComparison";
 
-// Lazy load heavy sections
-const Features = lazy(() => import("@/components/Features").then(module => ({ default: module.Features })));
+// Lazy load heavy sections (keep heavy interactive sections lazy if needed, but text content should be eager for mobile scroll)
 const WaitlistSection = lazy(() => import("@/components/WaitlistSection").then(module => ({ default: module.WaitlistSection })));
 const Footer = lazy(() => import("@/components/Footer").then(module => ({ default: module.Footer })));
-const DetailedComparison = lazy(() => import("@/components/DetailedComparison").then(module => ({ default: module.DetailedComparison })));
-const WhyPragenx = lazy(() => import("@/components/WhyPragenx").then(module => ({ default: module.WhyPragenx })));
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -47,35 +47,36 @@ export default function Home() {
             <Hero />
           </motion.div>
 
-          {/* Lazy loaded sections */}
+          {/* Static sections for smooth scroll */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <Features />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <WhyPragenx />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <DetailedComparison />
+          </motion.div>
+
+          {/* Lazy loaded interactive sections */}
           <Suspense fallback={<div className="h-96" />}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            >
-              <Features />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <WhyPragenx />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <DetailedComparison />
-            </motion.div>
-
             <div className="relative">
               {/* Footer Reveal Gateway */}
               <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-background z-20 pointer-events-none" />
