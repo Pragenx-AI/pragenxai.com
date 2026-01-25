@@ -15,14 +15,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const scrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const navLinks = [
     { name: "Product", id: "product", path: "/product" },
     { name: "Company", id: "company", path: "/company" },
@@ -33,14 +25,19 @@ export function Navbar() {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-background/80 backdrop-blur-md border-b border-border py-4" : "bg-transparent py-6"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+        ? "bg-background/10 backdrop-blur-xl border-b border-white/10 py-4 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+        : "bg-transparent py-6"
         }`}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         <Link href="/">
-          <div className="flex items-center gap-2">
-            <img src="/logo-icon.png" alt="Pragenx AI Logo" className="h-8 w-8 object-contain" />
-            <span className="text-xl md:text-2xl font-display font-bold tracking-wider cursor-pointer select-none text-foreground flex items-center">
+          <div className="flex items-center gap-2 group cursor-none">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <img src="/logo-icon.png" alt="Pragenx AI Logo" className="h-8 w-8 object-contain relative z-10" />
+            </div>
+            <span className="text-xl md:text-2xl font-display font-bold tracking-wider select-none text-foreground flex items-center">
               <AnimatePresence>
                 {!scrolled && (
                   <motion.span
@@ -55,7 +52,7 @@ export function Navbar() {
                   </motion.span>
                 )}
               </AnimatePresence>
-              <span className="text-primary">AI</span>
+              <span className="text-primary drop-shadow-[0_0_8px_rgba(var(--primary),0.8)]">AI</span>
             </span>
           </div>
         </Link>
@@ -64,8 +61,9 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link key={link.name} href={link.path}>
-              <a className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              <a className="relative text-sm font-medium text-muted-foreground hover:text-foreground transition-colors group">
                 {link.name}
+                <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-primary transition-all duration-300 group-hover:w-full box-shadow-[0_0_8px_rgba(var(--primary),0.8)]" />
               </a>
             </Link>
           ))}
@@ -74,7 +72,7 @@ export function Navbar() {
               const el = document.getElementById("join");
               el?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="bg-primary hover:bg-primary/90 text-white"
+            className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(var(--primary),0.5)] hover:shadow-[0_0_25px_rgba(var(--primary),0.8)] transition-all duration-300"
           >
             Get Started
           </Button>
@@ -100,7 +98,7 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background border-b border-border overflow-hidden"
+            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
           >
             <div className="flex flex-col p-4 gap-4">
               {navLinks.map((link) => (

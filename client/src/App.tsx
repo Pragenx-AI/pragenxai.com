@@ -27,11 +27,14 @@ function Router() {
   );
 }
 
+import CustomCursor from "@/components/CustomCursor";
+
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme" attribute="class">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
+          <CustomCursor />
           <Toaster />
           <Router />
         </TooltipProvider>

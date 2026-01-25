@@ -1,117 +1,100 @@
+import { Suspense, lazy } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { Features } from "@/components/Features";
-import { WaitlistSection } from "@/components/WaitlistSection";
-import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Check, X } from "lucide-react";
 
-function ComparisonSection() {
-  return (
-    <section className="py-32 bg-secondary">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid md:grid-cols-2 gap-20 items-center">
-          <div className="order-2 md:order-1">
-            <h2 className="text-4xl md:text-6xl font-display font-bold mb-8 text-foreground">
-              Evolutionary <br />Intelligence.
-            </h2>
-            <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-              Pragenx learns your lifestyle without intrusive tracking. It synthesizes your digital footprint to provide high-fidelity assistance.
-            </p>
-
-            <div className="space-y-6">
-              {[
-                { old: "Passive Observation", new: "Active Anticipation" },
-                { old: "Manual Coordination", new: "Automated Orchestration" },
-                { old: "Basic Retrieval", new: "Strategic Insight" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-6 rounded-2xl bg-card border border-border shadow-sm">
-                  <div className="flex items-center gap-4 opacity-40">
-                    <X className="w-5 h-5 text-foreground" />
-                    <span className="text-base line-through">{item.old}</span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <Check className="w-5 h-5 text-primary" />
-                    <span className="text-base font-bold text-foreground">{item.new}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="order-1 md:order-2 relative">
-            <div className="absolute inset-0 bg-primary/5 blur-[100px] -z-10" />
-            <div className="bg-card p-10 rounded-3xl border border-border shadow-2xl relative">
-              <div className="absolute -top-4 -right-4 bg-primary text-white text-xs font-bold px-6 py-2 rounded-full shadow-lg">
-                AUTONOMOUS AGENT
-              </div>
-
-              <div className="space-y-8">
-                <div className="flex gap-5">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-primary font-bold">P</span>
-                  </div>
-                  <div className="bg-secondary/50 p-6 rounded-2xl rounded-tl-none border border-border flex-1">
-                    <p className="text-base text-foreground font-medium">I've noticed your focus time is usually at 10 AM, but your calendar has 3 conflicts. I've drafted reschedule requests for the non-essential ones. Shall I send?</p>
-
-                    <div className="flex gap-3 mt-6">
-                      <Button size="sm" className="bg-primary text-white font-bold">Execute</Button>
-                      <Button size="sm" variant="outline">Dismiss</Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+// Lazy load heavy sections
+const Features = lazy(() => import("@/components/Features").then(module => ({ default: module.Features })));
+const WaitlistSection = lazy(() => import("@/components/WaitlistSection").then(module => ({ default: module.WaitlistSection })));
+const Footer = lazy(() => import("@/components/Footer").then(module => ({ default: module.Footer })));
+const DetailedComparison = lazy(() => import("@/components/DetailedComparison").then(module => ({ default: module.DetailedComparison })));
+const WhyPragenx = lazy(() => import("@/components/WhyPragenx").then(module => ({ default: module.WhyPragenx })));
 
 export default function Home() {
+  const { scrollYProgress } = useScroll();
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const backgroundColor = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    ["rgb(255, 255, 255)", "rgb(255, 245, 245)", "rgb(255, 255, 255)"]
+  );
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      <main>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <Hero />
-        </motion.div>
+    <motion.div
+      className="min-h-screen text-foreground relative overflow-hidden"
+      style={{ backgroundColor }}
+    >
+      {/* Dynamic Background Elements */}
+      <motion.div
+        className="fixed inset-0 z-0 opacity-20 pointer-events-none"
+        style={{
+          y: backgroundY,
+          backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(128, 0, 0, 0.1), transparent 70%)'
+        }}
+      />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Features />
-        </motion.div>
+      <div className="relative z-10">
+        <Navbar />
+        <main>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <Hero />
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <ComparisonSection />
-        </motion.div>
+          {/* Lazy loaded sections */}
+          <Suspense fallback={<div className="h-96" />}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <Features />
+            </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <WaitlistSection />
-        </motion.div>
-      </main>
-      <Footer />
-    </div>
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <WhyPragenx />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <DetailedComparison />
+            </motion.div>
+
+            <div className="relative">
+              {/* Footer Reveal Gateway */}
+              <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-background z-20 pointer-events-none" />
+
+              <motion.div
+                initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: false, margin: "-50px" }}
+                transition={{ duration: 1 }}
+              >
+                <WaitlistSection />
+              </motion.div>
+            </div>
+          </Suspense>
+        </main>
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+      </div>
+    </motion.div>
   );
 }

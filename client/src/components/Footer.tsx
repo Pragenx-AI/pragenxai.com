@@ -1,10 +1,21 @@
 import { Link } from "wouter";
 import { Twitter, Linkedin, Github } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function Footer() {
   return (
-    <footer className="bg-card/30 border-t border-white/5 pt-16 pb-8">
-      <div className="container mx-auto px-4 md:px-6">
+    <footer className="relative pt-32 pb-12 overflow-hidden">
+      {/* Horizon Glow Effect */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent opacity-50 shadow-[0_0_50px_rgba(var(--primary),0.8)]" />
+      <motion.div
+        initial={{ opacity: 0, scaleX: 0 }}
+        whileInView={{ opacity: 1, scaleX: 1 }}
+        viewport={{ margin: "0px 0px -200px 0px" }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
+        className="absolute top-0 left-0 right-0 h-[100px] bg-gradient-to-b from-primary/10 to-transparent blur-3xl pointer-events-none"
+      />
+
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1 md:col-span-1">
             <h3 className="text-xl font-display font-bold mb-4 text-foreground">
@@ -14,7 +25,7 @@ export function Footer() {
               Leading the autonomous revolution. Proactive intelligence for the modern individual.
             </p>
           </div>
-          
+
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Product</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -23,7 +34,7 @@ export function Footer() {
               <li><Link href="/product" className="hover:text-primary transition-colors">Security</Link></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -32,7 +43,7 @@ export function Footer() {
               <li><Link href="/company" className="hover:text-primary transition-colors">Careers</Link></li>
             </ul>
           </div>
-          
+
           <div>
             <h4 className="font-semibold mb-4 text-foreground">Legal</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -42,12 +53,12 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Pragenx AI Inc. 
+            © {new Date().getFullYear()} Pragenx AI Inc.
           </p>
-          
+
           <div className="flex items-center gap-6">
             <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
               <Twitter className="w-5 h-5" />

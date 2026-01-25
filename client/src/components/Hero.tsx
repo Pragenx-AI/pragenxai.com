@@ -65,20 +65,43 @@ export function Hero() {
       {/* Interactive Background Glows */}
       <motion.div
         animate={{ x: mousePos.x * 2, y: mousePos.y * 2 }}
-        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10"
+        className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 mix-blend-screen"
       />
       <motion.div
         animate={{ x: -mousePos.x * 1.5, y: -mousePos.y * 1.5 }}
-        className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-primary/3 rounded-full blur-[150px] -z-10"
+        className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[150px] -z-10 mix-blend-screen"
       />
+
+      {/* Optimized Futuristic Particles */}
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute rounded-full bg-primary/20 blur-[1px]"
+          initial={{
+            opacity: 0,
+            x: Math.random() * 100 + "%",
+            y: Math.random() * 100 + "%",
+          }}
+          animate={{
+            opacity: [0.1, 0.3, 0.1],
+            y: ["0%", "-20%"], // Simpler movement
+          }}
+          transition={{
+            duration: Math.random() * 10 + 15,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          style={{
+            width: Math.random() * 3 + 1 + "px",
+            height: Math.random() * 3 + 1 + "px",
+          }}
+        />
+      ))}
 
       <div className="container mx-auto px-4 md:px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
 
         {/* Left Content */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="max-w-2xl"
         >
           <motion.div
@@ -94,11 +117,40 @@ export function Hero() {
             <span className="text-xs font-bold text-primary uppercase tracking-widest">Next-Gen Intelligence</span>
           </motion.div>
 
-          <h1 className="text-6xl md:text-9xl font-display font-bold leading-[1] mb-8 text-foreground">
-            An AI That <br />
-            <span className="text-primary">Thinks Ahead</span> <br />
-            for You.
-          </h1>
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, staggerChildren: 0.1 }}
+            className="text-6xl md:text-9xl font-display font-bold leading-[1] mb-8 text-foreground"
+          >
+            {["An", "AI", "That"].map((word, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: i * 0.1, ease: "easeOut" }}
+                className="inline-block mr-2 md:mr-4"
+              >
+                {word}
+              </motion.span>
+            ))}
+            <br />
+            <motion.span
+              initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 1, delay: 0.5, type: "spring" }}
+              className="text-primary inline-block"
+            >
+              Thinks Ahead
+            </motion.span> <br />
+            <motion.span
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              for You.
+            </motion.span>
+          </motion.h1>
 
           <p className="text-xl md:text-3xl text-muted-foreground mb-12 leading-relaxed max-w-xl font-light">
             PRAGENX AI is a proactive personal assistant that predicts, reminds, and protects you from everyday stress.
