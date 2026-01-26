@@ -77,7 +77,7 @@ export function Hero() {
             scale: [1, 1.3, 1]
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-indigo-500/20 dark:via-purple-500/10"
+          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/20 dark:via-rose-500/10"
         />
 
         <motion.div
@@ -86,7 +86,7 @@ export function Hero() {
             rotate: [0, 180, 360]
           }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-amber-500/15 via-orange-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-amber-600/15 dark:via-orange-600/10"
+          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/15 dark:via-rose-600/10"
         />
 
         {/* Noise overlay for premium texture */}
@@ -175,40 +175,40 @@ export function Hero() {
         </motion.div>
 
         {/* Right Visuals - Interactive Brain/Dashboard */}
-        <div className="relative h-[700px] hidden lg:flex items-center justify-center perspective-1000">
+        <div className="relative h-[500px] lg:h-[700px] flex items-center justify-center perspective-1000 w-full mt-10 lg:mt-0">
           <motion.div
             style={{
-              rotateX: mousePos.y * 2,
-              rotateY: mousePos.x * 2,
+              rotateX: window.innerWidth > 1024 ? mousePos.y * 2 : 0,
+              rotateY: window.innerWidth > 1024 ? mousePos.x * 2 : 0,
             }}
             className="relative w-full h-full flex items-center justify-center transition-transform duration-200 ease-out"
           >
-            {/* Orbital Rings - Enhanced visibility */}
+            {/* Orbital Rings - Responsive */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[600px] h-[600px] border border-dashed border-primary/20 rounded-full shadow-[0_0_40px_rgba(128,0,0,0.05)]"
+              className="absolute w-[300px] h-[300px] lg:w-[600px] lg:h-[600px] border border-dashed border-primary/20 rounded-full shadow-[0_0_40px_rgba(128,0,0,0.05)]"
             />
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-              className="absolute w-[500px] h-[500px] border border-primary/10 rounded-full"
+              className="absolute w-[250px] h-[250px] lg:w-[500px] lg:h-[500px] border border-primary/10 rounded-full"
             />
 
-            {/* Glass Dashboard Card - More Pop */}
-            <div className="relative z-10 w-[420px] bg-white/60 dark:bg-black/60 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 dark:border-white/10 shadow-2xl overflow-hidden ring-1 ring-white/50 dark:ring-white/10">
+            {/* Glass Dashboard Card - Responsive Width */}
+            <div className="relative z-10 w-full max-w-[340px] lg:max-w-[420px] bg-white/60 dark:bg-black/60 backdrop-blur-2xl rounded-[2rem] lg:rounded-[2.5rem] border border-white/40 dark:border-white/10 shadow-2xl overflow-hidden ring-1 ring-white/50 dark:ring-white/10 mx-4">
               {/* Header */}
-              <div className="p-8 border-b border-white/20 dark:border-white/5 flex justify-between items-center bg-white/20 dark:bg-white/5">
+              <div className="p-6 lg:p-8 border-b border-white/20 dark:border-white/5 flex justify-between items-center bg-white/20 dark:bg-white/5">
                 <div className="flex gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80 shadow-sm" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80 shadow-sm" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-sm" />
+                  <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-red-500/80 shadow-sm" />
+                  <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-amber-500/80 shadow-sm" />
+                  <div className="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-green-500/80 shadow-sm" />
                 </div>
-                <div className="h-2 w-20 bg-primary/10 dark:bg-white/10 rounded-full" />
+                <div className="h-1.5 lg:h-2 w-16 lg:w-20 bg-primary/10 dark:bg-white/10 rounded-full" />
               </div>
 
               {/* Content - Live Cards */}
-              <div className="p-8 space-y-4">
+              <div className="p-6 lg:p-8 space-y-3 lg:space-y-4">
                 {[
                   { icon: Zap, title: "Proactive Action", label: "Meeting rescheduled to avoid conflict", color: "text-amber-500", bg: "bg-amber-500/10" },
                   { icon: ShieldCheck, title: "Security Alert", label: "Phishing attempt blocked", color: "text-primary", bg: "bg-primary/10" },
@@ -220,23 +220,23 @@ export function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + i * 0.2 }}
-                    className={`flex items-center gap-4 p-4 rounded-2xl ${item.bg} border border-transparent hover:border-white/40 dark:hover:border-white/20 transition-all cursor-pointer group shadow-sm hover:shadow-md`}
+                    className={`flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl lg:rounded-2xl ${item.bg} border border-transparent hover:border-white/40 dark:hover:border-white/20 transition-all cursor-pointer group shadow-sm hover:shadow-md`}
                   >
-                    <div className={`p-2 rounded-xl bg-white/60 dark:bg-white/10 ${item.color} shadow-sm`}>
-                      <item.icon className="w-5 h-5" />
+                    <div className={`p-1.5 lg:p-2 rounded-lg lg:rounded-xl bg-white/60 dark:bg-white/10 ${item.color} shadow-sm`}>
+                      <item.icon className="w-4 h-4 lg:w-5 lg:h-5" />
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider opacity-60 mb-0.5">{item.title}</div>
-                      <div className="font-semibold text-sm text-foreground">{item.label}</div>
+                      <div className="text-[9px] lg:text-[10px] font-bold uppercase tracking-wider opacity-60 mb-0.5">{item.title}</div>
+                      <div className="font-semibold text-xs lg:text-sm text-foreground line-clamp-1">{item.label}</div>
                     </div>
-                    <ChevronDown className="w-4 h-4 ml-auto opacity-0 group-hover:opacity-50 transition-opacity -rotate-90" />
+                    <ChevronDown className="w-3 h-3 lg:w-4 lg:h-4 ml-auto opacity-0 group-hover:opacity-50 transition-opacity -rotate-90 hidden sm:block" />
                   </motion.div>
                 ))}
               </div>
 
               {/* Bottom Activity Bar */}
-              <div className="px-8 pb-8 pt-4">
-                <div className="text-xs font-medium text-muted-foreground mb-3 flex justify-between">
+              <div className="px-6 lg:px-8 pb-6 lg:pb-8 pt-2 lg:pt-4">
+                <div className="text-xs font-medium text-muted-foreground mb-2 lg:mb-3 flex justify-between">
                   <span>System Load</span>
                   <span className="text-primary font-bold">Optimal</span>
                 </div>
@@ -250,18 +250,18 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Floating Elements */}
+            {/* Floating Elements - Responsive Position */}
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-8 top-20 glass-card p-4 rounded-2xl flex items-center gap-3 pr-8 shadow-xl bg-white/80 dark:bg-black/50 border border-white/50 dark:border-white/10"
+              className="absolute -right-2 lg:-right-8 top-10 lg:top-20 glass-card p-3 lg:p-4 rounded-xl lg:rounded-2xl flex items-center gap-2 lg:gap-3 pr-6 lg:pr-8 shadow-xl bg-white/80 dark:bg-black/50 border border-white/50 dark:border-white/10 scale-90 lg:scale-100 z-20"
             >
-              <div className="bg-green-500/20 p-2 rounded-full text-green-500">
-                <Lock className="w-4 h-4" />
+              <div className="bg-green-500/20 p-1.5 lg:p-2 rounded-full text-green-500">
+                <Lock className="w-3 h-3 lg:w-4 lg:h-4" />
               </div>
               <div>
-                <div className="text-xs font-bold text-green-500">Encrypted</div>
-                <div className="text-xs font-semibold">256-bit AES</div>
+                <div className="text-[10px] lg:text-xs font-bold text-green-500">Encrypted</div>
+                <div className="text-[10px] lg:text-xs font-semibold">256-bit AES</div>
               </div>
             </motion.div>
 

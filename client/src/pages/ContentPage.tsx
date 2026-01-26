@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { BackgroundSplashes } from "@/components/ui/BackgroundSplashes";
 import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
@@ -13,7 +14,8 @@ export default function ContentPage({ title, subtitle, children }: ContentPagePr
     return (
         <div className="min-h-screen bg-background">
             <Navbar />
-            <main className="pt-32 pb-20">
+            <BackgroundSplashes />
+            <main className="pt-32 pb-20 relative z-10">
                 <div className="container mx-auto px-4 md:px-6">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}

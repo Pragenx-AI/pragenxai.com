@@ -1,12 +1,14 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { BackgroundSplashes } from "@/components/ui/BackgroundSplashes";
 import { motion } from "framer-motion";
 
 export default function GenericPage({ title, description }: { title: string, description: string }) {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-32 pb-20">
+      <BackgroundSplashes />
+      <main className="pt-32 pb-20 relative z-10">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -20,7 +22,7 @@ export default function GenericPage({ title, description }: { title: string, des
               <p className="text-xl text-muted-foreground leading-relaxed mb-12">
                 {description}
               </p>
-              
+
               <div className="prose prose-lg prose-maroon max-w-none">
                 <p>This page is currently being updated with the latest information about PRAGENX AI. Check back soon for deeper insights into our mission and technology.</p>
                 <div className="grid md:grid-cols-2 gap-8 mt-12">

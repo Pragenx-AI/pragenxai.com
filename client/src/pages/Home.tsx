@@ -7,6 +7,7 @@ import { Check, X } from "lucide-react";
 import { Features } from "@/components/Features";
 import { WhyPragenx } from "@/components/WhyPragenx";
 import { DetailedComparison } from "@/components/DetailedComparison";
+import { BackgroundSplashes } from "@/components/ui/BackgroundSplashes";
 
 // Lazy load heavy sections (keep heavy interactive sections lazy if needed, but text content should be eager for mobile scroll)
 const WaitlistSection = lazy(() => import("@/components/WaitlistSection").then(module => ({ default: module.WaitlistSection })));
@@ -27,13 +28,10 @@ export default function Home() {
       style={{ backgroundColor }}
     >
       {/* Dynamic Background Elements */}
-      <motion.div
-        className="fixed inset-0 z-0 opacity-20 pointer-events-none"
-        style={{
-          y: backgroundY,
-          backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(128, 0, 0, 0.1), transparent 70%)'
-        }}
-      />
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <BackgroundSplashes />
+      </div>
 
       <div className="relative z-10">
         <Navbar />

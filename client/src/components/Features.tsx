@@ -66,6 +66,11 @@ export function Features() {
     <section id="features" className="py-32 relative overflow-hidden bg-background">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <motion.div
+        className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] mix-blend-screen pointer-events-none"
+        animate={{ x: [0, 50, 0], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 15, repeat: Infinity }}
+      />
 
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center max-w-3xl mx-auto mb-20">
