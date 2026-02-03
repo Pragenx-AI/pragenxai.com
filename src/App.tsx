@@ -13,6 +13,7 @@ import Records from './pages/Records'
 import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
+import Landing from './pages/Landing'
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useApp()
@@ -24,14 +25,20 @@ function App() {
     return (
         <AppProvider>
             <Routes>
+                {/* Public Landing Page */}
+                <Route path="/" element={<LandingSelector />} />
+
+                {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
+
+                {/* Dashboard Protected Routes */}
                 <Route
                     path="/*"
                     element={
                         <AuthGuard>
                             <MainLayout>
                                 <Routes>
-                                    <Route path="/" element={<Home />} />
+                                    <Route path="/dashboard" element={<Home />} />
                                     <Route path="/chat" element={<Chat />} />
                                     <Route path="/profile" element={<Profile />} />
                                     <Route path="/today" element={<Today />} />
@@ -42,6 +49,8 @@ function App() {
                                     <Route path="/records" element={<Records />} />
                                     <Route path="/notifications" element={<Notifications />} />
                                     <Route path="/settings" element={<Settings />} />
+                                    {/* Handle root redirect if authenticated */}
+                                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
                                 </Routes>
                             </MainLayout>
                         </AuthGuard>
@@ -50,6 +59,12 @@ function App() {
             </Routes>
         </AppProvider>
     )
+}
+
+function LandingSelector() {
+    const { isAuthenticated } = useApp()
+    if (isAuthenticated) return <Navigate to="/dashboard" replace />
+    return <Landing />
 }
 
 export default App

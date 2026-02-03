@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Shield, Mail, Lock, ArrowRight, Loader2 } from 'lucide-react'
+import { Shield, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react'
 
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const { login } = useApp()
     const navigate = useNavigate()
@@ -72,13 +73,20 @@ export default function Login() {
                                     <Lock size={18} />
                                 </div>
                                 <input
-                                    type="password"
+                                    type={showPassword ? 'text' : 'password'}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
                                     required
-                                    className="w-full pl-11 pr-4 py-4 bg-gray-50 dark:bg-dark-elevated border-none rounded-2xl focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/40 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 transition-all duration-300"
+                                    className="w-full pl-11 pr-12 py-4 bg-gray-50 dark:bg-dark-elevated border-none rounded-2xl focus:ring-2 focus:ring-primary/20 dark:focus:ring-primary/40 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600 transition-all duration-300"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 dark:text-gray-500 hover:text-primary dark:hover:text-primary-light transition-colors"
+                                >
+                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                </button>
                                 <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500 rounded-b-2xl" />
                             </div>
                         </div>
