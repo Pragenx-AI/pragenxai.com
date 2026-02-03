@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+/* Light Theme (default) */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #ffffff;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Deep Dark Theme */
+.dark body {
+    background-color: #000000;
+    color: #e4e4e7;
+}
+
+.dark {
+    color-scheme: dark;
+}
+
+/* Scrollbar Light */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1c4c6;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a64d61;
+}
+
+/* Scrollbar Dark */
+.dark ::-webkit-scrollbar-thumb {
+    background: #2a2a35;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #800020;
+}
+
+:focus-visible {
+    outline: 2px solid #800020;
+    outline-offset: 2px;
+}
+
+@layer components {
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    }
+
+    .btn-primary {
+        @apply bg-primary text-white hover:bg-primary-dark active:bg-primary-dark;
+    }
+
+    .btn-secondary {
+        @apply bg-surface text-gray-700 hover:bg-gray-100 border border-divider;
+    }
+
+    .dark .btn-secondary {
+        @apply bg-dark-card text-gray-200 hover:bg-dark-elevated hover:text-white border-dark-border;
+    }
+
+    .btn-ghost {
+        @apply text-gray-600 hover:bg-surface hover:text-primary;
+    }
+
+    .dark .btn-ghost {
+        @apply text-gray-400 hover:bg-dark-elevated hover:text-primary-light;
+    }
+
+    .card {
+        @apply bg-white rounded-xl border border-divider p-4 transition-all duration-200;
+    }
+
+    .dark .card {
+        @apply bg-dark-card border-dark-border;
+    }
+
+    .input {
+        @apply w-full px-4 py-2.5 rounded-lg border border-divider bg-white text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-200;
+    }
+
+    .dark .input {
+        @apply bg-dark-elevated border-dark-border text-gray-100 placeholder-gray-500;
+    }
+
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .badge-upcoming {
+        @apply bg-primary-100 text-primary-900;
+    }
+
+    .dark .badge-upcoming {
+        @apply bg-primary-900/30 text-primary-300;
+    }
+
+    .badge-paid {
+        @apply bg-green-100 text-green-800;
+    }
+
+    .dark .badge-paid {
+        @apply bg-green-900/30 text-green-300;
+    }
+
+    .badge-overdue {
+        @apply bg-red-100 text-red-800;
+    }
+
+    .dark .badge-overdue {
+        @apply bg-red-900/30 text-red-300;
+    }
+}
+
+/* Deep Dark Theme Custom Variables */
+@layer base {
+    :root {
+        --dark-bg: 0 0 0;
+        --dark-card: 9 9 11;
+        --dark-elevated: 24 24 27;
+        --dark-border: 39 39 42;
+        --dark-text: 228 228 231;
+        --dark-text-muted: 161 161 170;
+    }
+}
