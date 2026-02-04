@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useApp } from '../context/AppContext'
-import { User, Bell, Clock, Shield, ChevronRight, Save, Mic, MicOff, Volume2, Sun, Moon, Palette } from 'lucide-react'
+import { User, Bell, Clock, Shield, ChevronRight, Save, Mic, MicOff, Volume2, Sun, Moon, Palette, MapPin, BookOpen, Info, HelpCircle } from 'lucide-react'
 
 export default function Settings() {
-    const { userName, setUserName, showToast, theme, setTheme } = useApp()
+    const { userName, setUserName, showToast, theme, setTheme, userLocation, setUserLocation } = useApp()
     const [name, setName] = useState(userName)
+    const [location, setLocalLocation] = useState(userLocation)
     const [micPermission, setMicPermission] = useState<'granted' | 'denied' | 'prompt'>('prompt')
     const [settings, setSettings] = useState({
         emailNotifications: true,
@@ -32,6 +33,7 @@ export default function Settings() {
 
     const handleSaveProfile = () => {
         setUserName(name)
+        setUserLocation(location)
         showToast('Profile updated!', 'success')
     }
 
@@ -53,7 +55,7 @@ export default function Settings() {
 
     const testVoice = () => {
         if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance('Hello! I am Pragenx, your AI assistant.')
+            const utterance = new SpeechSynthesisUtterance('Hello! I am PragenX, your personal assistant.')
             utterance.lang = 'en-US'
             window.speechSynthesis.speak(utterance)
         }
@@ -80,7 +82,7 @@ export default function Settings() {
                             </div>
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{name}</h3>
-                                <p className="text-gray-500 dark:text-gray-400">PRAGENX AI User</p>
+                                <p className="text-gray-500 dark:text-gray-400">PragenX User</p>
                             </div>
                         </div>
                         <div className="space-y-4">
@@ -237,7 +239,7 @@ export default function Settings() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="font-medium text-gray-900 dark:text-gray-100">Voice Responses</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Pragenx speaks responses aloud</p>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">PragenX speaks responses aloud</p>
                             </div>
                             <button
                                 onClick={() => setSettings({ ...settings, voiceResponses: !settings.voiceResponses })}
@@ -344,6 +346,105 @@ export default function Settings() {
                     </div>
                 </section>
 
+                {/* Location Preferences Section */}
+                <section className="mb-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <MapPin size={20} className="text-primary" />
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Location Preferences</h2>
+                    </div>
+                    <div className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-6 transition-colors duration-300">
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Your City/Region</label>
+                                <div className="relative max-w-md">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                    <input
+                                        type="text"
+                                        value={location}
+                                        onChange={(e) => setLocalLocation(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-3 rounded-xl border border-divider dark:border-dark-border bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary dark:focus:border-primary outline-none transition-all"
+                                        placeholder="e.g. Mumbai, India"
+                                    />
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Used for weather, local reminders, and timezone-aware scheduling.</p>
+                            </div>
+                            <button onClick={handleSaveProfile} className="btn btn-primary">
+                                <Save size={18} className="mr-2" />
+                                Save Location
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Application Documentation Section */}
+                <section className="mb-8">
+                    <div className="flex items-center gap-3 mb-4">
+                        <BookOpen size={20} className="text-primary" />
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Documentation & Help</h2>
+                    </div>
+                    <div className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-6 transition-colors duration-300">
+                        <div className="space-y-6">
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Info size={18} className="text-primary" />
+                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Getting Started</h3>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    PragenX is your personal proactive assistant. Use the sidebar to navigate between your Dashboard, Bills, Meetings, Health tracking, and our GPT-powered Chat.
+                                </p>
+                            </div>
+
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Mic size={18} className="text-primary" />
+                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Voice Assistant</h3>
+                                </div>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-2">
+                                    Speak naturally to PragenX. Tap the microphone icon anywhere to ask questions like:
+                                </p>
+                                <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 list-disc pl-5">
+                                    <li>"What bills are due this week?"</li>
+                                    <li>"Plan my day for me."</li>
+                                    <li>"Show my upcoming travel plans."</li>
+                                    <li>"Log my water intake."</li>
+                                </ul>
+                            </div>
+
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <HelpCircle size={18} className="text-primary" />
+                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Key Features</h3>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-divider dark:border-dark-border">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Bills & Finance</h4>
+                                        <p className="text-[11px] text-gray-500">Track EMIs and utilities with proactive reminders before due dates.</p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-divider dark:border-dark-border">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Health Hub</h4>
+                                        <p className="text-[11px] text-gray-500">Monitor hydration, lifestyle habits, and get health-focused nudges.</p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-divider dark:border-dark-border">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Timeline View</h4>
+                                        <p className="text-[11px] text-gray-500">A unified chronological view of your day's tasks and events.</p>
+                                    </div>
+                                    <div className="p-3 bg-gray-50 dark:bg-dark-elevated rounded-xl border border-divider dark:border-dark-border">
+                                        <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">Cloud Records</h4>
+                                        <p className="text-[11px] text-gray-500">Securely store and tag your essential identity and legal documents.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-divider dark:border-dark-border">
+                                <button className="w-full flex items-center justify-between py-2 text-primary font-medium hover:underline transition-colors">
+                                    <span>View Full Step-by-Step Guide</span>
+                                    <ChevronRight size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Privacy Section */}
                 <section>
                     <div className="flex items-center gap-3 mb-4">
@@ -370,8 +471,8 @@ export default function Settings() {
 
                 {/* Footer */}
                 <div className="mt-12 pt-8 border-t border-divider dark:border-dark-border text-center text-sm text-gray-400 dark:text-gray-500">
-                    <p>PRAGENX AI v1.0.0</p>
-                    <p className="mt-1">© 2026 Pragenx. All rights reserved.</p>
+                    <p>PragenX v1.0.0</p>
+                    <p className="mt-1">© 2026 PragenX. All rights reserved.</p>
                 </div>
             </div>
         </div>

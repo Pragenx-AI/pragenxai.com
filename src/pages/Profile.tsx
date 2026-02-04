@@ -3,14 +3,15 @@ import { useApp } from '../context/AppContext'
 import { User, Mail, Phone, MapPin, Camera, Save } from 'lucide-react'
 
 export default function Profile() {
-    const { userName, setUserName, showToast } = useApp()
+    const { userName, setUserName, showToast, userLocation, setUserLocation } = useApp()
     const [name, setName] = useState(userName)
-    const [email, setEmail] = useState('user@pragenx.com')
+    const [email, setEmail] = useState('user@pragenxai.com')
     const [phone, setPhone] = useState('+91 98765 43210')
-    const [location, setLocation] = useState('Mumbai, India')
+    const [location, setLocalLocation] = useState(userLocation)
 
     const handleSave = () => {
         setUserName(name)
+        setUserLocation(location)
         showToast('Profile updated successfully!')
     }
 
@@ -82,7 +83,7 @@ export default function Profile() {
                                     <input
                                         type="text"
                                         value={location}
-                                        onChange={(e) => setLocation(e.target.value)}
+                                        onChange={(e) => setLocalLocation(e.target.value)}
                                         className="w-full pl-10 pr-4 py-2 rounded-lg border border-divider dark:border-dark-border bg-white dark:bg-dark-elevated text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary/20 focus:border-primary dark:focus:border-primary outline-none transition-all"
                                     />
                                 </div>

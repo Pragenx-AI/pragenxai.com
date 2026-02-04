@@ -37,7 +37,7 @@ export default function GreetingCard() {
                 </h1>
 
                 <p className="text-lg text-gray-600 dark:text-gray-400 mt-1">
-                    I'm <span className="text-primary font-medium">Pragenx</span>. I'll help you stay ahead today.
+                    I'm <span className="text-primary font-medium">PragenX</span>. I'll help you stay ahead today.
                 </p>
 
                 <div className="mt-3 inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 text-sm">

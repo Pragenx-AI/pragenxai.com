@@ -36,11 +36,14 @@ export default function Login() {
             <div className="w-full max-w-md relative z-10">
                 {/* Logo Area */}
                 <div className="flex flex-col items-center mb-10 animate-fade-in-up">
-                    <div className="w-20 h-20 bg-white dark:bg-dark-card rounded-[2rem] shadow-xl flex items-center justify-center mb-6 border border-gray-100 dark:border-dark-border group transition-all duration-500 hover:scale-110">
-                        <img src="/logo-new.png" alt="Pragenx Logo" className="w-12 h-12 object-contain" />
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="w-16 h-16 bg-white dark:bg-dark-card rounded-[1.25rem] shadow-xl flex items-center justify-center border border-gray-100 dark:border-dark-border group transition-all duration-500 hover:scale-110">
+                            <img src="/logo-new.png" alt="PragenX Logo" className="w-10 h-10 object-contain" />
+                        </div>
+                        <span className="text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tighter">PragenX</span>
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Welcome Back</h1>
-                    <p className="text-gray-500 dark:text-gray-400 mt-2">Sign in to your Pragenx AI dashboard</p>
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight">Welcome Back</h1>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Sign in to your PragenX dashboard</p>
                 </div>
 
                 <div className="bg-white/80 dark:bg-dark-card/80 backdrop-blur-xl rounded-[2.5rem] shadow-2xl shadow-gray-200/50 dark:shadow-none border border-white dark:border-dark-border p-8 lg:p-10 animate-fade-in-up" style={{ animationDelay: '200ms' }}>

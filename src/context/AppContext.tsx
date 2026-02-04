@@ -87,6 +87,8 @@ interface AppState {
     sidebarOpen: boolean
     waterIntake: number
     theme: 'light' | 'dark'
+    pendingQuestion: string | null
+    userLocation: string
 }
 
 interface AppContextType extends AppState {
@@ -115,6 +117,8 @@ interface AppContextType extends AppState {
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void
     toggleTheme: () => void
     setTheme: (theme: 'light' | 'dark') => void
+    setPendingQuestion: (question: string | null) => void
+    setUserLocation: (location: string) => void
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -156,6 +160,8 @@ const initialState: AppState = {
     sidebarOpen: true,
     waterIntake: 0,
     theme: 'light',
+    pendingQuestion: null,
+    userLocation: 'Mumbai, India',
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -337,7 +343,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             chatMessages: [{
                 id: generateId(),
                 role: 'assistant',
-                content: 'Hi! I\'m Pragenx. How can I help you today?',
+                content: 'Hi! I\'m PragenX. How can I help you today?',
                 timestamp: new Date().toISOString()
             }]
         }))
@@ -374,6 +380,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setState(s => ({ ...s, theme }))
     }
 
+    const setPendingQuestion = (question: string | null) => {
+        setState(s => ({ ...s, pendingQuestion: question }))
+    }
+
+    const setUserLocation = (location: string) => {
+        setState(s => ({ ...s, userLocation: location }))
+    }
+
     return (
         <AppContext.Provider value={{
             ...state,
@@ -402,6 +416,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             showToast,
             toggleTheme,
             setTheme,
+            setPendingQuestion,
+            setUserLocation,
         }}>
             {children}
             {toast && (
@@ -434,7 +450,7 @@ function generateAIResponse(userMessage: string, state: AppState): string {
         return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`
     }
     if (lower.includes('who are you') || lower.includes('what is your name')) {
-        return "I am Pragenx, your proactive AI assistant. I help you stay organized with your bills, meetings, health, and more."
+        return "I am PragenX, your proactive personal assistant. I help you stay organized with your bills, meetings, health, and more."
     }
     if (lower.includes('thank') || lower.includes('thanks')) {
         return "You're very welcome! Is there anything else I can help you with?"

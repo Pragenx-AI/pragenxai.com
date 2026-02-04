@@ -222,7 +222,7 @@ export default function Home() {
                                     className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-gray-600 dark:text-gray-400 group"
                                 >
                                     <Mic size={20} className="mb-2 group-hover:scale-110 transition-transform" />
-                                    <span className="text-xs font-medium">Ask AI</span>
+                                    <span className="text-xs font-medium">Ask PragenX</span>
                                 </button>
                             </div>
                         </div>

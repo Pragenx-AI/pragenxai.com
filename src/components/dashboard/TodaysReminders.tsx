@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
-import { Calendar, Receipt, ArrowRight, Clock, Sparkles, Plus, Plane, Heart, ChevronDown } from 'lucide-react'
+import { Calendar, Receipt, ArrowRight, Clock, Sparkles, Plane, Heart, ChevronDown } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 
 type ReminderItem =
@@ -69,7 +69,7 @@ export default function TodaysReminders() {
                                 onClick={() => navigate('/chat')}
                                 className="px-6 py-3 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
                             >
-                                Ask Pragenx
+                                Ask PragenX
                             </button>
 
                             {/* Add Reminder Dropdown */}

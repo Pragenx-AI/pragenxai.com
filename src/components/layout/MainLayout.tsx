@@ -26,8 +26,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
                             <Menu size={20} className="dark:text-gray-300" />
                         </button>
                         <div className="lg:hidden flex items-center gap-2">
-                            <img src="/logo-new.png" alt="Pragenx AI Logo" className="w-7 h-7 rounded-lg object-contain bg-white dark:bg-transparent" />
-                            <span className="font-semibold text-gray-900 dark:text-gray-100">PRAGENX AI</span>
+                            <img src="/logo-new.png" alt="PragenX Logo" className="w-7 h-7 rounded-lg object-contain bg-white dark:bg-transparent" />
+                            <span className="font-semibold text-gray-900 dark:text-gray-100">PragenX</span>
                         </div>
                     </div>
 
@@ -57,8 +57,11 @@ export default function MainLayout({ children }: MainLayoutProps) {
                         </button>
 
                         <button
-                            onClick={() => navigate('/profile')}
-                            className="w-9 h-9 rounded-full bg-primary-50 dark:bg-primary-900/30 text-primary dark:text-primary-300 flex items-center justify-center hover:bg-primary-100 dark:hover:bg-primary-900/50 transition-colors border border-primary-100 dark:border-primary-800"
+                            onClick={() => location.pathname === '/profile' ? navigate('/dashboard') : navigate('/profile')}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${location.pathname === '/profile'
+                                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20 scale-105'
+                                : 'bg-primary-50 dark:bg-primary-900/30 text-primary dark:text-primary-300 border-primary-100 dark:border-primary-800 hover:bg-primary-100 dark:hover:bg-primary-900/50'
+                                }`}
                             aria-label="Profile"
                         >
                             <User size={18} />

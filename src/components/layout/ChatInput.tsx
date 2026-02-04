@@ -73,7 +73,7 @@ export default function ChatInput() {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const menuRef = useRef<HTMLDivElement>(null)
 
-    const { addChatMessage, showToast } = useApp()
+    const { addChatMessage, showToast, pendingQuestion, setPendingQuestion } = useApp()
     const navigate = useNavigate()
     const recognitionRef = useRef<SpeechRecognition | null>(null)
 
@@ -136,12 +136,28 @@ export default function ChatInput() {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
+    // Handle pending questions from other pages
+    useEffect(() => {
+        if (pendingQuestion) {
+            setMessage(pendingQuestion)
+            setPendingQuestion(null)
+            // If we are not on the chat page, redirect there
+            if (window.location.pathname !== '/chat') {
+                navigate('/chat')
+            }
+        }
+    }, [pendingQuestion, setPendingQuestion, navigate])
+
     const handleSubmit = () => {
         if (!message.trim()) return
 
         addChatMessage({ role: 'user', content: message })
         setMessage('')
-        navigate('/')
+
+        // Always ensure we are on the chat page after sending
+        if (window.location.pathname !== '/chat') {
+            navigate('/chat')
+        }
     }
 
     const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -152,9 +168,8 @@ export default function ChatInput() {
     }
 
     const handlePromptClick = (prompt: string) => {
-        setMessage(prompt)
-        // addChatMessage({ role: 'user', content: prompt }) // User wants it pasted, not sent immediately
-        // navigate('/') // Stay on current page? Or navigate to where the input is? The input IS here.
+        setPendingQuestion(prompt)
+        navigate('/chat')
     }
 
     const toggleVoiceInput = () => {
@@ -260,7 +275,7 @@ export default function ChatInput() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Ask Pragenx..."
+                    placeholder="Ask PragenX..."
                     rows={1}
                     className="flex-1 bg-transparent border-none resize-none py-3 px-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-0 max-h-32"
                     style={{ minHeight: '44px' }}

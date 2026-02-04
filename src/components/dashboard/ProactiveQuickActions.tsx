@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import {
     Calendar,
@@ -40,8 +41,8 @@ const ACTIONS: QuickAction[] = [
     { label: "Show my recent records", icon: FileText, category: "Records" },
     { label: "Do I need to upload any documents?", icon: FileText, category: "Records" },
     // AI MEMORY / PREFERENCES
-    { label: "Remember how I like reminders", icon: Settings, category: "AI Memory" },
-    { label: "Change my reminder style", icon: Settings, category: "AI Memory" },
+    { label: "Remember how I like reminders", icon: Settings, category: "PragenX Memory" },
+    { label: "Change my reminder style", icon: Settings, category: "PragenX Memory" },
     // AUTOMATION-STYLE
     { label: "Automatically remind me before bills", icon: CheckCircle2, category: "Automation" },
     { label: "Watch for schedule conflicts", icon: CheckCircle2, category: "Automation" },
@@ -51,11 +52,13 @@ const ACTIONS: QuickAction[] = [
 ]
 
 export default function ProactiveQuickActions() {
-    const { addChatMessage } = useApp()
+    const { setPendingQuestion } = useApp()
+    const navigate = useNavigate()
     const [isOpen, setIsOpen] = useState(false)
 
     const handleAction = (label: string) => {
-        addChatMessage({ role: 'user', content: label })
+        setPendingQuestion(label)
+        navigate('/chat')
     }
 
     const displayedActions = isOpen ? ACTIONS : ACTIONS.slice(0, 3)

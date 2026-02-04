@@ -75,8 +75,8 @@ export default function Sidebar() {
 
                     {/* Open State: Logo + Text */}
                     <div className={`flex items-center gap-2 ${!sidebarOpen && 'hidden'}`}>
-                        <img src="/logo-new.png" alt="Pragenx AI Logo" className="w-8 h-8 rounded-lg object-contain bg-white dark:bg-transparent" />
-                        <span className="font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">PRAGENX AI</span>
+                        <img src="/logo-new.png" alt="PragenX Logo" className="w-8 h-8 rounded-lg object-contain bg-white dark:bg-transparent" />
+                        <span className="font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">PragenX</span>
                     </div>
 
                     {/* Toggle Button - Visible in both states (desktop) */}
@@ -210,7 +210,7 @@ export default function Sidebar() {
                 </nav>
 
                 <div className={`p-4 border-t border-divider dark:border-dark-border flex flex-col gap-4 ${!sidebarOpen && 'lg:hidden'}`}>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 pl-1">PRAGENX AI v1.0</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 pl-1">PragenX v1.0</p>
                     <button
                         onClick={logout}
                         className="flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors w-full text-left"

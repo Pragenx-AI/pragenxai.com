@@ -154,7 +154,7 @@ export default function Bills() {
                     <div className="w-24 h-24 rounded-full bg-primary/20 border-4 border-primary/30 flex items-center justify-center mb-8 animate-pulse shadow-[0_0_50px_rgba(var(--primary-rgb),0.3)]">
                         <Mic size={48} className="text-primary" />
                     </div>
-                    <h2 className="text-3xl font-bold mb-4 italic tracking-tight">Pragenx Voice</h2>
+                    <h2 className="text-3xl font-bold mb-4 tracking-tight">PragenX Voice</h2>
                     <p className="text-gray-300 mb-8 text-center max-w-md text-xl font-medium">
                         {voiceStep === 'title' && "What is the bill for?"}
                         {voiceStep === 'amount' && "How much is the bill?"}
@@ -178,7 +178,7 @@ export default function Bills() {
                     <div className="bg-white dark:bg-dark-card rounded-[2.5rem] shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-300 border border-gray-100 dark:border-dark-border">
                         <div className="p-8">
                             <div className="flex items-center justify-between mb-8">
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 italic tracking-tight">Add New Bill</h3>
+                                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">Add New Bill</h3>
                                 <button onClick={() => setShowForm(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-dark-elevated rounded-full transition-colors">
                                     <X size={24} className="text-gray-500 dark:text-gray-400" />
                                 </button>
@@ -246,8 +246,8 @@ export default function Bills() {
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
                     <div>
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 italic tracking-tight">Finance Hub</h1>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">Keep your payments and budget on track.</p>
+                        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">Finance Hub</h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">Keep your payments and budget on track.</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <button
@@ -276,7 +276,7 @@ export default function Bills() {
                             </div>
                             <div className="p-1 px-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-bold">UPCOMING</div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight italic">₹{stats.totalUpcoming.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">₹{stats.totalUpcoming.toLocaleString()}</h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{stats.upcomingCount} bills pending</p>
                     </div>
 
@@ -287,13 +287,13 @@ export default function Bills() {
                             </div>
                             <div className="p-1 px-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg text-[10px] font-bold">PAID</div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight italic">₹{stats.totalPaid.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">₹{stats.totalPaid.toLocaleString()}</h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{stats.paidCount} successfully paid</p>
                     </div>
 
                     <div className="bg-primary/5 dark:bg-primary/10 p-6 rounded-[2rem] border border-primary/20 p-2 lg:col-span-2 flex items-center gap-6">
                         <div className="flex-1">
-                            <h4 className="text-sm font-bold text-primary italic">Optimization Tip</h4>
+                            <h4 className="text-sm font-bold text-primary">Optimization Tip</h4>
                             <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
                                 You have {stats.upcomingCount} bills due this month. Consider setting up auto-pay for utilities to avoid late fees.
                             </p>
@@ -334,7 +334,7 @@ export default function Bills() {
                             <div className="w-20 h-20 bg-gray-50 dark:bg-dark-elevated rounded-full flex items-center justify-center mx-auto mb-6">
                                 <Receipt className="text-gray-300 dark:text-gray-600" size={32} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 italic">No bills found</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">No bills found</h3>
                             <p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">Try a different search or add a new bill.</p>
                         </div>
                     ) : (
@@ -348,7 +348,7 @@ export default function Bills() {
                                         {bill.status === 'upcoming' ? <Receipt size={28} /> : <Check size={28} />}
                                     </div>
                                     <div className="min-w-0">
-                                        <h3 className={`text-xl font-bold italic tracking-tight truncate ${bill.status === 'paid' ? 'text-gray-500 line-through' : 'text-gray-900 dark:text-gray-100'}`}>
+                                        <h3 className={`text-xl font-bold tracking-tight truncate ${bill.status === 'paid' ? 'text-gray-500 line-through' : 'text-gray-900 dark:text-gray-100'}`}>
                                             {bill.title}
                                         </h3>
                                         <div className="flex items-center gap-3 mt-1.5 font-medium">
@@ -363,7 +363,7 @@ export default function Bills() {
 
                                 <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-50">
                                     <div className="text-right">
-                                        <div className={`text-2xl font-bold italic tracking-tighter ${bill.status === 'upcoming' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'}`}>
+                                        <div className={`text-2xl font-bold tracking-tighter ${bill.status === 'upcoming' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'}`}>
                                             ₹{bill.amount.toLocaleString()}
                                         </div>
                                         {bill.status === 'upcoming' && (

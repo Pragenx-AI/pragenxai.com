@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useApp } from '../context/AppContext'
-import { Upload, FileText, Download, Trash2, Tag, File, Image, FileArchive, Clock, History, Search, Filter } from 'lucide-react'
+import { Upload, FileText, Download, Trash2, Tag, File, Image, FileArchive, Clock, History, Search, Filter, Heart, Receipt, Users, Plane } from 'lucide-react'
 
 export default function Records() {
     const { records, addRecord, deleteRecord, healthLogs } = useApp()
@@ -23,11 +23,11 @@ export default function Records() {
 
     const getActivityIcon = (type: string) => {
         switch (type) {
-            case 'bill': return '💰'
-            case 'meeting': return '🤝'
-            case 'travel': return '✈️'
-            case 'health': return '❤️'
-            default: return '📝'
+            case 'bill': return Receipt
+            case 'meeting': return Users
+            case 'travel': return Plane
+            case 'health': return Heart
+            default: return History
         }
     }
 
@@ -195,39 +195,42 @@ export default function Records() {
                             </div>
                         ) : (
                             <div className="space-y-8 relative before:absolute before:inset-y-0 before:left-6 before:w-0.5 before:bg-gray-100 dark:before:bg-dark-border pl-2">
-                                {[...healthLogs].reverse().map((log, idx) => (
-                                    <div key={log.id} className="relative flex items-start gap-6 group">
-                                        <div className={`relative z-10 w-12 h-12 rounded-2xl bg-white dark:bg-dark-card border-2 flex items-center justify-center text-xl shadow-sm transition-all group-hover:scale-110 ${log.type === 'bill' ? 'border-amber-100 text-amber-600' :
-                                                log.type === 'health' ? 'border-primary-100 text-primary' :
-                                                    log.type === 'meeting' ? 'border-blue-100 text-blue-600' :
-                                                        'border-gray-100 text-gray-600'
-                                            }`}>
-                                            {getActivityIcon(log.type)}
-                                        </div>
-                                        <div className="flex-1 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-[1.5rem] p-5 transition-all hover:shadow-lg hover:shadow-gray-100 dark:hover:shadow-none">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${log.type === 'bill' ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400' :
+                                {healthLogs.slice().reverse().map((log) => {
+                                    const Icon = getActivityIcon(log.type)
+                                    return (
+                                        <div key={log.id} className="relative flex items-start gap-6 group">
+                                            <div className={`relative z-10 w-12 h-12 rounded-2xl border flex items-center justify-center shadow-lg transition-all group-hover:scale-110 backdrop-blur-md bg-white/10 dark:bg-dark-card/30 ${log.type === 'bill' ? 'border-amber-500/30 text-amber-500' :
+                                                log.type === 'health' ? 'border-primary/30 text-primary' :
+                                                    log.type === 'meeting' ? 'border-blue-500/30 text-blue-500' :
+                                                        'border-gray-500/30 text-gray-500'
+                                                }`}>
+                                                <Icon size={24} />
+                                            </div>
+                                            <div className="flex-1 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-[1.5rem] p-5 transition-all hover:shadow-lg hover:shadow-gray-100 dark:hover:shadow-none">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider ${log.type === 'bill' ? 'bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400' :
                                                         log.type === 'health' ? 'bg-primary-50 text-primary dark:bg-primary-900/20' :
                                                             log.type === 'meeting' ? 'bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' :
                                                                 'bg-gray-50 text-gray-600'
-                                                    }`}>
-                                                    {log.type}
-                                                </span>
-                                                <span className="text-xs text-gray-400 dark:text-gray-500">
-                                                    {new Date(log.timestamp).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}
-                                                </span>
+                                                        }`}>
+                                                        {log.type}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400 dark:text-gray-500">
+                                                        {new Date(log.timestamp).toLocaleString('en-IN', { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
+                                                    {log.action} {log.title}
+                                                </h3>
+                                                {log.details && (
+                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">
+                                                        {log.details}
+                                                    </p>
+                                                )}
                                             </div>
-                                            <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">
-                                                {log.action} {log.title}
-                                            </h3>
-                                            {log.details && (
-                                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 italic">
-                                                    {log.details}
-                                                </p>
-                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    )
+                                })}
                             </div>
                         )}
                     </section>
