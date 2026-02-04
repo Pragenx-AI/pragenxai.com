@@ -329,16 +329,16 @@ export default function Meetings() {
                     )}
                 </section>
 
-                <section>
+                <section className="mb-8">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Upcoming ({upcomingMeetings.length})</h2>
                     {upcomingMeetings.length === 0 ? (
                         <p className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-500 dark:text-gray-400 text-center py-8 rounded-2xl transition-colors duration-300">No upcoming meetings</p>
                     ) : (
                         <div className="space-y-3">
                             {upcomingMeetings.map(meeting => (
-                                <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between transition-colors duration-300">
+                                <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between transition-colors duration-300 group hover:border-primary/50">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-gray-400 flex items-center justify-center">
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-gray-400 flex items-center justify-center group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 group-hover:text-primary transition-colors">
                                             <Calendar size={20} />
                                         </div>
                                         <div>
@@ -353,6 +353,37 @@ export default function Meetings() {
                                     </button>
                                 </div>
                             ))}
+                        </div>
+                    )}
+                </section>
+
+                <section>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Past Meetings</h2>
+                    {meetings.filter(m => m.date < today).length === 0 ? (
+                        <p className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border text-gray-500 dark:text-gray-400 text-center py-8 rounded-2xl transition-colors duration-300">No past meetings recorded</p>
+                    ) : (
+                        <div className="space-y-3">
+                            {meetings
+                                .filter(m => m.date < today)
+                                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                                .map(meeting => (
+                                    <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-50 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-400 dark:text-gray-500 flex items-center justify-center">
+                                                <Users size={20} />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-medium text-gray-900 dark:text-gray-100 line-through decoration-gray-400">{meeting.title}</h3>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    {new Date(meeting.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => deleteMeeting(meeting.id)} className="btn btn-ghost p-2 text-gray-400 hover:text-red-500 transition-colors">
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                ))}
                         </div>
                     )}
                 </section>

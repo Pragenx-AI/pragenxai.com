@@ -50,12 +50,22 @@ export default {
                 scaleUp: {
                     '0%': { transform: 'scale(0.95)', opacity: '0' },
                     '100%': { transform: 'scale(1)', opacity: '1' },
+                },
+                pulseRing: {
+                    '0%': { transform: 'scale(0.8)', opacity: '0.5' },
+                    '100%': { transform: 'scale(1.4)', opacity: '0' },
+                },
+                softFloat: {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-10px)' },
                 }
             },
             animation: {
                 'fade-in': 'fadeIn 0.2s ease-out',
                 'fade-in-up': 'fadeInUp 0.3s ease-out',
                 'scale-up': 'scaleUp 0.2s ease-out',
+                'pulse-ring': 'pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'soft-float': 'softFloat 3s ease-in-out infinite',
             }
         },
     },

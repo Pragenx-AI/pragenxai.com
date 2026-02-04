@@ -193,7 +193,7 @@ export default function Health() {
                 </section>
 
                 {/* Health Reminders */}
-                <section>
+                <section className="mb-8">
                     <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Daily Reminders</h2>
                     <div className="grid gap-4 md:grid-cols-2">
                         {healthReminders.map(reminder => {
@@ -237,6 +237,39 @@ export default function Health() {
                                 </div>
                             )
                         })}
+                    </div>
+                </section>
+
+                {/* Recent Activity */}
+                <section>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Recent Activity</h2>
+                    <div className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-[2rem] p-6">
+                        {useApp().healthLogs.filter(log => log.type === 'health').length === 0 ? (
+                            <p className="text-gray-500 text-center py-4">No health logs today</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {useApp().healthLogs
+                                    .filter(log => log.type === 'health')
+                                    .slice(-5)
+                                    .reverse()
+                                    .map(log => (
+                                        <div key={log.id} className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-dark-border last:border-0 last:pb-0">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-primary-50 dark:bg-primary-900/20 text-primary flex items-center justify-center">
+                                                    <Check size={14} />
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{log.title}</p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">{log.action}</p>
+                                                </div>
+                                            </div>
+                                            <span className="text-xs text-gray-400 dark:text-gray-500">
+                                                {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                    ))}
+                            </div>
+                        )}
                     </div>
                 </section>
             </div>

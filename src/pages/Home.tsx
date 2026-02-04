@@ -2,16 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import VoiceAssistant from '../components/voice/VoiceAssistant'
 import TodaysReminders from '../components/dashboard/TodaysReminders'
+import ProactiveQuickActions from '../components/dashboard/ProactiveQuickActions'
 import {
     Receipt,
     Calendar,
     Heart,
-    Mic,
     Bell,
     X,
-    Sparkles,
     Activity,
-    Clock
+    Mic
 } from 'lucide-react'
 
 export default function Home() {
@@ -26,12 +25,7 @@ export default function Home() {
     const upcomingBills = bills.filter(b => b.status === 'upcoming').sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime())
     const nextBill = upcomingBills[0]
 
-    // Suggestions Chips (Conversational)
-    const suggestions = [
-        { label: 'What is due today?', icon: Sparkles, action: () => navigate('/today') },
-        { label: 'Prepare my day', icon: Clock, action: () => navigate('/today') },
-        { label: 'Start voice chat', icon: Mic, action: () => navigate('/chat') },
-    ]
+
 
     return (
         <div className="h-full overflow-y-auto relative transition-colors duration-300">
@@ -92,23 +86,14 @@ export default function Home() {
                         <VoiceAssistant variant="default" />
                     </div>
 
-                    {/* Conversational Chips */}
-                    <div className="flex flex-wrap items-center justify-center gap-3">
-                        {suggestions.map((item, idx) => (
-                            <button
-                                key={idx}
-                                onClick={item.action}
-                                className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-dark-elevated border border-gray-200 dark:border-dark-border hover:border-gray-300 dark:hover:border-gray-600 shadow-sm hover:shadow-md text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 rounded-full transition-all duration-300"
-                            >
-                                <item.icon size={16} className="text-primary/70 dark:text-primary-light/70" />
-                                {item.label}
-                            </button>
-                        ))}
-                    </div>
+
                 </section>
 
                 {/* Today's Highlighed Reminders */}
                 <TodaysReminders />
+
+                {/* Proactive Quick Actions */}
+                <ProactiveQuickActions />
 
                 {/* Widgets Grid - The "Content Area" */}
                 <section>
@@ -121,20 +106,22 @@ export default function Home() {
                         {/* 1. Bill Widget (Soft Amber) */}
                         <div
                             onClick={() => navigate('/bills')}
-                            className="bg-amber-50/60 dark:bg-amber-900/10 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-[2rem] p-6 border border-amber-100/50 dark:border-amber-800/30 hover:border-amber-200 dark:hover:border-amber-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg hover:shadow-amber-100/50 dark:hover:shadow-amber-900/20"
+                            className="bg-amber-50/60 dark:bg-amber-900/10 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-[2rem] p-6 border border-amber-100/50 dark:border-amber-800/30 hover:border-amber-200 dark:hover:border-amber-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <div className="p-3 bg-white dark:bg-dark-elevated rounded-2xl shadow-sm text-amber-500 group-hover:scale-110 transition-transform">
                                     <Receipt size={24} />
                                 </div>
-                                {nextBill && (
+                                {nextBill ? (
                                     <span className="px-3 py-1 bg-white/60 dark:bg-dark-elevated/60 backdrop-blur-sm rounded-full text-xs font-semibold text-amber-700 dark:text-amber-400">
                                         Due {new Date(nextBill.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
                                     </span>
+                                ) : (
+                                    <span className="px-3 py-1 bg-amber-500/20 rounded-full text-[10px] font-bold text-amber-600 uppercase tracking-widest">Setup</span>
                                 )}
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-amber-800/60 dark:text-amber-400/60 uppercase tracking-wide">Upcoming</p>
+                                <p className="text-sm font-medium text-amber-800/60 dark:text-amber-400/60 uppercase tracking-wide">Upcoming Bills</p>
                                 {nextBill ? (
                                     <>
                                         <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">₹{nextBill.amount.toLocaleString()}</div>
@@ -142,8 +129,8 @@ export default function Home() {
                                     </>
                                 ) : (
                                     <>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">All Clear</div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">No upcoming bills</p>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">No Bills Yet</div>
+                                        <p className="text-sm text-amber-600/80 dark:text-amber-400/80 mt-1 font-medium">Tap to add your first bill</p>
                                     </>
                                 )}
                             </div>
@@ -152,14 +139,14 @@ export default function Home() {
                         {/* 2. Meeting Widget (Soft Blue) */}
                         <div
                             onClick={() => navigate('/meetings')}
-                            className="bg-blue-50/60 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-[2rem] p-6 border border-blue-100/50 dark:border-blue-800/30 hover:border-blue-200 dark:hover:border-blue-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-100/50 dark:hover:shadow-blue-900/20"
+                            className="bg-blue-50/60 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-[2rem] p-6 border border-blue-100/50 dark:border-blue-800/30 hover:border-blue-200 dark:hover:border-blue-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <div className="p-3 bg-white dark:bg-dark-elevated rounded-2xl shadow-sm text-blue-500 group-hover:scale-110 transition-transform">
                                     <Calendar size={24} />
                                 </div>
-                                <span className="px-3 py-1 bg-white/60 dark:bg-dark-elevated/60 backdrop-blur-sm rounded-full text-xs font-semibold text-blue-700 dark:text-blue-400">
-                                    Today
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${todayMeetings.length > 0 ? 'bg-white/60 text-blue-700' : 'bg-blue-500/20 text-blue-600'}`}>
+                                    {todayMeetings.length > 0 ? 'Today' : 'Setup'}
                                 </span>
                             </div>
                             <div>
@@ -171,8 +158,8 @@ export default function Home() {
                                     </>
                                 ) : (
                                     <>
-                                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">Free</div>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">No more meetings</p>
+                                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">Free Schedule</div>
+                                        <p className="text-sm text-blue-600/80 dark:text-blue-400/80 mt-1 font-medium">Connect your calendar</p>
                                     </>
                                 )}
                             </div>
@@ -181,14 +168,14 @@ export default function Home() {
                         {/* 3. Wellness Widget (Soft Emerald) */}
                         <div
                             onClick={() => navigate('/health')}
-                            className="bg-emerald-50/60 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-[2rem] p-6 border border-emerald-100/50 dark:border-emerald-800/30 hover:border-emerald-200 dark:hover:border-emerald-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-100/50 dark:hover:shadow-emerald-900/20"
+                            className="bg-emerald-50/60 dark:bg-emerald-900/10 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-[2rem] p-6 border border-emerald-100/50 dark:border-emerald-800/30 hover:border-emerald-200 dark:hover:border-emerald-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <div className="p-3 bg-white dark:bg-dark-elevated rounded-2xl shadow-sm text-emerald-500 group-hover:scale-110 transition-transform">
                                     <Activity size={24} />
                                 </div>
-                                <span className="px-3 py-1 bg-white/60 dark:bg-dark-elevated/60 backdrop-blur-sm rounded-full text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-                                    Daily
+                                <span className="px-3 py-1 bg-emerald-500/20 rounded-full text-[10px] font-bold text-emerald-600 uppercase tracking-widest">
+                                    {waterIntake > 0 ? 'Daily' : 'Setup'}
                                 </span>
                             </div>
                             <div>
@@ -197,10 +184,11 @@ export default function Home() {
                                     <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{waterIntake}</span>
                                     <span className="text-sm text-gray-500 dark:text-gray-400">glasses</span>
                                 </div>
-                                {/* Simple Progress Bar */}
+                                {/* Progress Bar */}
                                 <div className="h-2 bg-emerald-200/50 dark:bg-emerald-900/30 rounded-full mt-3 overflow-hidden">
                                     <div className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full transition-all duration-500" style={{ width: `${Math.min((waterIntake / 8) * 100, 100)}%` }}></div>
                                 </div>
+                                {waterIntake === 0 && <p className="text-xs text-emerald-600/80 font-medium mt-2">Start your wellness habit</p>}
                             </div>
                         </div>
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
-import { Mic, MicOff, Volume2, X, Loader2, Check, Plane, Clock, MapPin, Calendar, Receipt, Users } from 'lucide-react'
+import { Mic, Volume2, Loader2, Check, Plane, Receipt, Users } from 'lucide-react'
 
 // Web Speech API types
 interface SpeechRecognitionEvent extends Event {
@@ -62,11 +62,10 @@ interface FlowData {
     transcript: string
 }
 
-export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantProps) {
+export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceAssistantProps) {
     const [voiceState, setVoiceState] = useState<VoiceState>('idle')
     const [transcript, setTranscript] = useState('')
     const [isSupported, setIsSupported] = useState(true)
-    const [response, setResponse] = useState('')
     const [flow, setFlow] = useState<FlowData | null>(null)
 
     const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -80,6 +79,112 @@ export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantPr
         showToast
     } = useApp()
     const navigate = useNavigate()
+
+    const speakResponse = useCallback((text: string, onEnd?: () => void) => {
+        if (!('speechSynthesis' in window)) return
+
+        // Cancel any current speech immediately
+        window.speechSynthesis.cancel()
+
+        // Create utterance
+        const utterance = new SpeechSynthesisUtterance(text)
+
+            // CRITICAL: Keep a global reference to prevent GC on macOS
+            ; (window as any)._utterance = utterance
+        synthRef.current = utterance
+
+        // Voice selection - Samantha is the gold standard for reliability on macOS
+        const voices = window.speechSynthesis.getVoices()
+        const preferredVoice = voices.find(v => v.name.includes('Samantha') || v.name.includes('Google US English')) ||
+            voices.find(v => v.lang.startsWith('en-US')) ||
+            voices[0]
+
+        if (preferredVoice) utterance.voice = preferredVoice
+        utterance.rate = 1.05
+        utterance.pitch = 1
+        utterance.volume = 1
+
+        utterance.onstart = () => {
+            console.log("🔊 AI Voice Engaged")
+            setVoiceState('speaking')
+        }
+
+        utterance.onend = () => {
+            console.log("✅ AI Voice Finished")
+            setVoiceState('idle')
+            delete (window as any)._utterance
+            if (onEnd) onEnd()
+        }
+
+        utterance.onerror = (e) => {
+            console.error("❌ AI Voice Error:", e)
+            setVoiceState('idle')
+            delete (window as any)._utterance
+        }
+
+        // Standard sequence: Resume -> Speak
+        window.speechSynthesis.resume()
+        window.speechSynthesis.speak(utterance)
+    }, [])
+
+    const startListening = useCallback(() => {
+        if (recognitionRef.current && voiceState === 'idle') {
+            try {
+                // "Unlock" speech synthesis on first user interaction
+                if ('speechSynthesis' in window) {
+                    const silent = new SpeechSynthesisUtterance('')
+                    silent.volume = 0
+                    window.speechSynthesis.speak(silent)
+                }
+
+                recognitionRef.current.start()
+            } catch (e) {
+                console.error("Recognition Start Error", e)
+            }
+        }
+    }, [voiceState])
+
+    const handleVoiceCommand = useCallback((command: string) => {
+        setVoiceState('processing')
+        addChatMessage({ role: 'user', content: command })
+        const cmd = command.toLowerCase()
+
+        // If a flow is active, process next step (high priority for structured data collection)
+        if (flow) {
+            processActiveFlow(cmd)
+            return
+        }
+
+        // Detect new structured flows (keep these for complex data entry)
+        if (cmd.includes('travel') || cmd.includes('trip')) {
+            startTravelFlow(cmd)
+        } else if (cmd.includes('add a bill') || cmd.includes('create a bill')) {
+            startBillFlow(cmd)
+        } else if (cmd.includes('schedule a meeting')) {
+            startMeetingFlow(cmd)
+        } else {
+            // General AI response handles the 18 specific questions and other queries
+            // No direct speakResponse here; it's handled by the effect on chatMessages
+        }
+    }, [flow, addChatMessage])
+
+    const handleVoiceCommandRef = useRef(handleVoiceCommand)
+    useEffect(() => {
+        handleVoiceCommandRef.current = handleVoiceCommand
+    }, [handleVoiceCommand])
+
+    // Pre-load voices for synthesis
+    useEffect(() => {
+        if ('speechSynthesis' in window) {
+            const loadVoices = () => {
+                window.speechSynthesis.getVoices()
+            }
+            loadVoices()
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = loadVoices
+            }
+        }
+    }, [])
 
     // Initialize speech recognition
     useEffect(() => {
@@ -115,77 +220,44 @@ export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantPr
             setTranscript(finalTranscript || interimTranscript)
 
             if (finalTranscript) {
-                handleVoiceCommand(finalTranscript)
+                // Use the ref to call handleVoiceCommand
+                handleVoiceCommandRef.current(finalTranscript)
             }
         }
 
-        recognition.onerror = () => {
+        recognition.onerror = (event: any) => {
+            console.error("Speech Recognition Error", event)
             setVoiceState('idle')
-            // Don't toast on abort (manual stop)
         }
 
         recognition.onend = () => {
-            if (voiceState === 'listening') {
-                setVoiceState('idle')
-            }
+            setVoiceState(prev => (prev === 'listening' ? 'idle' : prev))
         }
 
         recognitionRef.current = recognition
-        return () => recognition.abort()
-    }, [voiceState])
-
-    const speakResponse = useCallback((text: string, onEnd?: () => void) => {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel()
-            setVoiceState('speaking')
-            const utterance = new SpeechSynthesisUtterance(text)
-            utterance.lang = 'en-US'
-            utterance.rate = 1.0
-
-            utterance.onend = () => {
-                setVoiceState('idle')
-                if (onEnd) onEnd()
+        return () => {
+            if (recognitionRef.current) {
+                recognitionRef.current.abort()
             }
-            utterance.onerror = () => setVoiceState('idle')
-
-            synthRef.current = utterance
-            window.speechSynthesis.speak(utterance)
         }
     }, [])
 
-    const startListening = useCallback(() => {
-        if (recognitionRef.current && voiceState === 'idle') {
-            try {
-                recognitionRef.current.start()
-            } catch (e) {
-                console.error("Recognition Start Error", e)
-            }
-        }
-    }, [voiceState])
+    // Speak assistant responses automatically
+    const { chatMessages } = useApp()
+    // Initialize with the ID of the last message so we don't auto-speak on mount
+    const lastMessageRef = useRef<string | null>(chatMessages[chatMessages.length - 1]?.id || null)
 
-    // Main logic for processing commands and flows
-    const handleVoiceCommand = useCallback((command: string) => {
-        setVoiceState('processing')
-        addChatMessage({ role: 'user', content: command })
-        const cmd = command.toLowerCase()
-
-        // If a flow is active, process next step
-        if (flow) {
-            processActiveFlow(cmd)
-            return
+    useEffect(() => {
+        const lastMessage = chatMessages[chatMessages.length - 1]
+        if (lastMessage && lastMessage.role === 'assistant' && lastMessage.id !== lastMessageRef.current) {
+            lastMessageRef.current = lastMessage.id
+            // Pass a callback to resume listening after speaking
+            speakResponse(lastMessage.content, () => {
+                // Optional: auto-start listening for a conversational feel
+                // startListening() 
+            })
         }
-
-        // Detect new flow
-        if (cmd.includes('travel') || cmd.includes('trip') || cmd.includes('ireland')) {
-            startTravelFlow(cmd)
-        } else if (cmd.includes('bill') || cmd.includes('pay')) {
-            startBillFlow(cmd)
-        } else if (cmd.includes('meeting') || cmd.includes('appointment')) {
-            startMeetingFlow(cmd)
-        } else {
-            speakResponse("I heard: " + command + ". You can say add a trip, add a bill, or a meeting.")
-        }
-    }, [flow, addChatMessage, speakResponse])
+    }, [chatMessages, speakResponse])
 
     const startTravelFlow = (cmd: string) => {
         // Entity extraction
@@ -379,11 +451,20 @@ export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantPr
                 <div className="flex flex-col items-center">
                     <button
                         onClick={voiceState === 'idle' ? startListening : stopVoiceAssistant}
-                        className={`relative group rounded-full flex items-center justify-center transition-all duration-500 ${voiceState === 'listening' ? 'bg-red-500 scale-110 shadow-2xl shadow-red-500/40' :
-                                voiceState === 'speaking' ? 'bg-green-500' :
-                                    'bg-primary-600 hover:bg-primary-700'
+                        className={`relative group rounded-full flex items-center justify-center transition-all duration-700 ${voiceState === 'listening' ? 'bg-red-500 scale-110 shadow-2xl shadow-red-500/40' :
+                            voiceState === 'speaking' ? 'bg-green-500' :
+                                'bg-primary-600 hover:bg-primary-700 active:scale-95'
                             } ${flow ? 'w-24 h-24' : 'w-36 h-36'}`}
                     >
+                        {/* Interactive Ripple Effects on Hover */}
+                        {voiceState === 'idle' && (
+                            <>
+                                <span className="absolute inset-0 rounded-full bg-primary-400/20 scale-100 group-hover:animate-pulse-ring transition-transform" />
+                                <span className="absolute inset-0 rounded-full bg-primary-400/10 scale-100 group-hover:animate-pulse-ring transition-transform" style={{ animationDelay: '0.5s' }} />
+                                <span className="absolute inset-0 rounded-full bg-primary-400/5 scale-100 group-hover:animate-pulse-ring transition-transform" style={{ animationDelay: '1s' }} />
+                            </>
+                        )}
+
                         {voiceState === 'listening' ? (
                             <>
                                 <Mic size={flow ? 32 : 48} className="text-white" />
@@ -394,18 +475,18 @@ export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantPr
                         ) : voiceState === 'speaking' ? (
                             <Volume2 size={flow ? 32 : 48} className="text-white animate-bounce" />
                         ) : (
-                            <Mic size={flow ? 32 : 48} className="text-white group-hover:scale-110 transition-transform" />
+                            <Mic size={flow ? 32 : 48} className="text-white group-hover:scale-110 transition-all duration-500 ease-out" />
                         )}
 
-                        {/* Glow for idle state */}
+                        {/* Ambient Glow */}
                         {voiceState === 'idle' && (
-                            <div className="absolute -inset-4 bg-primary-100 dark:bg-primary-900/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute -inset-8 bg-primary-500/20 dark:bg-primary-500/10 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
                         )}
                     </button>
 
                     <h4 className={`mt-6 text-xl font-bold tracking-tight transition-colors ${voiceState === 'listening' ? 'text-red-500 animate-pulse' :
-                            voiceState === 'speaking' ? 'text-green-500' :
-                                'text-gray-900 dark:text-gray-100'
+                        voiceState === 'speaking' ? 'text-green-500' :
+                            'text-gray-900 dark:text-gray-100'
                         }`}>
                         {voiceState === 'listening' ? 'Listening...' :
                             voiceState === 'processing' ? 'Thinking...' :
@@ -421,11 +502,7 @@ export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantPr
                         </div>
                     )}
 
-                    {!flow && voiceState === 'idle' && (
-                        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 text-center font-medium max-w-[280px] leading-relaxed">
-                            Ask me anything! Try "What's due today?" or "Add a travel reminder"
-                        </p>
-                    )}
+
 
                     {flow && (
                         <div className="mt-8 flex gap-3 w-full animate-in slide-in-from-bottom-4 duration-500">

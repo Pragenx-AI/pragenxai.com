@@ -10,7 +10,13 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Visual Step Tracking:** Real-time checklist in the main dashboard showing data collection progress.
 - **Contextual Responses:** Page-specific voice assistants for Health logging, Bill management, and Meeting scheduling.
 
+### 🕰️ Unified History
+- **Cross-Module Activity:** Centralized historical view for Bills, Travel, Meetings, and Health sections.
+- **Recent Health Activity:** Real-time logging and display of health habits and wellness activities.
+- **Meeting Records:** Archive of past meetings with quick access to previous discussions.
+
 ### 🔔 Proactive Intelligence
+- **Proactive Quick Actions:** Dynamic dashboard cards suggesting relevant actions based on your current context and upcoming schedule.
 - **Upcoming Bill Reminders:** Automatic notifications for bills due within 7 days.
 - **Schedule Awareness:** Proactive alerts for today's and tomorrow's meetings.
 - **Health & Wellness:** Reminders for hydration and daily healthy habits when targets aren't met.

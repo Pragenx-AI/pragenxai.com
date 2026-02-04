@@ -4,20 +4,49 @@ interface IWindow extends Window {
     SpeechRecognition: any
 }
 
-export const speak = (text: string, onEnd?: () => void) => {
-    // Cancel any current speech
-    window.speechSynthesis.cancel()
-
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.volume = 1
-    utterance.rate = 1
-    utterance.pitch = 1
-
-    if (onEnd) {
-        utterance.onend = onEnd
+// Pre-load voices
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    window.speechSynthesis.getVoices()
+    if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices()
     }
+}
 
-    window.speechSynthesis.speak(utterance)
+export const speak = (text: string, onEnd?: () => void) => {
+    if (!('speechSynthesis' in window)) return
+
+    // Small delay to ensure any previous cancel() has taken effect
+    setTimeout(() => {
+        const utterance = new SpeechSynthesisUtterance(text)
+
+        let voices = window.speechSynthesis.getVoices()
+        if (voices.length === 0) voices = window.speechSynthesis.getVoices()
+
+        const preferredVoice = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) ||
+            voices.find(v => v.name.includes('Samantha') || v.name.includes('Female')) ||
+            voices.find(v => v.lang.startsWith('en'))
+
+        if (preferredVoice) utterance.voice = preferredVoice
+        utterance.volume = 1
+        utterance.rate = 1.1 // Slightly faster for responsiveness
+        utterance.pitch = 1
+
+        if (onEnd) {
+            utterance.onend = onEnd
+        }
+
+        utterance.onerror = (e) => {
+            console.error("Speech Synthesis Error:", e)
+            if (onEnd) onEnd()
+        }
+
+        window.speechSynthesis.speak(utterance)
+
+        // Chrome fix: forces audio to start if it gets stuck
+        if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume()
+        }
+    }, 50)
 }
 
 export const listen = (

@@ -21,9 +21,9 @@ import {
 
 const navItems = [
     { icon: MessageSquarePlus, label: 'GPT', path: '/chat', action: 'newChat' },
-    { icon: Home, label: 'Home', path: '/' },
+    { icon: Home, label: 'Home', path: '/dashboard' },
     { icon: CalendarDays, label: 'Today', path: '/today' },
-    { icon: Receipt, label: 'Bills & Reminders', path: '/bills' },
+    { icon: Receipt, label: 'Bills', path: '/bills' },
     { icon: Users, label: 'Meetings', path: '/meetings' },
     { icon: Plane, label: 'Travel', path: '/travel' },
     { icon: Heart, label: 'Health', path: '/health' },
@@ -110,11 +110,12 @@ export default function Sidebar() {
                                 <li key={item.label}>
                                     <NavLink
                                         to={item.path}
+                                        end={item.path === '/'}
                                         onClick={() => handleNavClick(item)}
                                         className={({ isActive }) => `
                       flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 text-sm
-                      ${isActive && item.action !== 'newChat'
-                                                ? 'bg-primary text-white font-medium shadow-lg shadow-primary/20'
+                      ${isActive
+                                                ? 'bg-primary text-white font-medium shadow-lg shadow-primary/20 ring-1 ring-white/10'
                                                 : 'text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-dark-elevated hover:text-primary dark:hover:text-primary-light'
                                             }
                     `}
@@ -137,7 +138,7 @@ export default function Sidebar() {
                     {/* Your Reminders Section */}
                     {(bills.filter(b => b.status === 'upcoming').length > 0 || meetings.length > 0) && (
                         <div className={`mt-6 px-4 ${!sidebarOpen && 'lg:hidden'}`}>
-                            <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3 px-2">Your Reminders</h3>
+                            <h3 className="text-xs font-bold text-primary dark:text-primary-light uppercase tracking-[0.2em] mb-3 px-2">Active Bills</h3>
                             <ul className="space-y-1">
                                 {bills.filter(b => b.status === 'upcoming').slice(0, 3).map(bill => (
                                     <li key={bill.id} className="group/item flex items-center justify-between pr-2 rounded-md hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors relative">

@@ -13,7 +13,6 @@ import Records from './pages/Records'
 import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
-import Landing from './pages/Landing'
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useApp()
@@ -25,8 +24,8 @@ function App() {
     return (
         <AppProvider>
             <Routes>
-                {/* Public Landing Page */}
-                <Route path="/" element={<LandingSelector />} />
+                {/* Redirect root to dashboard (AuthGuard will handle login redirect) */}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
                 {/* Auth Routes */}
                 <Route path="/login" element={<Login />} />
@@ -61,10 +60,5 @@ function App() {
     )
 }
 
-function LandingSelector() {
-    const { isAuthenticated } = useApp()
-    if (isAuthenticated) return <Navigate to="/dashboard" replace />
-    return <Landing />
-}
-
 export default App
+

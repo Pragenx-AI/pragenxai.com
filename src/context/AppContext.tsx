@@ -34,6 +34,15 @@ export interface HealthReminder {
     lastLogged?: string
 }
 
+export interface ActivityLog {
+    id: string
+    type: 'bill' | 'meeting' | 'travel' | 'health'
+    title: string
+    action: string
+    timestamp: string
+    details?: string
+}
+
 export interface Record {
     id: string
     name: string
@@ -71,6 +80,7 @@ interface AppState {
     meetings: Meeting[]
     trips: Trip[]
     healthReminders: HealthReminder[]
+    healthLogs: ActivityLog[]
     records: Record[]
     notifications: Notification[]
     chatMessages: ChatMessage[]
@@ -125,18 +135,17 @@ const initialState: AppState = {
         { id: '2', title: 'Client Review', date: new Date().toISOString().split('T')[0], time: '14:00', duration: 60, notes: 'Q1 review' },
         { id: '3', title: 'Project Planning', date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], time: '11:00', duration: 45 },
     ],
-    trips: [
-        { id: '1', destination: 'Mumbai', startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], endDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], notes: 'Business trip' },
-    ],
+    trips: [],
     healthReminders: [
         { id: '1', type: 'water', title: 'Drink Water', enabled: true },
-        { id: '2', type: 'exercise', title: 'Morning Walk', enabled: true },
-        { id: '3', type: 'medication', title: 'Vitamins', enabled: false },
-        { id: '4', type: 'habit', title: 'Meditation', enabled: true },
+        { id: '2', type: 'exercise', title: 'Daily Workout', enabled: true },
+        { id: '3', type: 'medication', title: 'Vitamin C', enabled: true },
+        { id: '4', type: 'habit', title: 'Read a Book', enabled: false },
     ],
+    healthLogs: [],
     records: [
-        { id: '1', name: 'Passport.pdf', type: 'application/pdf', size: 2500000, uploadedAt: new Date().toISOString(), tags: ['travel', 'identity'] },
-        { id: '2', name: 'Insurance_Policy.pdf', type: 'application/pdf', size: 1500000, uploadedAt: new Date().toISOString(), tags: ['insurance'] },
+        { id: '1', name: 'Identity_Card.pdf', type: 'application/pdf', size: 1200000, uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Identity', 'Essential'] },
+        { id: '2', name: 'Rent_Agreement.pdf', type: 'application/pdf', size: 2500000, uploadedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Home', 'Legal'] },
     ],
     notifications: [
         { id: '1', type: 'bill', title: 'Bill Reminder', message: 'Home Loan EMI due in 2 days', read: false, createdAt: new Date().toISOString() },
@@ -204,7 +213,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const updateBill = (id: string, updates: Partial<Bill>) => {
-        setState(s => ({ ...s, bills: s.bills.map(b => b.id === id ? { ...b, ...updates } : b) }))
+        setState(s => {
+            const bill = s.bills.find(b => b.id === id)
+            const newBills = s.bills.map(b => b.id === id ? { ...b, ...updates } : b)
+            let newLogs = s.healthLogs
+
+            if (updates.status === 'paid' && bill && bill.status !== 'paid') {
+                newLogs = [...newLogs, {
+                    id: generateId(),
+                    type: 'bill',
+                    title: bill.title,
+                    action: 'Paid',
+                    timestamp: new Date().toISOString(),
+                    details: `Amount: ₹${bill.amount}`
+                }]
+            }
+
+            return { ...s, bills: newBills, healthLogs: newLogs }
+        })
         showToast('Bill updated!')
     }
 
@@ -241,10 +267,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const logHealth = (id: string) => {
-        setState(s => ({
-            ...s,
-            healthReminders: s.healthReminders.map(h => h.id === id ? { ...h, lastLogged: new Date().toISOString() } : h)
-        }))
+        setState(s => {
+            const reminder = s.healthReminders.find(h => h.id === id)
+            const newReminders = s.healthReminders.map(h => h.id === id ? { ...h, lastLogged: new Date().toISOString() } : h)
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: reminder?.title || 'Health Habit',
+                action: 'Logged',
+                timestamp: new Date().toISOString(),
+                details: reminder?.type ? `Category: ${reminder.type}` : undefined
+            }
+            return { ...s, healthReminders: newReminders, healthLogs: [...s.healthLogs, newLog] }
+        })
         showToast('Logged!')
     }
 
@@ -313,7 +348,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const addWater = () => {
-        setState(s => ({ ...s, waterIntake: s.waterIntake + 1 }))
+        setState(s => {
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: 'Drink Water',
+                action: 'Logged',
+                timestamp: new Date().toISOString(),
+                details: `Total today: ${s.waterIntake + 1} glasses`
+            }
+            return { ...s, waterIntake: s.waterIntake + 1, healthLogs: [...s.healthLogs, newLog] }
+        })
         showToast('Water logged! 💧')
     }
 
@@ -375,36 +420,110 @@ export function AppProvider({ children }: { children: ReactNode }) {
 function generateAIResponse(userMessage: string, state: AppState): string {
     const lower = userMessage.toLowerCase()
     const today = new Date().toISOString().split('T')[0]
+    const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     const todayMeetings = state.meetings.filter(m => m.date === today)
+    const tomorrowMeetings = state.meetings.filter(m => m.date === tomorrow)
     const upcomingBills = state.bills.filter(b => b.status === 'upcoming')
+    const recentRecords = state.records.slice(-3)
 
-    if (lower.includes('prepare') || lower.includes('day') || lower.includes('today')) {
-        let response = `Good morning! Here's your day:\n\n`
-        response += `📅 Meetings:\n`
+    // 0. General / Utility Queries
+    if (lower.includes('time now') || lower.includes('current time')) {
+        return `The current time is ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`
+    }
+    if (lower.includes('today\'s date') || lower.includes('what is the date')) {
+        return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`
+    }
+    if (lower.includes('who are you') || lower.includes('what is your name')) {
+        return "I am Pragenx, your proactive AI assistant. I help you stay organized with your bills, meetings, health, and more."
+    }
+    if (lower.includes('thank') || lower.includes('thanks')) {
+        return "You're very welcome! Is there anything else I can help you with?"
+    }
+    if (lower.includes('hello') || lower.includes(' hi ') || lower.startsWith('hi')) {
+        return `Hello! How can I help you organize your day?`
+    }
+
+    // 1. Plan my day / What should I focus on today?
+    if (lower.includes('plan my day') || lower.includes('focus on today')) {
+        let response = `Here's your plan for today:\n\n`
         if (todayMeetings.length > 0) {
-            todayMeetings.forEach(m => { response += `• ${m.time} - ${m.title} (${m.duration} min)\n` })
+            response += `🗓️ You have ${todayMeetings.length} meetings, starting with ${todayMeetings[0].title} at ${todayMeetings[0].time}.\n`
         } else {
-            response += `• No meetings today\n`
+            response += `🗓️ Your calendar is clear today.\n`
         }
-        response += `\n💰 Bills:\n`
         if (upcomingBills.length > 0) {
-            response += `• EMI due in ${Math.ceil((new Date(upcomingBills[0].dueDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days - ₹${upcomingBills[0].amount.toLocaleString()}\n`
+            response += `💰 Note: ${upcomingBills[0].title} is due in ${Math.ceil((new Date(upcomingBills[0].dueDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} days.\n`
         }
-        response += `\n💚 Health:\n• Remember to drink water!\n• Morning walk pending`
+        response += `💧 Focus on staying hydrated; you've logged ${state.waterIntake} glasses so far.`
         return response
     }
 
-    if (lower.includes('bill') || lower.includes('due')) {
-        if (upcomingBills.length === 0) return 'You have no upcoming bills!'
-        return `You have ${upcomingBills.length} upcoming bills:\n` + upcomingBills.map(b => `• ${b.title}: ₹${b.amount.toLocaleString()} due ${b.dueDate}`).join('\n')
+    // 2. Any bills or EMIs coming up soon? / Show my upcoming payments
+    if (lower.includes('bills or emis') || lower.includes('upcoming payments')) {
+        if (upcomingBills.length === 0) return "You're all caught up! No bills or EMIs due soon."
+        return `You have ${upcomingBills.length} upcoming payments:\n` +
+            upcomingBills.map(b => `• ${b.title}: ₹${b.amount.toLocaleString()} (Due ${b.dueDate})`).join('\n')
     }
 
-    if (lower.includes('meeting')) {
-        if (todayMeetings.length === 0) return 'No meetings scheduled for today.'
-        return `Today's meetings:\n` + todayMeetings.map(m => `• ${m.time} - ${m.title}`).join('\n')
+    // 3. Do I have any meetings today? / Are there any meeting conflicts?
+    if (lower.includes('meetings today') || lower.includes('meeting conflicts')) {
+        if (todayMeetings.length === 0) return "You have no meetings scheduled for today. Enjoy the focus time!"
+        const conflicts = todayMeetings.filter((m, i) => todayMeetings.some((m2, j) => i !== j && m.time === m2.time))
+        let response = `You have ${todayMeetings.length} meetings today.`
+        if (conflicts.length > 0) {
+            response += ` I've detected a conflict at ${conflicts[0].time} between ${conflicts[0].title} and others.`
+        } else {
+            response += " No conflicts detected."
+        }
+        return response + "\n" + todayMeetings.map(m => `• ${m.time}: ${m.title}`).join('\n')
     }
 
-    return `I understand you said: "${userMessage}". I can help you with bills, meetings, travel, health reminders, and more. Try asking "Prepare my day" or "What bills are due?"`
+    // 4. Do I have any upcoming trips? / Any travel reminders I should know about?
+    if (lower.includes('upcoming trips') || lower.includes('travel reminders')) {
+        if (state.trips.length === 0) return "No upcoming trips found in your schedule."
+        return `You have ${state.trips.length} upcoming trip(s):\n` +
+            state.trips.map(t => `• ${t.destination}: Starting ${t.startDate}`).join('\n')
+    }
+
+    // 5. Have I logged water today? / Remind me to stay hydrated
+    if (lower.includes('logged water') || lower.includes('stay hydrated')) {
+        return `You've logged ${state.waterIntake} glasses of water today. I'll remind you to take a sip every hour!`
+    }
+
+    // 6. Show my recent records / Do I need to upload any documents?
+    if (lower.includes('recent records') || lower.includes('upload any documents')) {
+        if (state.records.length === 0) return "You haven't uploaded any records yet. You might want to upload your latest insurance or identity docs."
+        return `Your recent records:\n` +
+            recentRecords.map(r => `• ${r.name} (${r.tags.join(', ')})`).join('\n')
+    }
+
+    // 7. Remember how I like reminders / Change my reminder style
+    if (lower.includes('like reminders') || lower.includes('reminder style')) {
+        return "I've noted your preference for gentle, proactive voice reminders. You can change this anytime in Settings."
+    }
+
+    // 8. Automatically remind me before bills / Watch for schedule conflicts
+    if (lower.includes('remind me before bills') || lower.includes('watch for schedule conflicts')) {
+        return "Smart automation enabled. I will now proactively alert you 48 hours before any bill is due and scan for calendar overlaps daily."
+    }
+
+    // 9. Give me today’s summary / Prepare tomorrow’s plan
+    if (lower.includes('summary') || lower.includes('tomorrow’s plan')) {
+        if (lower.includes('summary')) {
+            return `Today's Summary: You completed ${state.waterIntake} hydration logs and had ${todayMeetings.length} meetings. A productive day!`
+        } else {
+            let resp = `Setting up for tomorrow (${tomorrow}):\n`
+            if (tomorrowMeetings.length > 0) {
+                resp += `• You have ${tomorrowMeetings.length} meetings scheduled.`
+            } else {
+                resp += `• Your morning looks quiet and perfect for deep work.`
+            }
+            return resp
+        }
+    }
+
+    // Default fallback
+    return `That's an interesting question! I don't have a specific answer for "${userMessage}" yet, but I'm learning more every day. In the meantime, I can help you with your bills, meetings, health goals, or show you a summary of your day!`
 }
 
 export function useApp() {
