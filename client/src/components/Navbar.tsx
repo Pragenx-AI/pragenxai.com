@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "wouter";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -8,6 +8,12 @@ import { ModeToggle } from "@/components/mode-toggle";
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -15,11 +21,55 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close popup when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        handleClosePopup();
+      }
+    };
+
+    if (showSignupPopup) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showSignupPopup]);
+
   const navLinks = [
     { name: "Product", id: "product", path: "/product/vision" },
     { name: "Company", id: "company", path: "/company/about" },
     { name: "Legal", id: "legal", path: "/legal/privacy" },
   ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    setIsSubmitting(false);
+    setShowSuccess(true);
+    setFormData({ name: "", email: "" });
+  };
+
+  const handleClosePopup = () => {
+    setShowSignupPopup(false);
+    setShowSuccess(false);
+    setFormData({ name: "", email: "" });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   return (
     <motion.nav
@@ -67,13 +117,120 @@ export function Navbar() {
               </a>
             </Link>
           ))}
-          <Link href="/login">
+
+          {/* Get Started Button with Dropdown Popup */}
+          <div className="relative">
             <Button
+              ref={buttonRef}
+              onClick={() => setShowSignupPopup(!showSignupPopup)}
               className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(var(--primary),0.5)] hover:shadow-[0_0_25px_rgba(var(--primary),0.8)] transition-all duration-300"
             >
               Get Started
             </Button>
-          </Link>
+
+            {/* Small Popup Dropdown */}
+            <AnimatePresence>
+              {showSignupPopup && (
+                <motion.div
+                  ref={popupRef}
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 400 }}
+                  className="absolute right-0 top-full mt-2 w-80 bg-background/95 backdrop-blur-2xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border border-primary/10 p-5 z-[100]"
+                >
+                  {/* Arrow pointer */}
+                  <div className="absolute -top-2 right-8 w-4 h-4 bg-background/95 border-l border-t border-primary/10 transform rotate-45" />
+
+                  {!showSuccess ? (
+                    <>
+                      {/* Header */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 dark:bg-primary/20">
+                          <Sparkles className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-base font-bold text-foreground">Get Started</h3>
+                          <p className="text-xs text-muted-foreground">Join the future of AI today</p>
+                        </div>
+                      </div>
+
+                      {/* Form */}
+                      <form onSubmit={handleSubmit} className="space-y-3">
+                        <div className="space-y-3">
+                          <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            placeholder="Full Name"
+                            className="w-full px-4 py-2.5 rounded-xl bg-secondary/50 border border-primary/10 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-sm"
+                          />
+                          <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="Email Address"
+                            className="w-full px-4 py-2.5 rounded-xl bg-secondary/50 border border-primary/10 text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all text-sm"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm mt-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                              Connecting...
+                            </>
+                          ) : (
+                            "Submit"
+                          )}
+                        </button>
+                      </form>
+
+                      <div className="mt-3 text-center">
+                        <p className="text-[10px] text-muted-foreground/60">
+                          Invite-only beta access
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    /* Success State */
+                    <div className="text-center py-4">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 mb-3"
+                      >
+                        <CheckCircle2 className="w-6 h-6 text-green-500" />
+                      </motion.div>
+
+                      <h3 className="text-base font-bold text-foreground mb-1">
+                        You're on the list!
+                      </h3>
+                      <p className="text-xs text-muted-foreground mb-4">
+                        Keep an eye on your inbox.
+                      </p>
+
+                      <button
+                        onClick={handleClosePopup}
+                        className="w-full px-4 py-2 rounded-xl bg-secondary hover:bg-secondary/80 text-foreground font-medium text-xs transition-all"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <ModeToggle />
         </div>
 
@@ -106,14 +263,52 @@ export function Navbar() {
                   </a>
                 </Link>
               ))}
-              <Link href="/login">
-                <Button
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full mt-2 bg-primary text-white"
-                >
-                  Get Started
-                </Button>
-              </Link>
+
+              {/* Mobile Form */}
+              <div className="mt-2 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-rose-500 to-purple-600">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Get Started</span>
+                </div>
+
+                {!showSuccess ? (
+                  <form onSubmit={handleSubmit} className="space-y-2">
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      placeholder="Full Name"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 text-sm"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="Email Address"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 text-sm"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full py-2 rounded-lg bg-gradient-to-r from-rose-500 to-purple-600 text-white font-medium text-sm disabled:opacity-70"
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit"}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="text-center py-2">
+                    <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">Success!</p>
+                    <p className="text-xs text-gray-500">We'll be in touch soon.</p>
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

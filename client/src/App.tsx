@@ -5,15 +5,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import Home from "@/pages/Home";
+import Signup from "@/pages/Signup";
 import NotFound from "@/pages/not-found";
-
 import ContentPage from "@/pages/ContentPage";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      {/* Product Routes */}
+      <Route path="/login" component={Signup} />
       <Route path="/product">
         <ContentPage
           title="Vision"
