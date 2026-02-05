@@ -67,15 +67,13 @@ export function Navbar() {
               </a>
             </Link>
           ))}
-          <Button
-            onClick={() => {
-              const el = document.getElementById("join");
-              el?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(var(--primary),0.5)] hover:shadow-[0_0_25px_rgba(var(--primary),0.8)] transition-all duration-300"
-          >
-            Get Started
-          </Button>
+          <Link href="/login">
+            <Button
+              className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_15px_rgba(var(--primary),0.5)] hover:shadow-[0_0_25px_rgba(var(--primary),0.8)] transition-all duration-300"
+            >
+              Get Started
+            </Button>
+          </Link>
           <ModeToggle />
         </div>
 
@@ -108,16 +106,14 @@ export function Navbar() {
                   </a>
                 </Link>
               ))}
-              <Button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  const el = document.getElementById("join");
-                  el?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="w-full mt-2 bg-primary text-white"
-              >
-                Get Started
-              </Button>
+              <Link href="/login">
+                <Button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full mt-2 bg-primary text-white"
+                >
+                  Get Started
+                </Button>
+              </Link>
             </div>
           </motion.div>
         )}
