@@ -15,6 +15,16 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Recent Health Activity:** Real-time logging and display of health habits and wellness activities.
 - **Meeting Records:** Archive of past meetings with quick access to previous discussions.
 
+### 🔌 Smart Integrations
+- **Centralized Hub:** Dedicated Integrations page to manage connections with Google, Zoom, Microsoft, and more.
+- **Status Monitoring:** Real-time visibility into connection status and sync validity.
+- **One-Click Connectivity:** Streamlined flow for adding and configuring external services.
+
+### 📅 Enhanced Scheduling
+- **Professional Modal:** Full-screen, Teams-style meeting scheduler with comprehensive fields.
+- **Advanced Controls:** Support for attendees, location, service selection, and recurrence.
+- **Visual Clarity:** Clean, intuitive layout for managing complex schedule details.
+
 ### 🔔 Proactive Intelligence
 - **Proactive Quick Actions:** Dynamic dashboard cards suggesting relevant actions based on your current context and upcoming schedule.
 - **Upcoming Bill Reminders:** Automatic notifications for bills due within 7 days.

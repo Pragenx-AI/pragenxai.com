@@ -16,6 +16,15 @@ export interface Meeting {
     time: string
     duration: number
     notes?: string
+    integrationId?: string
+}
+
+export interface Integration {
+    id: string
+    name: string
+    status: 'Connected' | 'Disconnected'
+    iconType: 'Video' | 'Users' | 'MessageSquare' | 'FileText'
+    description: string
 }
 
 export interface Trip {
@@ -89,6 +98,7 @@ interface AppState {
     theme: 'light' | 'dark'
     pendingQuestion: string | null
     userLocation: string
+    integrations: Integration[]
 }
 
 interface AppContextType extends AppState {
@@ -119,6 +129,7 @@ interface AppContextType extends AppState {
     setTheme: (theme: 'light' | 'dark') => void
     setPendingQuestion: (question: string | null) => void
     setUserLocation: (location: string) => void
+    updateIntegrationStatus: (id: string, status: 'Connected' | 'Disconnected') => void
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
@@ -162,6 +173,13 @@ const initialState: AppState = {
     theme: 'light',
     pendingQuestion: null,
     userLocation: 'Mumbai, India',
+    integrations: [
+        { id: 'gmeet', name: 'Google Meet', iconType: 'Video', status: 'Connected', description: 'Schedule and join video calls' },
+        { id: 'teams', name: 'Microsoft Teams', iconType: 'Users', status: 'Disconnected', description: 'Connect with your workplace' },
+        { id: 'zoom', name: 'Zoom Meet', iconType: 'Video', status: 'Connected', description: 'Direct scheduling for Zoom calls' },
+        { id: 'slack', name: 'Slack', iconType: 'MessageSquare', status: 'Connected', description: 'Notifications and channel updates' },
+        { id: 'notion', name: 'Notion', iconType: 'FileText', status: 'Disconnected', description: 'Sync documentation and notes' }
+    ]
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
@@ -388,6 +406,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setState(s => ({ ...s, userLocation: location }))
     }
 
+    const updateIntegrationStatus = (id: string, status: 'Connected' | 'Disconnected') => {
+        setState(s => ({
+            ...s,
+            integrations: s.integrations.map(i => i.id === id ? { ...i, status } : i)
+        }))
+    }
+
     return (
         <AppContext.Provider value={{
             ...state,
@@ -418,6 +443,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
             setTheme,
             setPendingQuestion,
             setUserLocation,
+            updateIntegrationStatus,
         }}>
             {children}
             {toast && (

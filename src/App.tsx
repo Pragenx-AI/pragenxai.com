@@ -13,6 +13,7 @@ import Records from './pages/Records'
 import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
+import Integrations from './pages/Integrations'
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useApp()
@@ -47,6 +48,7 @@ function App() {
                                     <Route path="/health" element={<Health />} />
                                     <Route path="/records" element={<Records />} />
                                     <Route path="/notifications" element={<Notifications />} />
+                                    <Route path="/integrations" element={<Integrations />} />
                                     <Route path="/settings" element={<Settings />} />
                                     {/* Handle root redirect if authenticated */}
                                     <Route path="/" element={<Navigate to="/dashboard" replace />} />

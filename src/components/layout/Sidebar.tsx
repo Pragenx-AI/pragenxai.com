@@ -16,7 +16,8 @@ import {
     MoreHorizontal,
     Check,
     Trash2,
-    PanelLeft
+    PanelLeft,
+    Plug
 } from 'lucide-react'
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
     { icon: Plane, label: 'Travel', path: '/travel' },
     { icon: Heart, label: 'Health', path: '/health' },
     { icon: FileText, label: 'Records', path: '/records' },
+    { icon: Plug, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
 ]
 

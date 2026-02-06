@@ -1,18 +1,28 @@
 import { useState, useEffect, useRef } from 'react'
 import { useApp } from '../context/AppContext'
-import { Plus, X, Users, Calendar, Trash2, AlertTriangle, Mic, MicOff } from 'lucide-react'
+import { Plus, X, Users, Calendar, Trash2, AlertTriangle, Mic, MicOff, Video, MessageSquare, FileText } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
 
+const iconMap = {
+    Video,
+    Users,
+    MessageSquare,
+    FileText
+}
+
 export default function Meetings() {
-    const { meetings, addMeeting, deleteMeeting, showToast } = useApp()
+    const { meetings, addMeeting, deleteMeeting, showToast, integrations } = useApp()
     const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
         date: '',
         time: '',
         duration: '30',
-        notes: ''
+        notes: '',
+        integrationId: ''
     })
+
+    const connectedIntegrations = integrations.filter(i => i.status === 'Connected')
 
     // Voice Assistant State
     const [isVoiceActive, setIsVoiceActive] = useState(false)
@@ -178,9 +188,10 @@ export default function Meetings() {
             date: formData.date,
             time: formData.time,
             duration: parseInt(formData.duration),
-            notes: formData.notes
+            notes: formData.notes,
+            integrationId: formData.integrationId || undefined
         })
-        setFormData({ title: '', date: '', time: '', duration: '30', notes: '' })
+        setFormData({ title: '', date: '', time: '', duration: '30', notes: '', integrationId: '' })
         setShowForm(false)
         showToast('Meeting added successfully')
     }
@@ -229,68 +240,164 @@ export default function Meetings() {
                         >
                             <Mic size={20} />
                         </button>
-                        <button onClick={() => setShowForm(true)} className="btn btn-primary">
-                            <Plus size={18} className="mr-2" />
-                            Add Meeting
-                        </button>
+                        <div className="flex rounded-lg overflow-hidden shadow-sm">
+                            <button
+                                onClick={() => setShowForm(true)}
+                                className="px-4 py-2 bg-[#4B5CC4] hover:bg-[#3d4bb1] text-white flex items-center gap-2 font-medium transition-colors"
+                            >
+                                <Plus size={18} />
+                                New meeting
+                            </button>
+                            <div className="w-[1px] bg-[#3d4bb1]"></div>
+                            <button className="px-2 py-2 bg-[#4B5CC4] hover:bg-[#3d4bb1] text-white transition-colors">
+                                <X size={16} className="rotate-45" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
                 {showForm && (
-                    <div className="card mb-6 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-6 transition-colors duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="font-semibold text-gray-900 dark:text-gray-100">Schedule New Meeting</h3>
-                            <button onClick={() => setShowForm(false)} className="p-1 hover:bg-surface dark:hover:bg-dark-elevated rounded transition-colors">
-                                <X size={20} className="text-gray-500 dark:text-gray-400" />
-                            </button>
-                        </div>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <input
-                                type="text"
-                                placeholder="Meeting title"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                className="input dark:bg-dark-elevated dark:border-dark-border dark:text-gray-100 dark:placeholder-gray-500"
-                                required
-                            />
-                            <div className="grid grid-cols-3 gap-4">
-                                <input
-                                    type="date"
-                                    value={formData.date}
-                                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                                    className="input dark:bg-dark-elevated dark:border-dark-border dark:text-gray-100"
-                                    required
-                                />
-                                <input
-                                    type="time"
-                                    value={formData.time}
-                                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                                    className="input dark:bg-dark-elevated dark:border-dark-border dark:text-gray-100"
-                                    required
-                                />
-                                <select
-                                    value={formData.duration}
-                                    onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                                    className="input dark:bg-dark-elevated dark:border-dark-border dark:text-gray-100"
+                    <div className="fixed inset-0 bg-[#F5F5F5] dark:bg-[#111111] z-[60] flex flex-col animate-in slide-in-from-bottom duration-300">
+                        {/* Modal Header */}
+                        <div className="bg-white dark:bg-[#1F1F1F] px-6 py-3 flex items-center justify-between border-b border-gray-200 dark:border-dark-border">
+                            <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 italic">PragenX Meetings</h2>
+                            <div className="flex items-center gap-3">
+                                <button
+                                    onClick={() => setShowForm(false)}
+                                    className="px-4 py-1.5 rounded text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-elevated transition-colors"
                                 >
-                                    <option value="15">15 min</option>
-                                    <option value="30">30 min</option>
-                                    <option value="45">45 min</option>
-                                    <option value="60">1 hour</option>
-                                    <option value="90">1.5 hours</option>
-                                </select>
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSubmit}
+                                    className="px-6 py-1.5 rounded bg-[#4B5CC4] text-white text-sm font-semibold hover:bg-[#3d4bb1] transition-colors"
+                                >
+                                    Save
+                                </button>
+                                <div className="w-[1px] h-6 bg-gray-200 dark:border-dark-border mx-1"></div>
+                                <button onClick={() => setShowForm(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-dark-elevated rounded">
+                                    <X size={20} className="text-gray-500" />
+                                </button>
                             </div>
-                            <textarea
-                                placeholder="Notes (optional)"
-                                value={formData.notes}
-                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                className="input dark:bg-dark-elevated dark:border-dark-border dark:text-gray-100 dark:placeholder-gray-500"
-                                rows={2}
-                            />
-                            <button type="submit" className="btn btn-primary w-full">
-                                Schedule Meeting
-                            </button>
-                        </form>
+                        </div>
+
+                        {/* Modal Body */}
+                        <div className="flex-1 overflow-y-auto p-8">
+                            <div className="max-w-4xl mx-auto space-y-8">
+                                <div className="space-y-6 bg-white dark:bg-[#1F1F1F] p-8 rounded-xl shadow-sm border border-gray-100 dark:border-dark-border">
+                                    {/* Row 1: Title */}
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Add title</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter meeting title"
+                                            value={formData.title}
+                                            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                            className="w-full text-xl font-normal bg-transparent border-b border-gray-200 dark:border-dark-border pb-2 focus:border-blue-500 focus:outline-none dark:text-gray-100 placeholder-gray-400"
+                                            autoFocus
+                                        />
+                                    </div>
+
+                                    {/* Row 2: Participants */}
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Add required attendees</label>
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                placeholder="Invite someone..."
+                                                className="w-full bg-transparent border-b border-gray-200 dark:border-dark-border pb-2 focus:border-blue-500 focus:outline-none dark:text-gray-100"
+                                            />
+                                            <Users size={18} className="absolute right-2 top-0 text-gray-400" />
+                                        </div>
+                                    </div>
+
+                                    {/* Row 3: Date & Time */}
+                                    <div className="flex items-center gap-6 pt-2">
+                                        <div className="flex-1 flex items-center gap-4 bg-gray-50 dark:bg-black/20 p-4 rounded-lg">
+                                            <Calendar size={20} className="text-[#800020]" />
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="date"
+                                                    value={formData.date}
+                                                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                                    className="bg-transparent font-medium dark:text-gray-100 outline-none"
+                                                    required
+                                                />
+                                                <input
+                                                    type="time"
+                                                    value={formData.time}
+                                                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                                                    className="bg-transparent font-medium dark:text-gray-100 outline-none"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+                                        <X size={16} className="text-gray-400" />
+                                        <div className="w-32">
+                                            <select
+                                                value={formData.duration}
+                                                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                                                className="w-full bg-gray-50 dark:bg-black/20 p-4 rounded-lg font-medium dark:text-gray-100 outline-none appearance-none"
+                                            >
+                                                <option value="15">15 min</option>
+                                                <option value="30">30 min</option>
+                                                <option value="45">45 min</option>
+                                                <option value="60">1 hour</option>
+                                                <option value="90">1.5 hours</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 4: Location/Service */}
+                                    <div className="grid grid-cols-2 gap-8 pt-2">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Add location</label>
+                                            <input
+                                                type="text"
+                                                placeholder="Search for a location"
+                                                className="w-full bg-transparent border-b border-gray-200 dark:border-dark-border pb-2 focus:border-blue-500 focus:outline-none dark:text-gray-100"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Sync with service</label>
+                                            <div className="flex flex-wrap gap-2 pt-1">
+                                                {connectedIntegrations.map(integration => {
+                                                    const Icon = iconMap[integration.iconType as keyof typeof iconMap]
+                                                    return (
+                                                        <button
+                                                            key={integration.id}
+                                                            type="button"
+                                                            onClick={() => setFormData({ ...formData, integrationId: formData.integrationId === integration.id ? '' : integration.id })}
+                                                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${formData.integrationId === integration.id
+                                                                ? 'bg-[#800020]/10 border-[#800020] text-[#800020]'
+                                                                : 'bg-gray-50 dark:bg-black/20 border-transparent text-gray-600 dark:text-gray-400 hover:border-gray-200 dark:hover:border-dark-border'
+                                                                }`}
+                                                        >
+                                                            <Icon size={14} />
+                                                            {integration.name}
+                                                        </button>
+                                                    )
+                                                })}
+                                                {connectedIntegrations.length === 0 && (
+                                                    <p className="text-xs text-amber-500 py-1">No integrations connected.</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Row 5: Notes */}
+                                    <div className="flex flex-col gap-2 pt-2">
+                                        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">Add a description</label>
+                                        <textarea
+                                            placeholder="Type details for this new meeting"
+                                            value={formData.notes}
+                                            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                            className="w-full bg-[#F9F9F9] dark:bg-black/30 p-4 rounded-xl border border-transparent focus:border-blue-500 focus:outline-none dark:text-gray-100 min-h-[120px] resize-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -303,8 +410,18 @@ export default function Meetings() {
                             {todayMeetings.map(meeting => (
                                 <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between transition-colors duration-300">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                                            <Users size={20} />
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${meeting.integrationId
+                                            ? 'bg-primary/10 text-primary'
+                                            : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                                            }`}>
+                                            {(() => {
+                                                const integration = integrations.find(i => i.id === meeting.integrationId)
+                                                if (integration) {
+                                                    const Icon = iconMap[integration.iconType as keyof typeof iconMap]
+                                                    return <Icon size={20} />
+                                                }
+                                                return <Users size={20} />
+                                            })()}
                                         </div>
                                         <div>
                                             <div className="flex items-center gap-2">
@@ -338,8 +455,18 @@ export default function Meetings() {
                             {upcomingMeetings.map(meeting => (
                                 <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between transition-colors duration-300 group hover:border-primary/50">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-gray-400 flex items-center justify-center group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 group-hover:text-primary transition-colors">
-                                            <Calendar size={20} />
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${meeting.integrationId
+                                            ? 'bg-primary-50 dark:bg-primary-900/20 text-primary'
+                                            : 'bg-gray-100 dark:bg-dark-elevated text-gray-600 dark:text-gray-400 group-hover:bg-primary-50 dark:group-hover:bg-primary-900/20 group-hover:text-primary'
+                                            }`}>
+                                            {(() => {
+                                                const integration = integrations.find(i => i.id === meeting.integrationId)
+                                                if (integration) {
+                                                    const Icon = iconMap[integration.iconType as keyof typeof iconMap]
+                                                    return <Icon size={20} />
+                                                }
+                                                return <Calendar size={20} />
+                                            })()}
                                         </div>
                                         <div>
                                             <h3 className="font-medium text-gray-900 dark:text-gray-100">{meeting.title}</h3>
@@ -370,7 +497,14 @@ export default function Meetings() {
                                     <div key={meeting.id} className="card bg-white dark:bg-dark-card border border-gray-50 dark:border-dark-border rounded-2xl p-4 flex items-center justify-between opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-dark-elevated text-gray-400 dark:text-gray-500 flex items-center justify-center">
-                                                <Users size={20} />
+                                                {(() => {
+                                                    const integration = integrations.find(i => i.id === meeting.integrationId)
+                                                    if (integration) {
+                                                        const Icon = iconMap[integration.iconType as keyof typeof iconMap]
+                                                        return <Icon size={20} />
+                                                    }
+                                                    return <Users size={20} />
+                                                })()}
                                             </div>
                                             <div>
                                                 <h3 className="font-medium text-gray-900 dark:text-gray-100 line-through decoration-gray-400">{meeting.title}</h3>

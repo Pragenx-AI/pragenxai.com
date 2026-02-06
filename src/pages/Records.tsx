@@ -1,10 +1,18 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { Upload, FileText, Download, Trash2, Tag, File, Image, FileArchive, Clock, History, Search, Filter, Heart, Receipt, Users, Plane } from 'lucide-react'
 
 export default function Records() {
     const { records, addRecord, deleteRecord, healthLogs } = useApp()
+    const [searchParams] = useSearchParams()
     const [activeTab, setActiveTab] = useState<'documents' | 'history'>('documents')
+
+    useEffect(() => {
+        const tab = searchParams.get('tab')
+        if (tab === 'history') setActiveTab('history')
+        else setActiveTab('documents')
+    }, [searchParams])
     const [isDragging, setIsDragging] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -72,13 +80,13 @@ export default function Records() {
                             onClick={() => setActiveTab('documents')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'documents' ? 'bg-white dark:bg-dark-card shadow-sm text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
                         >
-                            Documents
+                            Docs
                         </button>
                         <button
                             onClick={() => setActiveTab('history')}
                             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'history' ? 'bg-white dark:bg-dark-card shadow-sm text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
                         >
-                            Activity
+                            History
                         </button>
                     </div>
                 </div>
