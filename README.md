@@ -44,7 +44,9 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Futuristic Design System:** A cutting-edge blend of deep dark modes, sharp glassmorphism, and "Maroon Glow" accent colors (`#800020`).
 - **Dynamic Animations:** Smooth transitions, hover lifts, and neon pulse effects that bring the interface to life.
 - **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
-- **Unified Command Center:** Centralized chat and search bar with attachment capabilities and integrated "New Chat" controls.
+- **Unified Command Center:** Centralized chat and search bar with "drop-up" attachment capabilities, interactive tool menus (Deep Research, Agent Mode), and integrated "New Chat" controls.
+- **Inline Chat Experience:** Persistent conversation window on the Home dashboard that allows for seamless multi-turn dialogue without leaving the main view.
+- **Silence Guarantee:** Intelligent interaction logic that ensures text-based searches remain silent, while preserving voice-guided assistance for mic-activated commands.
 - **Internationalization (GBP):** Fully localized for the UK with British Pounds (£) as the primary currency across all modules and AI interactions.
 
 ## 🛠️ Technology Stack

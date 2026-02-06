@@ -251,11 +251,14 @@ export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceA
         const lastMessage = chatMessages[chatMessages.length - 1]
         if (lastMessage && lastMessage.role === 'assistant' && lastMessage.id !== lastMessageRef.current) {
             lastMessageRef.current = lastMessage.id
-            // Pass a callback to resume listening after speaking
-            speakResponse(lastMessage.content, () => {
-                // Optional: auto-start listening for a conversational feel
-                // startListening() 
-            })
+
+            // Only speak if the message is NOT marked as silent
+            if (!lastMessage.silent) {
+                speakResponse(lastMessage.content, () => {
+                    // Optional: auto-start listening for a conversational feel
+                    // startListening() 
+                })
+            }
         }
     }, [chatMessages, speakResponse])
 

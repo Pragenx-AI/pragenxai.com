@@ -159,13 +159,13 @@ export default function ChatInput() {
     const handleSubmit = () => {
         if (!message.trim()) return
 
-        addChatMessage({ role: 'user', content: message })
+        addChatMessage({ role: 'user', content: message, silent: true })
         setMessage('')
     }
 
 
     const handlePromptClick = (prompt: string) => {
-        addChatMessage({ role: 'user', content: prompt })
+        addChatMessage({ role: 'user', content: prompt, silent: true })
     }
 
     const toggleVoiceInput = () => {
@@ -220,34 +220,46 @@ export default function ChatInput() {
             {showAttachMenu && (
                 <div
                     ref={menuRef}
-                    className={`absolute left-6 w-64 bg-white dark:bg-dark-elevated rounded-2xl shadow-2xl border border-divider dark:border-dark-border z-50 overflow-hidden animate-in fade-in duration-300 ${chatMessages.length > 0
-                        ? 'bottom-full mb-4 slide-in-from-bottom-2'
-                        : 'top-[4.5rem] slide-in-from-top-2'
-                        }`}
+                    className="absolute left-6 w-64 bg-white dark:bg-dark-elevated rounded-2xl shadow-2xl border border-divider dark:border-dark-border z-50 overflow-hidden animate-in fade-in duration-300 bottom-full mb-4 slide-in-from-bottom-2"
                 >
                     <div className="p-1.5 space-y-0.5">
                         <button onClick={triggerFileUpload} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
                             <Paperclip size={18} className="text-gray-500" />
                             <span>Add photos & files</span>
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
+                        <button
+                            onClick={() => { showToast('Image generation coming soon!', 'info'); setShowAttachMenu(false); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors"
+                        >
                             <ImageIcon size={18} className="text-gray-500" />
                             <span>Create image</span>
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
+                        <button
+                            onClick={() => { showToast('Deep research mode activated!', 'info'); setShowAttachMenu(false); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors"
+                        >
                             <Search size={18} className="text-gray-500" />
                             <span>Deep research</span>
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
+                        <button
+                            onClick={() => { showToast('Shopping research mode activated!', 'info'); setShowAttachMenu(false); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors"
+                        >
                             <ShoppingBag size={18} className="text-gray-500" />
                             <span>Shopping research</span>
                         </button>
-                        <button className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
+                        <button
+                            onClick={() => { showToast('Agent mode activated!', 'info'); setShowAttachMenu(false); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors"
+                        >
                             <Bot size={18} className="text-gray-500" />
                             <span>Agent mode</span>
                         </button>
                         <div className="h-px bg-divider dark:bg-dark-border my-1 mx-2" />
-                        <button className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors">
+                        <button
+                            onClick={() => { showToast('More options coming soon!', 'info'); setShowAttachMenu(false); }}
+                            className="w-full flex items-center justify-between px-3 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-dark-border rounded-xl transition-colors"
+                        >
                             <div className="flex items-center gap-3">
                                 <MoreHorizontal size={18} className="text-gray-500" />
                                 <span>More</span>

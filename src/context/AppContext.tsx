@@ -117,6 +117,7 @@ export interface ChatMessage {
     role: 'user' | 'assistant'
     content: string
     timestamp: string
+    silent?: boolean
 }
 
 export interface ChatSession {
@@ -505,7 +506,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
                 const response = generateAIResponse(message.content, state)
                 setState(s => ({
                     ...s,
-                    chatMessages: [...s.chatMessages, { id: generateId(), role: 'assistant', content: response, timestamp: new Date().toISOString() }]
+                    chatMessages: [...s.chatMessages, {
+                        id: generateId(),
+                        role: 'assistant',
+                        content: response,
+                        timestamp: new Date().toISOString(),
+                        silent: message.silent // Propagate silence from user message to response
+                    }]
                 }))
             }, 500)
         }
