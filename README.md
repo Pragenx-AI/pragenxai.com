@@ -15,15 +15,16 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Recent Health Activity:** Real-time logging and display of health habits and wellness activities.
 - **Meeting Records:** Archive of past meetings with quick access to previous discussions.
 
-### 🔌 Smart Integrations
-- **Centralized Hub:** Dedicated Integrations page to manage connections with Google, Zoom, Microsoft, and more.
-- **Status Monitoring:** Real-time visibility into connection status and sync validity.
+### 🔌 Smart & Futuristic Integrations
+- **Expanded Ecosystem:** Native support for Google Meet, Microsoft Teams, Zoom, Webex, Skype, Discord, GoToMeeting, and Slack.
+- **Cyber-Executive UI:** Redesigned Integrations page featuring glassmorphism, neon glows, and interactive animations.
+- **Status Monitoring:** Real-time visibility into connection status with active visual feedback.
 - **One-Click Connectivity:** Streamlined flow for adding and configuring external services.
 
-### 📅 Enhanced Scheduling
-- **Professional Modal:** Full-screen, Teams-style meeting scheduler with comprehensive fields.
-- **Advanced Controls:** Support for attendees, location, service selection, and recurrence.
-- **Visual Clarity:** Clean, intuitive layout for managing complex schedule details.
+### 📅 Next-Gen Scheduling
+- **Futuristic Modal:** Immersive, light/dark theme-aware meeting scheduler with "laser-line" accents and glowing focused states.
+- **Advanced Controls:** Support for attendees, location, platform synchronization, and custom recurrence patterns.
+- **Visual Clarity:** High-fidelity inputs and interactive elements designed for speed and precision.
 
 ### 🔔 Proactive Intelligence
 - **Proactive Quick Actions:** Dynamic dashboard cards suggesting relevant actions based on your current context and upcoming schedule.
@@ -37,11 +38,11 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Stunning Login UI:** High-performance, glassmorphic login page with ambient lighting and smooth animations.
 - **Session Management:** Seamless sign-in and sign-out flows with real-time feedback.
 
-### 🎨 State-of-the-Art UI/UX
-- **Ambient Design:** Dynamic greetings (Morning/Afternoon/Evening) and responsive lighting effects.
-- **Unified Command Center:** A centralized chat and search bar with an attachment menu for research, agent mode, and file uploads.
-- **Glassmorphism:** Modern, translucent UI components that feel light and premium.
-- **Dark Mode Support:** Full, curated dark theme across every page and component.
+### 🎨 Cyber-Executive Aesthetic
+- **Futuristic Design System:** A cutting-edge blend of deep dark modes, sharp glassmorphism, and "Maroon Glow" accent colors (`#800020`).
+- **Dynamic Animations:** Smooth transitions, hover lifts, and neon pulse effects that bring the interface to life.
+- **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
+- **Unified Command Center:** Centralized chat and search bar with attachment capabilities.
 
 ## 🛠️ Technology Stack
 - **Frontend:** React, TypeScript, Vite

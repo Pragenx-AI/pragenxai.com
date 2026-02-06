@@ -149,3 +149,27 @@ body {
         --dark-text-muted: 161 161 170;
     }
 }
+
+
+@layer utilities {
+    .glass-panel {
+        @apply bg-white/95 dark:bg-black/40 backdrop-blur-2xl border border-gray-200 dark:border-white/5 shadow-2xl transition-colors duration-300;
+    }
+
+    .glow-maroon {
+        box-shadow: 0 0 20px rgba(128, 0, 32, 0.4);
+    }
+
+    .glow-text {
+        text-shadow: 0 0 10px rgba(128, 0, 32, 0.5);
+    }
+
+    .laser-line {
+        @apply h-[1px] w-full opacity-50 transition-colors duration-300;
+        background: linear-gradient(90deg, transparent, #800020, transparent);
+    }
+
+    .input-underlined {
+        @apply bg-transparent border-b border-gray-300 dark:border-white/10 focus:border-[#800020] outline-none transition-all duration-300 text-gray-900 dark:text-white;
+    }
+}

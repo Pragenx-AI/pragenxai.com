@@ -175,8 +175,12 @@ const initialState: AppState = {
     userLocation: 'Mumbai, India',
     integrations: [
         { id: 'gmeet', name: 'Google Meet', iconType: 'Video', status: 'Connected', description: 'Schedule and join video calls' },
-        { id: 'teams', name: 'Microsoft Teams', iconType: 'Users', status: 'Disconnected', description: 'Connect with your workplace' },
+        { id: 'teams', name: 'Microsoft Teams', iconType: 'Users', status: 'Connected', description: 'Connect with your workplace' },
         { id: 'zoom', name: 'Zoom Meet', iconType: 'Video', status: 'Connected', description: 'Direct scheduling for Zoom calls' },
+        { id: 'webex', name: 'Cisco Webex', iconType: 'Video', status: 'Connected', description: 'Enterprise video conferencing' },
+        { id: 'skype', name: 'Skype', iconType: 'Video', status: 'Connected', description: 'Video and voice calls' },
+        { id: 'goto', name: 'GoToMeeting', iconType: 'Video', status: 'Connected', description: 'Professional online meetings' },
+        { id: 'discord', name: 'Discord', iconType: 'MessageSquare', status: 'Connected', description: 'Community communication' },
         { id: 'slack', name: 'Slack', iconType: 'MessageSquare', status: 'Connected', description: 'Notifications and channel updates' },
         { id: 'notion', name: 'Notion', iconType: 'FileText', status: 'Disconnected', description: 'Sync documentation and notes' }
     ]
@@ -184,13 +188,13 @@ const initialState: AppState = {
 
 export function AppProvider({ children }: { children: ReactNode }) {
     const [state, setState] = useState<AppState>(() => {
-        const saved = localStorage.getItem('pragenx-state')
+        const saved = localStorage.getItem('pragenx-state-v1')
         return saved ? { ...initialState, ...JSON.parse(saved) } : initialState
     })
     const [toast, setToast] = useState<{ message: string; type: string } | null>(null)
 
     useEffect(() => {
-        localStorage.setItem('pragenx-state', JSON.stringify(state))
+        localStorage.setItem('pragenx-state-v1', JSON.stringify(state))
     }, [state])
 
     // Apply theme class to HTML element
