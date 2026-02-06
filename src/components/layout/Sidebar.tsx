@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import {
     MessageSquarePlus,
     Home,
+    History as HistoryIcon,
     CalendarDays,
     Receipt,
     Users,
@@ -14,32 +15,37 @@ import {
     X,
     LogOut,
     MoreHorizontal,
-    Check,
     Trash2,
     PanelLeft,
-    Plug
+    Plug,
+    MessageSquare
 } from 'lucide-react'
 
 const navItems = [
-    { icon: MessageSquarePlus, label: 'GPT', path: '/chat', action: 'newChat' },
     { icon: Home, label: 'Home', path: '/dashboard' },
+    { icon: MessageSquarePlus, label: 'GPT', path: '/chat', action: 'newChat' },
     { icon: CalendarDays, label: 'Today', path: '/today' },
     { icon: Receipt, label: 'Bills', path: '/bills' },
     { icon: Users, label: 'Meetings', path: '/meetings' },
     { icon: Plane, label: 'Travel', path: '/travel' },
     { icon: Heart, label: 'Health', path: '/health' },
-    { icon: FileText, label: 'Records', path: '/records' },
+    { icon: FileText, label: 'Docs', path: '/records' },
+    { icon: HistoryIcon, label: 'History', path: '/history' },
     { icon: Plug, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
 ]
 
 export default function Sidebar() {
     const [activeMenuId, setActiveMenuId] = useState<string | null>(null)
-    const { sidebarOpen, toggleSidebar, notifications, startNewChat, bills, meetings, updateBill, deleteBill, deleteMeeting, logout } = useApp()
+    const {
+        sidebarOpen, toggleSidebar, notifications,
+        startNewChat, logout,
+        chatSessions, loadChatSession, deleteChatSession, currentSessionId
+    } = useApp()
     const unreadCount = notifications.filter(n => !n.read).length
 
     const handleNavClick = (item: typeof navItems[0]) => {
-        if (item.action === 'newChat') {
+        if ((item as any).action === 'newChat') {
             startNewChat()
         }
         if (window.innerWidth < 1024) {
@@ -137,70 +143,41 @@ export default function Sidebar() {
                         })}
                     </ul>
 
-                    {/* Your Reminders Section */}
-                    {(bills.filter(b => b.status === 'upcoming').length > 0 || meetings.length > 0) && (
+                    {/* Recent Chats Section */}
+                    {chatSessions.length > 0 && (
                         <div className={`mt-6 px-4 ${!sidebarOpen && 'lg:hidden'}`}>
-                            <h3 className="text-xs font-bold text-primary dark:text-primary-light uppercase tracking-[0.2em] mb-3 px-2">Active Bills</h3>
+                            <h3 className="text-xs font-bold text-primary dark:text-primary-light uppercase tracking-[0.2em] mb-3 px-2 flex items-center justify-between">
+                                Recent Chats
+                            </h3>
                             <ul className="space-y-1">
-                                {bills.filter(b => b.status === 'upcoming').slice(0, 3).map(bill => (
-                                    <li key={bill.id} className="group/item flex items-center justify-between pr-2 rounded-md hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors relative">
+                                {chatSessions.slice(0, 8).map(session => (
+                                    <li key={session.id} className="group/item flex items-center justify-between pr-2 rounded-md hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors relative">
                                         <NavLink
-                                            to="/bills"
-                                            className="flex-1 flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 overflow-hidden"
+                                            to="/chat"
+                                            onClick={() => loadChatSession(session.id)}
+                                            className={`flex-1 flex items-center gap-2 px-2 py-2 text-sm overflow-hidden rounded-lg transition-all ${currentSessionId === session.id
+                                                ? 'bg-primary/10 text-primary dark:text-primary-light font-medium'
+                                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                                }`}
                                         >
-                                            <div className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover/item:scale-125 transition-transform flex-shrink-0" />
-                                            <span className="truncate">{bill.title}</span>
+                                            <MessageSquare size={16} className={currentSessionId === session.id ? 'text-primary' : 'text-gray-400'} />
+                                            <span className="truncate">{session.title}</span>
                                         </NavLink>
                                         <button
-                                            onClick={(e) => toggleMenu(e, `bill-${bill.id}`)}
-                                            className={`p-1 hover:bg-gray-200 dark:hover:bg-dark-border rounded text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all ${activeMenuId === `bill-${bill.id}` ? 'opacity-100 bg-gray-200 dark:bg-dark-border' : 'opacity-0 group-hover/item:opacity-100'}`}
+                                            onClick={(e) => toggleMenu(e, `chat-${session.id}`)}
+                                            className={`p-1 hover:bg-gray-200 dark:hover:bg-dark-border rounded text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all ${activeMenuId === `chat-${session.id}` ? 'opacity-100 bg-gray-200 dark:bg-dark-border' : 'opacity-0 group-hover/item:opacity-100'}`}
                                         >
                                             <MoreHorizontal size={14} />
                                         </button>
 
                                         {/* Dropdown Menu */}
-                                        {activeMenuId === `bill-${bill.id}` && (
+                                        {activeMenuId === `chat-${session.id}` && (
                                             <div className="absolute right-0 top-8 w-32 bg-white dark:bg-dark-elevated rounded-lg shadow-lg border border-gray-100 dark:border-dark-border z-50 overflow-hidden animate-fade-in-up">
                                                 <button
-                                                    onClick={(e) => handleAction(e, () => updateBill(bill.id, { status: 'paid' }))}
-                                                    className="w-full text-left px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-border hover:text-primary transition-colors flex items-center gap-2"
-                                                >
-                                                    <Check size={12} /> Mark Paid
-                                                </button>
-                                                <button
-                                                    onClick={(e) => handleAction(e, () => deleteBill(bill.id))}
+                                                    onClick={(e) => handleAction(e, () => deleteChatSession(session.id))}
                                                     className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
                                                 >
-                                                    <Trash2 size={12} /> Dismiss
-                                                </button>
-                                            </div>
-                                        )}
-                                    </li>
-                                ))}
-                                {meetings.filter(m => m.date >= new Date().toISOString().split('T')[0]).sort((a, b) => new Date(a.date + 'T' + a.time).getTime() - new Date(b.date + 'T' + b.time).getTime()).slice(0, 3).map(meeting => (
-                                    <li key={meeting.id} className="group/item flex items-center justify-between pr-2 rounded-md hover:bg-gray-50 dark:hover:bg-dark-elevated transition-colors relative">
-                                        <NavLink
-                                            to="/meetings"
-                                            className="flex-1 flex items-center gap-2 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 overflow-hidden"
-                                        >
-                                            <div className="w-1.5 h-1.5 rounded-full bg-blue-400 group-hover/item:scale-125 transition-transform flex-shrink-0" />
-                                            <span className="truncate">{meeting.title}</span>
-                                        </NavLink>
-                                        <button
-                                            onClick={(e) => toggleMenu(e, `meeting-${meeting.id}`)}
-                                            className={`p-1 hover:bg-gray-200 dark:hover:bg-dark-border rounded text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all ${activeMenuId === `meeting-${meeting.id}` ? 'opacity-100 bg-gray-200 dark:bg-dark-border' : 'opacity-0 group-hover/item:opacity-100'}`}
-                                        >
-                                            <MoreHorizontal size={14} />
-                                        </button>
-
-                                        {/* Dropdown Menu */}
-                                        {activeMenuId === `meeting-${meeting.id}` && (
-                                            <div className="absolute right-0 top-8 w-32 bg-white dark:bg-dark-elevated rounded-lg shadow-lg border border-gray-100 dark:border-dark-border z-50 overflow-hidden animate-fade-in-up">
-                                                <button
-                                                    onClick={(e) => handleAction(e, () => deleteMeeting(meeting.id))}
-                                                    className="w-full text-left px-3 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
-                                                >
-                                                    <Trash2 size={12} /> Dismiss
+                                                    <Trash2 size={12} /> Delete
                                                 </button>
                                             </div>
                                         )}

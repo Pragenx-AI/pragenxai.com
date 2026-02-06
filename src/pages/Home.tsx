@@ -95,6 +95,79 @@ export default function Home() {
                 {/* Proactive Quick Actions */}
                 <ProactiveQuickActions />
 
+                {/* Relocated Sidebar Content: Upcoming Agenda */}
+                <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+                    <div className="flex items-center justify-between mb-6 px-2">
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                            Upcoming Agenda
+                            <span className="text-xs font-normal text-gray-500 lowercase px-2 py-0.5 bg-gray-100 dark:bg-dark-elevated rounded-full">Proactive View</span>
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {/* Upcoming Bills List */}
+                        <div className="bg-white/50 dark:bg-dark-card/50 backdrop-blur-xl rounded-[2.5rem] p-8 border border-divider dark:border-dark-border shadow-sm">
+                            <h3 className="text-sm font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-6 px-2 flex items-center gap-2">
+                                <Receipt size={16} /> Active Bills
+                            </h3>
+                            <div className="space-y-4">
+                                {upcomingBills.length > 0 ? (
+                                    upcomingBills.slice(0, 3).map(bill => (
+                                        <div key={bill.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-dark-elevated border border-transparent hover:border-amber-100 dark:hover:border-amber-900/30 transition-all hover:shadow-md cursor-pointer" onClick={() => navigate('/bills')}>
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-full bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 group-hover:scale-110 transition-transform">
+                                                    <Receipt size={20} />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-gray-900 dark:text-gray-100">{bill.title}</p>
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">Due {new Date(bill.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right font-bold text-gray-900 dark:text-gray-100">
+                                                £{bill.amount.toLocaleString()}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 py-4 px-2">No upcoming bills. You're all caught up!</p>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Next Meetings List */}
+                        <div className="bg-white/50 dark:bg-dark-card/50 backdrop-blur-xl rounded-[2.5rem] p-8 border border-divider dark:border-dark-border shadow-sm">
+                            <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-2 flex items-center gap-2">
+                                <Calendar size={16} /> Next Meetings
+                            </h3>
+                            <div className="space-y-4">
+                                {meetings.filter(m => m.date >= today).length > 0 ? (
+                                    meetings.filter(m => m.date >= today)
+                                        .sort((a, b) => new Date(a.date + 'T' + a.time).getTime() - new Date(b.date + 'T' + b.time).getTime())
+                                        .slice(0, 3)
+                                        .map(meeting => (
+                                            <div key={meeting.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-dark-elevated border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30 transition-all hover:shadow-md cursor-pointer" onClick={() => navigate('/meetings')}>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                                                        <Calendar size={20} />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold text-gray-900 dark:text-gray-100">{meeting.title}</p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(meeting.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} at {meeting.time}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full">
+                                                    Upcoming
+                                                </div>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 py-4 px-2">Your schedule is wide open. Enjoy the focus time!</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 {/* Widgets Grid - The "Content Area" */}
                 <section>
                     <div className="flex items-center justify-between mb-6 px-2">
@@ -124,7 +197,7 @@ export default function Home() {
                                 <p className="text-sm font-medium text-amber-800/60 dark:text-amber-400/60 uppercase tracking-wide">Upcoming Bills</p>
                                 {nextBill ? (
                                     <>
-                                        <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">₹{nextBill.amount.toLocaleString()}</div>
+                                        <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">£{nextBill.amount.toLocaleString()}</div>
                                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 truncate">{nextBill.title}</p>
                                     </>
                                 ) : (

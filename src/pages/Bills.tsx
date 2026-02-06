@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useMemo } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { useApp } from '../context/AppContext'
-import { Plus, X, Receipt, Check, Trash2, Mic, MicOff, Search, Filter, ArrowUpRight, ArrowDownRight, IndianRupee, CreditCard, Wallet, Calendar } from 'lucide-react'
+import { Plus, X, Receipt, Check, Trash2, Mic, MicOff, Search, ArrowUpRight, Wallet, Calendar, PoundSterling } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
 
 export default function Bills() {
@@ -201,7 +201,7 @@ export default function Bills() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <div className="relative">
                                             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                                                <IndianRupee size={18} />
+                                                <PoundSterling size={18} />
                                             </div>
                                             <input
                                                 type="number"
@@ -252,10 +252,10 @@ export default function Bills() {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={startVoiceAssistant}
-                            className="p-4 rounded-2xl bg-white dark:bg-dark-card text-primary border border-gray-100 dark:border-dark-border shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all"
-                            title="Voice Command"
+                            className="p-3 rounded-full bg-gradient-to-r from-primary-600 to-primary-800 text-white hover:from-primary-500 hover:to-primary-700 shadow-lg shadow-primary-900/40 hover:scale-105 transition-all duration-300"
+                            title="Voice Add"
                         >
-                            <Mic size={24} />
+                            <Mic size={20} />
                         </button>
                         <button
                             onClick={() => setShowForm(true)}
@@ -276,7 +276,7 @@ export default function Bills() {
                             </div>
                             <div className="p-1 px-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-lg text-[10px] font-bold">UPCOMING</div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">₹{stats.totalUpcoming.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">£{stats.totalUpcoming.toLocaleString()}</h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{stats.upcomingCount} bills pending</p>
                     </div>
 
@@ -287,7 +287,7 @@ export default function Bills() {
                             </div>
                             <div className="p-1 px-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-lg text-[10px] font-bold">PAID</div>
                         </div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">₹{stats.totalPaid.toLocaleString()}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">£{stats.totalPaid.toLocaleString()}</h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-medium">{stats.paidCount} successfully paid</p>
                     </div>
 
@@ -364,7 +364,7 @@ export default function Bills() {
                                 <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-50">
                                     <div className="text-right">
                                         <div className={`text-2xl font-bold tracking-tighter ${bill.status === 'upcoming' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400'}`}>
-                                            ₹{bill.amount.toLocaleString()}
+                                            £{bill.amount.toLocaleString()}
                                         </div>
                                         {bill.status === 'upcoming' && (
                                             <div className="text-[10px] font-bold text-amber-500 uppercase mt-0.5 animate-pulse">Action Required</div>

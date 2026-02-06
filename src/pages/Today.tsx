@@ -52,7 +52,7 @@ export default function Today() {
             type: 'bill' as const,
             time: '09:00',
             title: b.title,
-            subtitle: `${new Date(b.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • Due by 5:00 PM • ₹${b.amount.toLocaleString()}`,
+            subtitle: `${new Date(b.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • Due by 5:00 PM • £${b.amount.toLocaleString()}`,
             icon: Receipt,
             color: 'bg-amber-50 text-amber-600',
             id: b.id,

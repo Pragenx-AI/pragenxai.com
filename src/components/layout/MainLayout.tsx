@@ -73,7 +73,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     {children}
                 </main>
 
-                {!['/bills', '/meetings', '/travel', '/health', '/notifications', '/profile'].includes(location.pathname) && <ChatInput />}
+                {!['/chat', '/bills', '/meetings', '/travel', '/health', '/notifications', '/profile', '/integrations', '/history', '/records', '/today'].includes(location.pathname) && <ChatInput />}
             </div>
         </div>
     )

@@ -63,9 +63,9 @@ body {
     background: #800020;
 }
 
+/* Global focus-visible override for cleaner UI */
 :focus-visible {
-    outline: 2px solid #800020;
-    outline-offset: 2px;
+    outline: none;
 }
 
 @layer components {
@@ -171,5 +171,14 @@ body {
 
     .input-underlined {
         @apply bg-transparent border-b border-gray-300 dark:border-white/10 focus:border-[#800020] outline-none transition-all duration-300 text-gray-900 dark:text-white;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 }

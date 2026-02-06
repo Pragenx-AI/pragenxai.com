@@ -10,6 +10,7 @@ import Meetings from './pages/Meetings'
 import Travel from './pages/Travel'
 import Health from './pages/Health'
 import Records from './pages/Records'
+import History from './pages/History'
 import Notifications from './pages/Notifications'
 import Settings from './pages/Settings'
 import Login from './pages/Login'
@@ -47,6 +48,7 @@ function App() {
                                     <Route path="/travel" element={<Travel />} />
                                     <Route path="/health" element={<Health />} />
                                     <Route path="/records" element={<Records />} />
+                                    <Route path="/history" element={<History />} />
                                     <Route path="/notifications" element={<Notifications />} />
                                     <Route path="/integrations" element={<Integrations />} />
                                     <Route path="/settings" element={<Settings />} />

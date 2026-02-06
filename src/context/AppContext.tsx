@@ -23,7 +23,7 @@ export interface Integration {
     id: string
     name: string
     status: 'Connected' | 'Disconnected'
-    iconType: 'Video' | 'Users' | 'MessageSquare' | 'FileText'
+    iconType: 'Video' | 'Users' | 'MessageSquare' | 'FileText' | 'Phone' | 'Globe' | 'Headphones' | 'Monitor'
     description: string
 }
 
@@ -41,6 +41,48 @@ export interface HealthReminder {
     title: string
     enabled: boolean
     lastLogged?: string
+}
+
+export interface Medication {
+    id: string
+    name: string
+    dosage: string
+    frequency: 'daily' | 'twice_daily' | 'weekly' | 'as_needed'
+    timeOfDay: 'morning' | 'afternoon' | 'evening' | 'night'
+    startDate: string
+    endDate?: string
+    refillDate?: string
+    notes?: string
+    takenToday: boolean
+    streak: number
+}
+
+export interface VitalLog {
+    id: string
+    type: 'blood_pressure' | 'heart_rate' | 'blood_sugar' | 'weight' | 'temperature' | 'oxygen'
+    value: string
+    unit: string
+    timestamp: string
+    notes?: string
+}
+
+export interface SleepLog {
+    id: string
+    bedtime: string
+    wakeTime: string
+    quality: 1 | 2 | 3 | 4 | 5
+    duration: number // in minutes
+    date: string
+    notes?: string
+}
+
+export interface MoodLog {
+    id: string
+    mood: 'great' | 'good' | 'okay' | 'bad' | 'terrible'
+    energy: number // 1-100
+    stress: 'low' | 'medium' | 'high'
+    timestamp: string
+    notes?: string
 }
 
 export interface ActivityLog {
@@ -77,6 +119,13 @@ export interface ChatMessage {
     timestamp: string
 }
 
+export interface ChatSession {
+    id: string
+    title: string
+    messages: ChatMessage[]
+    lastModified: string
+}
+
 export interface User {
     email: string
 }
@@ -90,9 +139,15 @@ interface AppState {
     trips: Trip[]
     healthReminders: HealthReminder[]
     healthLogs: ActivityLog[]
+    medications: Medication[]
+    vitalLogs: VitalLog[]
+    sleepLogs: SleepLog[]
+    moodLogs: MoodLog[]
     records: Record[]
     notifications: Notification[]
     chatMessages: ChatMessage[]
+    chatSessions: ChatSession[]
+    currentSessionId: string | null
     sidebarOpen: boolean
     waterIntake: number
     theme: 'light' | 'dark'
@@ -114,6 +169,12 @@ interface AppContextType extends AppState {
     deleteTrip: (id: string) => void
     toggleHealthReminder: (id: string) => void
     logHealth: (id: string) => void
+    addMedication: (medication: Omit<Medication, 'id' | 'takenToday' | 'streak'>) => void
+    takeMedication: (id: string) => void
+    deleteMedication: (id: string) => void
+    logVitals: (vital: Omit<VitalLog, 'id' | 'timestamp'>) => void
+    logSleep: (sleep: Omit<SleepLog, 'id'>) => void
+    logMood: (mood: Omit<MoodLog, 'id' | 'timestamp'>) => void
     addRecord: (record: Omit<Record, 'id' | 'uploadedAt'>) => void
     deleteRecord: (id: string) => void
     markNotificationRead: (id: string) => void
@@ -122,6 +183,8 @@ interface AppContextType extends AppState {
     addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
     clearChat: () => void
     startNewChat: () => void
+    loadChatSession: (id: string) => void
+    deleteChatSession: (id: string) => void
     toggleSidebar: () => void
     addWater: () => void
     showToast: (message: string, type?: 'success' | 'error' | 'info') => void
@@ -141,9 +204,9 @@ const initialState: AppState = {
     isAuthenticated: false,
     user: null,
     bills: [
-        { id: '1', title: 'Home Loan EMI', amount: 25000, dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'upcoming', category: 'Loan' },
-        { id: '2', title: 'Electricity Bill', amount: 2500, dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'upcoming', category: 'Utilities' },
-        { id: '3', title: 'Netflix Subscription', amount: 649, dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'paid', category: 'Entertainment' },
+        { id: '1', title: 'Home Loan EMI', amount: 2500, dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'upcoming', category: 'Loan' },
+        { id: '2', title: 'Electricity Bill', amount: 150, dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'upcoming', category: 'Utilities' },
+        { id: '3', title: 'Netflix Subscription', amount: 15, dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], status: 'paid', category: 'Entertainment' },
     ],
     meetings: [
         { id: '1', title: 'Team Standup', date: new Date().toISOString().split('T')[0], time: '10:00', duration: 30, notes: 'Daily sync' },
@@ -158,16 +221,22 @@ const initialState: AppState = {
         { id: '4', type: 'habit', title: 'Read a Book', enabled: false },
     ],
     healthLogs: [],
+    medications: [
+        { id: '1', name: 'Vitamin D3', dosage: '1000 IU', frequency: 'daily', timeOfDay: 'morning', startDate: new Date().toISOString().split('T')[0], takenToday: false, streak: 5, notes: 'Take with breakfast' },
+        { id: '2', name: 'Omega-3', dosage: '500mg', frequency: 'daily', timeOfDay: 'evening', startDate: new Date().toISOString().split('T')[0], takenToday: false, streak: 12, notes: 'Take with dinner' },
+        { id: '3', name: 'Metformin', dosage: '500mg', frequency: 'twice_daily', timeOfDay: 'morning', startDate: new Date().toISOString().split('T')[0], takenToday: false, streak: 30, notes: 'Take 30 min before meals' },
+    ],
+    vitalLogs: [],
+    sleepLogs: [],
+    moodLogs: [],
     records: [
         { id: '1', name: 'Identity_Card.pdf', type: 'application/pdf', size: 1200000, uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Identity', 'Essential'] },
         { id: '2', name: 'Rent_Agreement.pdf', type: 'application/pdf', size: 2500000, uploadedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Home', 'Legal'] },
     ],
-    notifications: [
-        { id: '1', type: 'bill', title: 'Bill Reminder', message: 'Home Loan EMI due in 2 days', read: false, createdAt: new Date().toISOString() },
-        { id: '2', type: 'meeting', title: 'Meeting Soon', message: 'Team Standup in 30 minutes', read: false, createdAt: new Date().toISOString() },
-        { id: '3', type: 'health', title: 'Health Tip', message: 'Remember to drink water!', read: true, createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString() },
-    ],
+    notifications: [],
     chatMessages: [],
+    chatSessions: [],
+    currentSessionId: null,
     sidebarOpen: true,
     waterIntake: 0,
     theme: 'light',
@@ -179,22 +248,28 @@ const initialState: AppState = {
         { id: 'zoom', name: 'Zoom Meet', iconType: 'Video', status: 'Connected', description: 'Direct scheduling for Zoom calls' },
         { id: 'webex', name: 'Cisco Webex', iconType: 'Video', status: 'Connected', description: 'Enterprise video conferencing' },
         { id: 'skype', name: 'Skype', iconType: 'Video', status: 'Connected', description: 'Video and voice calls' },
-        { id: 'goto', name: 'GoToMeeting', iconType: 'Video', status: 'Connected', description: 'Professional online meetings' },
-        { id: 'discord', name: 'Discord', iconType: 'MessageSquare', status: 'Connected', description: 'Community communication' },
-        { id: 'slack', name: 'Slack', iconType: 'MessageSquare', status: 'Connected', description: 'Notifications and channel updates' },
-        { id: 'notion', name: 'Notion', iconType: 'FileText', status: 'Disconnected', description: 'Sync documentation and notes' }
+        { id: 'goto', name: 'GoTo Meeting', iconType: 'Video', status: 'Connected', description: 'A secure, professional online meeting platform' },
+        { id: 'jitsi', name: 'Jitsi Meet', iconType: 'Monitor', status: 'Connected', description: 'An open-source, fully encrypted video solution' },
+        { id: 'whereby', name: 'Whereby', iconType: 'Globe', status: 'Connected', description: 'Browser-based meetings with no app download' },
+        { id: 'slack_huddles', name: 'Slack Huddles', iconType: 'Headphones', status: 'Connected', description: 'Built-in audio and video calling for teams' },
+        { id: 'zoho', name: 'Zoho Meeting', iconType: 'Video', status: 'Connected', description: 'Secure video conferencing and webinar solution' },
+        { id: 'lark', name: 'Lark', iconType: 'MessageSquare', status: 'Connected', description: 'A unified workspace for team collaboration' },
+        { id: 'bluejeans', name: 'BlueJeans', iconType: 'Video', status: 'Connected', description: 'Enterprise-grade video conferencing platform' },
+        { id: 'discord', name: 'Discord', iconType: 'MessageSquare', status: 'Connected', description: 'Frequently used for community and casual chats' },
+        { id: 'dialpad', name: 'Dialpad Meetings', iconType: 'Phone', status: 'Connected', description: 'Known for high-quality audio and AI features' },
+        { id: 'notion', name: 'Notion', iconType: 'FileText', status: 'Connected', description: 'Sync documentation and notes' }
     ]
 }
 
 export function AppProvider({ children }: { children: ReactNode }) {
     const [state, setState] = useState<AppState>(() => {
-        const saved = localStorage.getItem('pragenx-state-v1')
+        const saved = localStorage.getItem('pragenx-state-v2')
         return saved ? { ...initialState, ...JSON.parse(saved) } : initialState
     })
     const [toast, setToast] = useState<{ message: string; type: string } | null>(null)
 
     useEffect(() => {
-        localStorage.setItem('pragenx-state-v1', JSON.stringify(state))
+        localStorage.setItem('pragenx-state-v2', JSON.stringify(state))
     }, [state])
 
     // Apply theme class to HTML element
@@ -253,7 +328,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
                     title: bill.title,
                     action: 'Paid',
                     timestamp: new Date().toISOString(),
-                    details: `Amount: ₹${bill.amount}`
+                    details: `Amount: £${bill.amount}`
                 }]
             }
 
@@ -311,6 +386,87 @@ export function AppProvider({ children }: { children: ReactNode }) {
         showToast('Logged!')
     }
 
+    const addMedication = (medication: Omit<Medication, 'id' | 'takenToday' | 'streak'>) => {
+        setState(s => ({
+            ...s,
+            medications: [...s.medications, { ...medication, id: generateId(), takenToday: false, streak: 0 }]
+        }))
+        showToast('Medication added!')
+    }
+
+    const takeMedication = (id: string) => {
+        setState(s => {
+            const med = s.medications.find(m => m.id === id)
+            if (!med) return s
+            const newMedications = s.medications.map(m =>
+                m.id === id ? { ...m, takenToday: true, streak: m.streak + 1 } : m
+            )
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: med.name,
+                action: 'Taken',
+                timestamp: new Date().toISOString(),
+                details: `Dosage: ${med.dosage}`
+            }
+            return { ...s, medications: newMedications, healthLogs: [...s.healthLogs, newLog] }
+        })
+        showToast('Medication logged!')
+    }
+
+    const deleteMedication = (id: string) => {
+        setState(s => ({ ...s, medications: s.medications.filter(m => m.id !== id) }))
+        showToast('Medication removed')
+    }
+
+    const logVitals = (vital: Omit<VitalLog, 'id' | 'timestamp'>) => {
+        setState(s => {
+            const newVital: VitalLog = { ...vital, id: generateId(), timestamp: new Date().toISOString() }
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: vital.type.replace('_', ' '),
+                action: 'Measured',
+                timestamp: new Date().toISOString(),
+                details: `Value: ${vital.value} ${vital.unit}`
+            }
+            return { ...s, vitalLogs: [...s.vitalLogs, newVital], healthLogs: [...s.healthLogs, newLog] }
+        })
+        showToast('Vitals logged!')
+    }
+
+    const logSleep = (sleep: Omit<SleepLog, 'id'>) => {
+        setState(s => {
+            const newSleep: SleepLog = { ...sleep, id: generateId() }
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: 'Sleep',
+                action: 'Logged',
+                timestamp: new Date().toISOString(),
+                details: `Duration: ${Math.floor(sleep.duration / 60)}h ${sleep.duration % 60}m`
+            }
+            return { ...s, sleepLogs: [...s.sleepLogs, newSleep], healthLogs: [...s.healthLogs, newLog] }
+        })
+        showToast('Sleep logged!')
+    }
+
+    const logMood = (mood: Omit<MoodLog, 'id' | 'timestamp'>) => {
+        setState(s => {
+            const newMood: MoodLog = { ...mood, id: generateId(), timestamp: new Date().toISOString() }
+            const newLog: ActivityLog = {
+                id: generateId(),
+                type: 'health',
+                title: 'Mood',
+                action: 'Checked in',
+                timestamp: new Date().toISOString(),
+                details: mood.mood
+            }
+            return { ...s, moodLogs: [...s.moodLogs, newMood], healthLogs: [...s.healthLogs, newLog] }
+        })
+        showToast('Mood logged!')
+    }
+
     const addRecord = (record: Omit<Record, 'id' | 'uploadedAt'>) => {
         setState(s => ({
             ...s,
@@ -360,14 +516,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
 
     const startNewChat = () => {
+        setState(s => {
+            const updates: Partial<AppState> = {
+                chatMessages: [],
+                currentSessionId: null
+            }
+
+            // Save current session if it has messages
+            if (s.chatMessages.length > 0) {
+                const firstUserMsg = s.chatMessages.find(m => m.role === 'user')?.content || 'New Conversation'
+                const title = firstUserMsg.length > 30 ? firstUserMsg.substring(0, 30) + '...' : firstUserMsg
+
+                const newSession: ChatSession = {
+                    id: s.currentSessionId || generateId(),
+                    title: title,
+                    messages: [...s.chatMessages],
+                    lastModified: new Date().toISOString()
+                }
+
+                if (s.currentSessionId) {
+                    updates.chatSessions = s.chatSessions.map(sess => sess.id === s.currentSessionId ? newSession : sess)
+                } else {
+                    updates.chatSessions = [newSession, ...s.chatSessions]
+                }
+            }
+
+            return { ...s, ...updates }
+        })
+    }
+
+    const loadChatSession = (id: string) => {
+        setState(s => {
+            const session = s.chatSessions.find(sess => sess.id === id)
+            if (!session) return s
+            return {
+                ...s,
+                chatMessages: [...session.messages],
+                currentSessionId: id
+            }
+        })
+    }
+
+    const deleteChatSession = (id: string) => {
         setState(s => ({
             ...s,
-            chatMessages: [{
-                id: generateId(),
-                role: 'assistant',
-                content: 'Hi! I\'m PragenX. How can I help you today?',
-                timestamp: new Date().toISOString()
-            }]
+            chatSessions: s.chatSessions.filter(sess => sess.id !== id),
+            chatMessages: s.currentSessionId === id ? [] : s.chatMessages,
+            currentSessionId: s.currentSessionId === id ? null : s.currentSessionId
         }))
     }
 
@@ -432,6 +627,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
             deleteTrip,
             toggleHealthReminder,
             logHealth,
+            addMedication,
+            takeMedication,
+            deleteMedication,
+            logVitals,
+            logSleep,
+            logMood,
             addRecord,
             deleteRecord,
             markNotificationRead,
@@ -440,6 +641,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             addChatMessage,
             clearChat,
             startNewChat,
+            loadChatSession,
+            deleteChatSession,
             toggleSidebar,
             addWater,
             showToast,
@@ -479,14 +682,8 @@ function generateAIResponse(userMessage: string, state: AppState): string {
     if (lower.includes('today\'s date') || lower.includes('what is the date')) {
         return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}.`
     }
-    if (lower.includes('who are you') || lower.includes('what is your name')) {
-        return "I am PragenX, your proactive personal assistant. I help you stay organized with your bills, meetings, health, and more."
-    }
     if (lower.includes('thank') || lower.includes('thanks')) {
         return "You're very welcome! Is there anything else I can help you with?"
-    }
-    if (lower.includes('hello') || lower.includes(' hi ') || lower.startsWith('hi')) {
-        return `Hello! How can I help you organize your day?`
     }
 
     // 1. Plan my day / What should I focus on today?
@@ -508,7 +705,7 @@ function generateAIResponse(userMessage: string, state: AppState): string {
     if (lower.includes('bills or emis') || lower.includes('upcoming payments')) {
         if (upcomingBills.length === 0) return "You're all caught up! No bills or EMIs due soon."
         return `You have ${upcomingBills.length} upcoming payments:\n` +
-            upcomingBills.map(b => `• ${b.title}: ₹${b.amount.toLocaleString()} (Due ${b.dueDate})`).join('\n')
+            upcomingBills.map(b => `• ${b.title}: £${b.amount.toLocaleString()} (Due ${b.dueDate})`).join('\n')
     }
 
     // 3. Do I have any meetings today? / Are there any meeting conflicts?

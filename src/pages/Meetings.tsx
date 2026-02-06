@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { useApp } from '../context/AppContext'
-import { X, Users, Calendar, Trash2, AlertTriangle, Mic, MicOff, Video, MessageSquare, FileText } from 'lucide-react'
+import { X, Users, Calendar, Trash2, AlertTriangle, Mic, MicOff, Video, MessageSquare, FileText, Phone, Globe, Headphones, Monitor } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
 
 const iconMap = {
     Video,
     Users,
     MessageSquare,
-    FileText
+    FileText,
+    Phone,
+    Globe,
+    Headphones,
+    Monitor
 }
 
 export default function Meetings() {

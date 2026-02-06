@@ -145,7 +145,7 @@ export default function TodaysReminders() {
 
                             <div className="text-right">
                                 {item.type === 'bill' && (
-                                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">₹{item.amount.toLocaleString()}</span>
+                                    <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">£{item.amount.toLocaleString()}</span>
                                 )}
                                 {item.date === today && (
                                     <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary dark:text-primary-light bg-primary/10 dark:bg-primary/20 rounded-md">
