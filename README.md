@@ -41,7 +41,8 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Session Management:** Seamless sign-in and sign-out flows with real-time feedback.
 
 ### 🎨 Cyber-Executive Aesthetic
-- **Futuristic Design System:** A cutting-edge blend of deep dark modes, sharp glassmorphism, and "Maroon Glow" accent colors (`#800020`).
+- **Maroon Branding Transition:** A unified UI experience centered around the project's signature "Maroon Glow" (#800020). All blue and indigo accents have been transitioned to a cohesive maroon/rose palette.
+- **Transparent Icon Strategy:** Interactive elements such as mood selectors and dashboard widgets now utilize transparent backgrounds and glassmorphic hover effects for a more integrated and premium feel.
 - **Dynamic Animations:** Smooth transitions, hover lifts, and neon pulse effects that bring the interface to life.
 - **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
 - **Unified Command Center:** Centralized chat and search bar with "drop-up" attachment capabilities, interactive tool menus (Deep Research, Agent Mode), and integrated "New Chat" controls.
