@@ -21,7 +21,7 @@ export default function Notifications() {
     const getColor = (type: string) => {
         switch (type) {
             case 'bill': return 'bg-amber-100 text-amber-600'
-            case 'meeting': return 'bg-blue-100 text-blue-600'
+            case 'meeting': return 'bg-primary/10 text-primary'
             case 'travel': return 'bg-green-100 text-green-600'
             case 'health': return 'bg-pink-100 text-pink-600'
             default: return 'bg-gray-100 text-gray-600'

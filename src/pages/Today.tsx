@@ -40,7 +40,7 @@ export default function Today() {
             title: m.title,
             subtitle: `${new Date(m.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • ${m.time} - ${new Date(new Date(`2000-01-01T${m.time}`).getTime() + m.duration * 60000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} • ${m.duration} min`,
             icon: Users,
-            color: 'bg-blue-50 text-blue-600',
+            color: 'bg-primary/10 text-primary',
             id: m.id,
             details: {
                 purpose: 'Sync with the team on project progress.',
@@ -98,7 +98,7 @@ export default function Today() {
     return (
         <div className="h-full overflow-y-auto bg-gray-50/50 dark:bg-dark-bg relative transition-colors duration-300">
             {/* Ambient Lighting Effects */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-100/40 dark:bg-indigo-900/20 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-normal" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary-900/10 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-normal" />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary-100/30 dark:bg-primary-900/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-normal" />
 
             <div className="max-w-4xl mx-auto p-6 lg:p-8 relative z-10">

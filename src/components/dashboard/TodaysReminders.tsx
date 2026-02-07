@@ -39,7 +39,7 @@ export default function TodaysReminders() {
 
     const addActions = [
         { label: 'Bills', icon: Receipt, path: '/bills', color: 'text-amber-500' },
-        { label: 'Meetings', icon: Calendar, path: '/meetings', color: 'text-blue-500' },
+        { label: 'Meetings', icon: Calendar, path: '/meetings', color: 'text-primary' },
         { label: 'Travel', icon: Plane, path: '/travel', color: 'text-purple-500' },
         { label: 'Health', icon: Heart, path: '/health', color: 'text-rose-500' },
     ]
@@ -50,7 +50,7 @@ export default function TodaysReminders() {
                 <div className="bg-transparent border border-primary/10 dark:border-primary-light/10 rounded-[2.5rem] p-8 lg:p-10 text-center relative overflow-hidden group">
                     {/* Background Decorative Element */}
                     <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
 
                     <div className="relative z-10 flex flex-col items-center max-w-md mx-auto space-y-6">
                         <div className="p-4 bg-transparent scale-110 mb-2">

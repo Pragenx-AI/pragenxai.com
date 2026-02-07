@@ -59,7 +59,7 @@ export default function History() {
                                     <div className={`absolute left-0 lg:left-4 -translate-x-1/2 top-6 w-8 h-8 rounded-full border-4 border-gray-50 dark:border-dark-bg flex items-center justify-center z-10 transition-all duration-300 group-hover:scale-110 
                                         ${log.type === 'bill' ? 'bg-amber-100 text-amber-600' :
                                             log.type === 'health' ? 'bg-red-100 text-red-600' :
-                                                log.type === 'meeting' ? 'bg-blue-100 text-blue-600' :
+                                                log.type === 'meeting' ? 'bg-primary/10 text-primary' :
                                                     'bg-gray-100 text-gray-600'
                                         }`}>
                                         <div className="w-2 h-2 rounded-full bg-current"></div>
@@ -72,7 +72,7 @@ export default function History() {
                                                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg
                                                     ${log.type === 'bill' ? 'bg-amber-500 shadow-amber-500/20' :
                                                         log.type === 'health' ? 'bg-[#800020] shadow-maroon/20' :
-                                                            log.type === 'meeting' ? 'bg-blue-500 shadow-blue-500/20' :
+                                                            log.type === 'meeting' ? 'bg-primary shadow-primary/20' :
                                                                 'bg-gray-500'
                                                     }`}>
                                                     <Icon size={24} />
@@ -81,7 +81,7 @@ export default function History() {
                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest mb-1
                                                         ${log.type === 'bill' ? 'bg-amber-50 text-amber-700' :
                                                             log.type === 'health' ? 'bg-red-50 text-red-700' :
-                                                                log.type === 'meeting' ? 'bg-blue-50 text-blue-700' :
+                                                                log.type === 'meeting' ? 'bg-primary/5 text-primary' :
                                                                     'bg-gray-50 text-gray-700'
                                                         }`}>
                                                         {log.type}

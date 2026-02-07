@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useApp, Medication } from '../context/AppContext'
 import {
     Droplets, Heart, Pill, Sparkles, Plus, Check, Mic, MicOff,
-    Activity, Moon, Brain, PlusCircle, Trash2, Clock, Calendar,
-    ChevronRight, AlertCircle, TrendingUp, Info, X
+    Activity, Moon, Brain, PlusCircle, Trash2, Clock,
+    TrendingUp, Info, X
 } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
 
@@ -11,11 +11,8 @@ type HealthTab = 'dashboard' | 'medications' | 'vitals' | 'sleep'
 
 export default function Health() {
     const {
-        healthReminders, toggleHealthReminder, logHealth, waterIntake, addWater, showToast,
+        healthReminders, waterIntake, addWater, showToast,
         medications, takeMedication, deleteMedication, addMedication,
-        vitalLogs, logVitals,
-        sleepLogs, logSleep,
-        moodLogs, logMood,
         healthLogs
     } = useApp()
 
@@ -244,7 +241,7 @@ export default function Health() {
                             <div className="p-6 bg-white dark:bg-dark-card border border-gray-100 dark:border-white/5 rounded-3xl shadow-sm">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/10 text-blue-500 flex items-center justify-center shadow-inner">
+                                        <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shadow-inner">
                                             <Droplets size={24} />
                                         </div>
                                         <div>
@@ -252,13 +249,13 @@ export default function Health() {
                                             <p className="text-sm text-gray-500">{waterIntake} / {waterGoal} glasses</p>
                                         </div>
                                     </div>
-                                    <button onClick={addWater} className="p-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-lg shadow-blue-500/20">
+                                    <button onClick={addWater} className="p-2 bg-primary text-white rounded-xl hover:bg-primary-dark transition-colors shadow-lg shadow-primary/20">
                                         <Plus size={20} />
                                     </button>
                                 </div>
                                 <div className="relative h-2.5 bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
                                     <div
-                                        className="absolute inset-y-0 left-0 bg-blue-500 transition-all duration-700 rounded-full"
+                                        className="absolute inset-y-0 left-0 bg-primary transition-all duration-700 rounded-full"
                                         style={{ width: `${Math.min(waterProgress, 100)}%` }}
                                     />
                                 </div>
@@ -459,7 +456,7 @@ export default function Health() {
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="p-8 bg-white dark:bg-dark-card border border-gray-100 dark:border-white/5 rounded-[2.5rem] shadow-sm text-center">
-                                <div className="w-16 h-16 mx-auto mb-6 rounded-3xl bg-indigo-50 dark:bg-indigo-900/10 text-indigo-500 flex items-center justify-center shadow-inner">
+                                <div className="w-16 h-16 mx-auto mb-6 rounded-3xl bg-primary/5 text-primary flex items-center justify-center shadow-inner">
                                     <Moon size={32} />
                                 </div>
                                 <h3 className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-2">Last Night's Sleep</h3>
@@ -470,7 +467,7 @@ export default function Health() {
                                     {[1, 2, 3, 4].map(s => <Sparkles key={s} size={16} className="text-amber-400 fill-amber-400" />)}
                                     <Sparkles size={16} className="text-gray-200 dark:text-gray-700" />
                                 </div>
-                                <button className="w-full py-4 bg-indigo-500 text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/20 hover:bg-indigo-600 transition-all">
+                                <button className="w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all">
                                     Analyze Patterns
                                 </button>
                             </div>

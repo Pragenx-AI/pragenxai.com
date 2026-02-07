@@ -464,7 +464,7 @@ export default function Travel() {
                                         {formData.destination && (
                                             <div className="space-y-3">
                                                 <label className="text-xs uppercase tracking-widest text-gray-500 font-semibold block">Weather Preview</label>
-                                                <div className="p-4 bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-xl border border-blue-200 dark:border-blue-800/30">
+                                                <div className="p-4 bg-gradient-to-br from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 rounded-xl border border-primary/20 dark:border-primary/30">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-10 h-10 bg-amber-400 rounded-full flex items-center justify-center">
                                                             <CloudSun size={20} className="text-white" />
@@ -565,12 +565,12 @@ export default function Travel() {
                 )}
 
                 {/* Weather Alert */}
-                <div className="card mb-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 transition-colors duration-300">
+                <div className="card mb-6 bg-primary/5 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-2xl p-4 transition-colors duration-300">
                     <div className="flex items-center gap-3">
-                        <CloudSun className="text-blue-500 dark:text-blue-400" size={24} />
+                        <CloudSun className="text-primary dark:text-primary-light" size={24} />
                         <div>
-                            <h3 className="font-medium text-blue-900 dark:text-blue-100">Weather Alert</h3>
-                            <p className="text-sm text-blue-700 dark:text-blue-300">Check weather at your destination before traveling</p>
+                            <h3 className="font-medium text-primary dark:text-primary-light">Weather Alert</h3>
+                            <p className="text-sm text-primary/70 dark:text-primary-light/70">Check weather at your destination before traveling</p>
                         </div>
                     </div>
                 </div>

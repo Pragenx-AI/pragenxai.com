@@ -416,7 +416,7 @@ export default function Meetings() {
                                     <div className="flex items-center gap-4">
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${meeting.integrationId
                                             ? 'bg-primary/10 text-primary'
-                                            : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                                            : 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light'
                                             }`}>
                                             {(() => {
                                                 const integration = integrations.find(i => i.id === meeting.integrationId)

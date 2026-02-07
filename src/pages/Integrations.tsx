@@ -184,7 +184,7 @@ export default function Integrations() {
                             {/* Auto Sync */}
                             <div className="flex items-center justify-between group">
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                    <div className="w-10 h-10 rounded-xl bg-primary/5 dark:bg-primary/10 flex items-center justify-center text-primary dark:text-primary-light">
                                         <RefreshCw size={20} />
                                     </div>
                                     <div>

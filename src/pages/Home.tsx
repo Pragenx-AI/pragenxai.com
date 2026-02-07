@@ -34,13 +34,13 @@ export default function Home() {
                 {theme === 'dark' ? (
                     <>
                         <div className="absolute -top-[20%] left-[20%] w-[60%] h-[60%] bg-primary-900/20 rounded-full blur-[120px]" />
-                        <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-blue-900/15 rounded-full blur-[100px]" />
+                        <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px]" />
                         <div className="absolute top-[30%] left-[5%] w-[30%] h-[30%] bg-purple-900/10 rounded-full blur-[80px]" />
                     </>
                 ) : (
                     <>
                         <div className="absolute -top-[20%] left-[20%] w-[60%] h-[60%] bg-primary-100/30 rounded-full blur-[100px]" />
-                        <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-blue-100/30 rounded-full blur-[100px]" />
+                        <div className="absolute top-[10%] right-[10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[100px]" />
                     </>
                 )}
             </div>
@@ -136,7 +136,7 @@ export default function Home() {
 
                         {/* Next Meetings List */}
                         <div className="bg-white/50 dark:bg-dark-card/50 backdrop-blur-xl rounded-[2.5rem] p-8 border border-divider dark:border-dark-border shadow-sm">
-                            <h3 className="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-6 px-2 flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-primary dark:text-primary-light uppercase tracking-widest mb-6 px-2 flex items-center gap-2">
                                 <Calendar size={16} /> Next Meetings
                             </h3>
                             <div className="space-y-4">
@@ -145,9 +145,9 @@ export default function Home() {
                                         .sort((a, b) => new Date(a.date + 'T' + a.time).getTime() - new Date(b.date + 'T' + b.time).getTime())
                                         .slice(0, 3)
                                         .map(meeting => (
-                                            <div key={meeting.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-dark-elevated border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30 transition-all hover:shadow-md cursor-pointer" onClick={() => navigate('/meetings')}>
+                                            <div key={meeting.id} className="group flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-dark-elevated border border-transparent hover:border-primary/20 dark:hover:border-primary/30 transition-all hover:shadow-md cursor-pointer" onClick={() => navigate('/meetings')}>
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                                                    <div className="w-10 h-10 rounded-full bg-primary/5 dark:bg-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                                                         <Calendar size={20} />
                                                     </div>
                                                     <div>
@@ -155,7 +155,7 @@ export default function Home() {
                                                         <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(meeting.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} at {meeting.time}</p>
                                                     </div>
                                                 </div>
-                                                <div className="px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full">
+                                                <div className="px-3 py-1 bg-primary/5 dark:bg-primary/20 text-primary dark:text-primary-light text-xs font-bold rounded-full">
                                                     Upcoming
                                                 </div>
                                             </div>
@@ -212,18 +212,18 @@ export default function Home() {
                         {/* 2. Meeting Widget (Soft Blue) */}
                         <div
                             onClick={() => navigate('/meetings')}
-                            className="bg-blue-50/60 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-[2rem] p-6 border border-blue-100/50 dark:border-blue-800/30 hover:border-blue-200 dark:hover:border-blue-700/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg"
+                            className="bg-primary/5 dark:bg-primary/10 hover:bg-primary/10 dark:hover:bg-primary/20 rounded-[2rem] p-6 border border-primary/20 dark:border-primary/30 hover:border-primary/40 dark:hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex justify-between items-start mb-6">
-                                <div className="p-3 bg-white dark:bg-dark-elevated rounded-2xl shadow-sm text-blue-500 group-hover:scale-110 transition-transform">
+                                <div className="p-3 bg-white dark:bg-dark-elevated rounded-2xl shadow-sm text-primary group-hover:scale-110 transition-transform">
                                     <Calendar size={24} />
                                 </div>
-                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${todayMeetings.length > 0 ? 'bg-white/60 text-blue-700' : 'bg-blue-500/20 text-blue-600'}`}>
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${todayMeetings.length > 0 ? 'bg-white/60 text-primary' : 'bg-primary/20 text-primary'}`}>
                                     {todayMeetings.length > 0 ? 'Today' : 'Setup'}
                                 </span>
                             </div>
                             <div>
-                                <p className="text-sm font-medium text-blue-800/60 dark:text-blue-400/60 uppercase tracking-wide">Next Meeting</p>
+                                <p className="text-sm font-medium text-primary/60 dark:text-primary-light/60 uppercase tracking-wide">Next Meeting</p>
                                 {todayMeetings.length > 0 ? (
                                     <>
                                         <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{todayMeetings[0].time}</div>
@@ -232,7 +232,7 @@ export default function Home() {
                                 ) : (
                                     <>
                                         <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">Free Schedule</div>
-                                        <p className="text-sm text-blue-600/80 dark:text-blue-400/80 mt-1 font-medium">Connect your calendar</p>
+                                        <p className="text-sm text-primary/80 dark:text-primary-light/80 mt-1 font-medium">Connect your calendar</p>
                                     </>
                                 )}
                             </div>
@@ -278,7 +278,7 @@ export default function Home() {
                                 </button>
                                 <button
                                     onClick={() => navigate('/meetings')}
-                                    className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-gray-600 dark:text-gray-400 group"
+                                    className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light transition-colors text-gray-600 dark:text-gray-400 group"
                                 >
                                     <Calendar size={20} className="mb-2 group-hover:scale-110 transition-transform" />
                                     <span className="text-xs font-medium">Meeting</span>
