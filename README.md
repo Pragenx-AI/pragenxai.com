@@ -19,6 +19,10 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Minimalist GPT UI:** Refined, pill-shaped chat interface with right-aligned, lowercase message bubbles and a focus on clean typography.
 - **Intelligent Weather Widget:** Structured real-time weather data visualization directly within chat responses.
 
+### 🕰️ Unified Chat History
+- **Dedicated Chat Sessions:** The History page now exclusively tracks your conversations with the AI, allowing you to resume or delete past sessions.
+- **Context Preservation:** seamless restoration of chat context when loading a previous session.
+
 ### 🔌 Smart & Futuristic Integrations
 - **Expanded Ecosystem:** Native support for Google Meet, Microsoft Teams, Zoom, Webex, Skype, Discord, GoToMeeting, and Slack.
 - **Cyber-Executive UI:** Redesigned Integrations page featuring glassmorphism, neon glows, and interactive animations.
@@ -49,6 +53,7 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
 - **Unified Command Center:** Minimalist, pill-shaped chat bar with "+" attachment capabilities, integrated voice/history/send icons, and a focus on essential functionality.
 - **Streamlined Dashboard:** Simplified home page layout with a compact "Tap to speak" Voice Assistant hub and prominent, high-impact greeting typography.
+- **Consistent Typography:** Unified font styles and sizes across Today, Meetings, and Travel pages for a cohesive reading experience.
 - **Internationalization (GBP):** Fully localized for the UK with British Pounds (£) as the primary currency across all modules and AI interactions.
 
 ## 🛠️ Technical Deep Dive

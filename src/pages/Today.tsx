@@ -1,26 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useApp } from '../context/AppContext'
-import { Receipt, Calendar, Users, Heart, CheckCircle, Clock, Check, X } from 'lucide-react'
+import { Calendar, Clock, Check, X, ArrowRight, Users, Receipt, Heart, Grip } from 'lucide-react'
 
 export default function Today() {
     const { bills, meetings, trips, healthReminders, showToast, updateBill, logHealth } = useApp()
     const today = new Date().toISOString().split('T')[0]
+    const [currentTime, setCurrentTime] = useState(new Date())
 
     // State for modal and locally completed items
     const [selectedItem, setSelectedItem] = useState<any>(null)
     const [completedIds, setCompletedIds] = useState<Set<string>>(new Set())
 
+    useEffect(() => {
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+        return () => clearInterval(timer)
+    }, [])
+
     const handleMarkDone = (item: any) => {
         if (item.type === 'bill') {
             updateBill(item.id, { status: 'paid' })
-            showToast('Bill marked as paid! Payment recorded.', 'success')
+            showToast('PAYMENT AUTHORIZED', 'success')
         } else if (item.type === 'health') {
             logHealth(item.id)
-            showToast('Great job! Healthy habit tracked.', 'success')
+            showToast('HEALTH LOGGED', 'success')
         } else {
-            showToast('Task marked as completed!', 'success')
+            showToast('TASK COMPLETED', 'success')
         }
-        // Add to local completed state to update UI immediately
         setCompletedIds(prev => new Set(prev).add(item.id))
     }
 
@@ -32,231 +37,286 @@ export default function Today() {
         }
         return false
     }
-
     const timelineItems = [
         ...meetings.filter(m => m.date === today).map(m => ({
             type: 'meeting' as const,
             time: m.time,
             title: m.title,
-            subtitle: `${new Date(m.date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • ${m.time} - ${new Date(new Date(`2000-01-01T${m.time}`).getTime() + m.duration * 60000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} • ${m.duration} min`,
+            subtitle: `${m.duration} MIN // SYNC`,
             icon: Users,
-            color: 'bg-primary/10 text-primary',
+            color: 'text-blue-600 dark:text-blue-400',
+            bg: 'bg-blue-50 dark:bg-blue-900/20',
+            border: 'border-blue-200 dark:border-blue-500/20',
             id: m.id,
             details: {
-                purpose: 'Sync with the team on project progress.',
-                advantages: 'Clear blockers, align on goals, and improve team cohesion.',
-                location: 'Conference Room A'
+                purpose: 'TEAM SYNCHRONIZATION',
+                advantages: 'ALIGNMENT & PLANNING',
+                location: 'CONFERENCE ROOM A'
             }
         })),
         ...bills.filter(b => b.status === 'upcoming' && b.dueDate === today).map(b => ({
             type: 'bill' as const,
             time: '09:00',
             title: b.title,
-            subtitle: `${new Date(b.dueDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • Due by 5:00 PM • £${b.amount.toLocaleString()}`,
+            subtitle: `£${b.amount.toLocaleString()} // DUE`,
             icon: Receipt,
-            color: 'bg-amber-50 text-amber-600',
+            color: 'text-amber-600 dark:text-amber-400',
+            bg: 'bg-amber-50 dark:bg-amber-900/20',
+            border: 'border-amber-200 dark:border-amber-500/20',
             id: b.id,
             details: {
-                purpose: 'Payment for essential utilities/services.',
-                advantages: 'Avoid late fees, maintain service continuity, and improve credit score.',
-                location: 'Online Portal'
+                purpose: 'FINANCIAL TRANSACTION',
+                advantages: 'CREDIT HEALTH',
+                location: 'BANKING PORTAL'
             }
         })),
         ...trips.filter(t => t.startDate === today).map(t => ({
             type: 'trip' as const,
             time: '06:00',
             title: `Trip to ${t.destination}`,
-            subtitle: `${new Date(t.startDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} - ${new Date(t.endDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • Travel`,
+            subtitle: `${t.startDate} - ${t.endDate}`,
             icon: Calendar,
-            color: 'bg-green-50 text-green-600',
+            color: 'text-emerald-600 dark:text-emerald-400',
+            bg: 'bg-emerald-50 dark:bg-emerald-900/20',
+            border: 'border-emerald-200 dark:border-emerald-500/20',
             id: t.id,
             details: {
-                purpose: 'Traveling for business/leisure.',
-                advantages: 'Exposure to new environments, networking, or relaxation.',
-                location: t.destination
+                purpose: 'BUSINESS TRAVEL',
+                advantages: 'EXPANSION',
+                location: t.destination.toUpperCase()
             }
         })),
         ...healthReminders.filter(h => h.enabled).map(h => ({
             type: 'health' as const,
-            time: h.type === 'water' ? 'All Day' : '07:00',
+            time: h.type === 'water' ? 'ALL DAY' : '07:00',
             title: h.title,
             lastLogged: h.lastLogged,
-            subtitle: h.type === 'water'
-                ? 'All Day • Hydration Goal: 2000ml'
-                : `${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' })} • 07:00 AM - 07:45 AM • Morning Routine`,
+            subtitle: h.type === 'water' ? '2000ML GOAL' : 'DAILY PROTOCOL',
             icon: Heart,
-            color: 'bg-pink-50 text-pink-600',
+            color: 'text-rose-600 dark:text-rose-400',
+            bg: 'bg-rose-50 dark:bg-rose-900/20',
+            border: 'border-rose-200 dark:border-rose-500/20',
             id: h.id,
             details: {
-                purpose: h.type === 'water' ? 'Maintain optimal hydration levels.' : 'Physical exercise and mental preparation.',
-                advantages: h.type === 'water' ? 'Improves skin health, kidney function, and energy.' : 'Boosts metabolism, improves mood, and strengthens muscles.',
-                location: h.type === 'water' ? 'Everywhere' : 'Local Park / Gym'
+                purpose: 'BIOMETRIC MAINTENANCE',
+                advantages: 'OPTIMAL PERFORMANCE',
+                location: 'HEALTH SECTOR'
             }
         }))
     ].sort((a, b) => a.time.localeCompare(b.time))
 
     return (
-        <div className="h-full overflow-y-auto bg-gray-50/50 dark:bg-dark-bg relative transition-colors duration-300">
-            {/* Ambient Lighting Effects */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 dark:bg-primary-900/10 rounded-full blur-[120px] pointer-events-none mix-blend-multiply dark:mix-blend-normal" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary-100/30 dark:bg-primary-900/20 rounded-full blur-[100px] pointer-events-none mix-blend-multiply dark:mix-blend-normal" />
+        <div className="h-full bg-gray-50 dark:bg-black transition-colors duration-500 overflow-hidden relative selection:bg-[#800020] selection:text-white">
+            {/* Ambient Background - Subtle in light, Glowing in dark */}
+            <div className="absolute inset-0 pointer-events-none">
 
-            <div className="max-w-4xl mx-auto p-6 lg:p-8 relative z-10">
-                <header className="mb-8 animate-fade-in-up">
-                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-1">Today</h1>
-                    <p className="text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1">
-                        {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
-                        <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600"></span>
-                        <span className="text-sm font-medium bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-2 py-0.5 rounded-full">{timelineItems.length} Tasks</span>
-                    </p>
-                </header>
 
-                {timelineItems.length === 0 ? (
-                    <div className="glass-card rounded-[2rem] p-12 text-center border border-white/60 dark:border-dark-border shadow-xl shadow-gray-100/50 dark:shadow-none dark:bg-dark-card transition-colors duration-300">
-                        <div className="w-20 h-20 bg-green-50 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <CheckCircle size={32} className="text-green-500 dark:text-green-400" />
+
+            </div>
+
+            <div className="h-full overflow-y-auto relative z-10 custom-scrollbar">
+                <div className="max-w-5xl mx-auto p-6 md:p-10">
+
+                    {/* Header Section */}
+                    <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="flex h-2 w-2 relative">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#800020] opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#800020]"></span>
+                                </span>
+                                <span className="text-xs font-bold tracking-widest text-[#800020] uppercase">System Ready</span>
+                            </div>
+                            <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+                                Today
+                            </h1>
+                            <div className="flex items-center gap-3 mt-1 text-sm font-medium text-gray-500 dark:text-gray-400">
+                                <span className="uppercase tracking-wide">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+                                <span className="text-gray-300 dark:text-gray-700">|</span>
+                                <span className="font-semibold">{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                            </div>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">All caught up</h3>
-                        <p className="text-gray-500 dark:text-gray-400 mt-2">Enjoy your free time!</p>
-                    </div>
-                ) : (
-                    <div className="relative pl-8 lg:pl-10 border-l border-gray-200/60 dark:border-dark-border transition-all">
-                        <div className="space-y-4">
-                            {timelineItems.map((item, index) => {
-                                const Icon = item.icon
-                                const completed = isCompleted(item)
-                                return (
-                                    <div key={`${item.type}-${item.id}`} className="relative group animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
-                                        {/* Timeline Node */}
-                                        <div className={`absolute -left-[45px] lg:-left-[53px] top-8 w-6 h-6 rounded-full border-[3px] shadow-sm z-10 transition-all duration-300 ${completed ? 'bg-green-500 border-green-500' : 'bg-white dark:bg-dark-card border-primary-100 dark:border-primary-800 group-hover:border-primary-400 group-hover:scale-125'}`} >
-                                            {completed && <Check size={14} className="text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
-                                        </div>
 
-                                        {/* Card - Now Clickable */}
-                                        <button
-                                            onClick={() => setSelectedItem(item)}
-                                            className={`w-full text-left group/card relative backdrop-blur-xl rounded-2xl p-5 border shadow-sm transition-all duration-300 cursor-pointer overflow-hidden transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary-200 dark:focus:ring-primary-800 ${completed ? 'bg-gray-50/80 dark:bg-dark-elevated/80 border-gray-100 dark:border-dark-border grayscale-[0.5]' : 'bg-white/80 dark:bg-dark-card/90 border-white/60 dark:border-dark-border hover:shadow-md'}`}
+                        {/* Status Cards */}
+                        <div className="flex gap-4">
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-sm backdrop-blur-sm">
+                                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-1">Active</div>
+                                <div className="text-2xl font-bold text-gray-900 dark:text-white">{timelineItems.length}</div>
+                            </div>
+                            <div className="bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 p-4 rounded-xl shadow-sm backdrop-blur-sm">
+                                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-1">Done</div>
+                                <div className="text-2xl font-bold text-[#800020]">
+                                    {Math.round((completedIds.size / Math.max(timelineItems.length, 1)) * 100)}%
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Timeline Container */}
+                    <div className="relative">
+                        {/* Vertical Timeline Line */}
+                        <div className="absolute left-4 top-4 bottom-10 w-px bg-gray-200 dark:bg-white/10" />
+
+                        <div className="space-y-6">
+                            {timelineItems.length === 0 ? (
+                                <div className="p-12 text-center bg-white dark:bg-white/5 rounded-2xl border border-dashed border-gray-300 dark:border-white/10">
+                                    <Clock className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">All Clear</h3>
+                                    <p className="text-gray-500">No tasks scheduled for today.</p>
+                                </div>
+                            ) : (
+                                timelineItems.map((item, index) => {
+                                    const Icon = item.icon
+                                    const completed = isCompleted(item)
+
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className={`relative pl-12 transition-all duration-700 delay-[${index * 100}ms] animate-in fade-in slide-in-from-bottom-4`}
                                         >
+                                            {/* Timeline Node */}
+                                            <div className={`absolute left-[11px] top-6 w-[11px] h-[11px] rounded-full border-[3px] z-10 transition-colors duration-300 ${completed
+                                                ? 'bg-[#800020] border-gray-50 dark:border-black'
+                                                : 'bg-white dark:bg-black border-gray-300 dark:border-gray-600'
+                                                }`} />
 
-                                            {/* Hover Gradient Overlay */}
-                                            {!completed && <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-primary-50/30 dark:to-primary-900/20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />}
+                                            {/* Card */}
+                                            <div
+                                                onClick={() => setSelectedItem(item)}
+                                                className={`group relative overflow-hidden rounded-2xl border transition-all duration-300 cursor-pointer
+                                                    ${completed
+                                                        ? 'bg-gray-50/50 dark:bg-white/[0.02] border-gray-100 dark:border-white/5 opacity-60 grayscale'
+                                                        : 'bg-white dark:bg-white/[0.04] border-gray-200 dark:border-white/10 hover:shadow-xl hover:shadow-gray-200/50 dark:hover:shadow-none hover:-translate-y-1'
+                                                    }`}
+                                            >
+                                                {/* Left Color Accent Bar */}
+                                                <div className={`absolute left-0 top-0 bottom-0 w-1 ${completed ? 'bg-gray-300 dark:bg-white/10' : item.color.replace('text-', 'bg-')}`} />
 
-                                            {/* Time Tag */}
-                                            <div className="absolute top-5 right-5 px-2.5 py-0.5 bg-white dark:bg-dark-elevated rounded-full text-[10px] font-semibold text-gray-500 dark:text-gray-400 border border-gray-100 dark:border-dark-border shadow-sm">
-                                                {item.time}
-                                            </div>
+                                                <div className="p-5 md:p-6 flex flex-col md:flex-row gap-6 md:items-center justify-between">
 
-                                            <div className="flex items-start gap-4 relative z-10">
-                                                <div className={`p-3 rounded-xl ${item.color} dark:bg-opacity-30 shadow-sm group-hover/card:scale-105 transition-transform duration-300`}>
-                                                    <Icon size={20} strokeWidth={2} />
-                                                </div>
-
-                                                <div className="flex-1 py-0.5">
-                                                    <h3 className={`font-medium text-gray-900 dark:text-gray-100 ${completed && 'line-through text-gray-500 dark:text-gray-500'}`}>{item.title}</h3>
-                                                    <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5 font-medium">{item.subtitle}</p>
-
-                                                    {/* Quick Actions (Appear on Hover) */}
-                                                    <div className={`flex items-center gap-2 mt-3 transition-all duration-300 ${completed ? 'opacity-100 translate-y-0' : 'opacity-0 group-hover/card:opacity-100 translate-y-2 group-hover/card:translate-y-0'}`}>
-                                                        {!completed ? (
-                                                            <div
-                                                                role="button"
-                                                                onClick={(e) => { e.stopPropagation(); handleMarkDone(item); }}
-                                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-[10px] font-semibold shadow hover:bg-gray-800 dark:hover:bg-white transition-colors hover:scale-105"
-                                                            >
-                                                                <Check size={12} /> Mark Done
-                                                            </div>
-                                                        ) : (
-                                                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-semibold">
-                                                                <Check size={12} /> Completed
-                                                            </div>
-                                                        )}
-                                                        <div className="p-1.5 rounded-lg bg-white dark:bg-dark-elevated border border-gray-100 dark:border-dark-border text-gray-400 dark:text-gray-500 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-200 dark:hover:border-primary-700 transition-colors shadow-sm">
-                                                            <Clock size={14} />
+                                                    {/* Time & Title */}
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <span className="text-xs font-bold py-1 px-2 rounded-md bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">
+                                                                {item.time}
+                                                            </span>
+                                                            {completed && (
+                                                                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                                                                    <Check size={12} /> Completed
+                                                                </span>
+                                                            )}
                                                         </div>
+                                                        <h3 className={`text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-1 ${!completed && 'group-hover:text-[#800020] transition-colors'}`}>
+                                                            {item.title}
+                                                        </h3>
+                                                        <p className="text-xs font-bold text-gray-500 dark:text-gray-500 tracking-wider uppercase">
+                                                            {item.subtitle}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Right Side Actions/Icon */}
+                                                    <div className="flex items-center justify-between md:justify-end gap-4">
+                                                        <div className={`p-3 rounded-xl ${item.bg} ${item.color} ${item.border} border`}>
+                                                            <Icon size={24} strokeWidth={1.5} />
+                                                        </div>
+
+                                                        {!completed && (
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); handleMarkDone(item); }}
+                                                                className="hidden opacity-0 group-hover:block group-hover:opacity-100 transition-all duration-300 px-4 py-2 bg-[#800020] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-lg hover:bg-[#600018] flex items-center gap-2"
+                                                            >
+                                                                Complete <ArrowRight size={12} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </button>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Detailed Modal Overlay */}
-            {selectedItem && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/30 dark:bg-black/50 backdrop-blur-sm animate-fade-in">
-                    <div
-                        className="bg-white dark:bg-dark-card rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden relative animate-scale-up transition-colors duration-300"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Modal Header */}
-                        <div className={`h-32 ${selectedItem.color.replace('text-', 'bg-').replace('50', '100')} dark:opacity-80 relative transition-colors`}>
-                            <button
-                                onClick={() => setSelectedItem(null)}
-                                className="absolute top-4 right-4 p-2 bg-white/50 dark:bg-dark-card/50 hover:bg-white dark:hover:bg-dark-card rounded-full transition-colors backdrop-blur-sm shadow-sm"
-                            >
-                                <X size={20} className="text-gray-600 dark:text-gray-300" />
-                            </button>
-
-                            {/* Floating Icon */}
-                            <div className="absolute -bottom-8 left-8 p-4 rounded-2xl bg-white dark:bg-dark-card shadow-lg transition-colors duration-300">
-                                <selectedItem.icon size={32} className={selectedItem.color.split(' ')[1]} />
-                            </div>
-                        </div>
-
-                        {/* Modal Content */}
-                        <div className="pt-12 pb-8 px-8">
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{selectedItem.title}</h2>
-                                <p className="text-gray-500 dark:text-gray-400 font-medium text-sm mt-1">{selectedItem.subtitle.split('•')[0]}</p>
-                            </div>
-
-                            <div className="mt-8 space-y-6">
-                                {/* Purpose Section */}
-                                <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-                                    <h4 className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">Purpose</h4>
-                                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-gray-50 dark:bg-dark-elevated p-4 rounded-2xl border border-gray-100 dark:border-dark-border transition-colors duration-300">
-                                        {selectedItem.details.purpose}
-                                    </p>
-                                </div>
-
-                                {/* Advantages Section */}
-                                <div className="animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-                                    <h4 className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">Advantages</h4>
-                                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed bg-primary-50/50 dark:bg-primary-900/20 p-4 rounded-2xl border border-primary-100/50 dark:border-primary-800/50 transition-colors duration-300">
-                                        {selectedItem.details.advantages}
-                                    </p>
-                                </div>
-
-                                {/* Metadata Grid */}
-                                <div className="flex gap-4 pt-2 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                                    <div className="flex-1 p-3 bg-gray-50 dark:bg-dark-elevated rounded-2xl border border-gray-100 dark:border-dark-border text-center transition-colors duration-300">
-                                        <div className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase disabled:tracking-wider mb-1">Time</div>
-                                        <div className="font-bold text-gray-900 dark:text-gray-100 text-sm">{selectedItem.time}</div>
-                                    </div>
-                                    <div className="flex-1 p-3 bg-gray-50 dark:bg-dark-elevated rounded-2xl border border-gray-100 dark:border-dark-border text-center transition-colors duration-300">
-                                        <div className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">Location</div>
-                                        <div className="font-bold text-gray-900 dark:text-gray-100 text-sm">{selectedItem.details.location}</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={() => setSelectedItem(null)}
-                                className="mt-8 w-full py-3.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-xl font-bold text-sm shadow-lg hover:bg-gray-800 dark:hover:bg-white hover:scale-[1.02] transition-all active:scale-95"
-                            >
-                                Close Details
-                            </button>
+                                        </div>
+                                    )
+                                })
+                            )}
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
 
-            {/* Bottom spacer */}
-            <div className="h-20" />
+            {/* Details Modal - Premium Design */}
+            {selectedItem && (
+                <div className="fixed inset-0 z-[100] bg-gray-900/40 dark:bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+                    <div className="w-full max-w-lg bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-gray-100 dark:border-white/10">
+                        {/* Header */}
+                        <div className="p-6 md:p-8 bg-gray-50 dark:bg-white/[0.02] border-b border-gray-100 dark:border-white/5 flex justify-between items-start">
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className={`p-1.5 rounded-md ${selectedItem.bg} ${selectedItem.color}`}>
+                                        <selectedItem.icon size={16} />
+                                    </div>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                                        Details // {selectedItem.id}
+                                    </span>
+                                </div>
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white leading-tight">
+                                    {selectedItem.title}
+                                </h2>
+                            </div>
+                            <button
+                                onClick={() => setSelectedItem(null)}
+                                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 dark:text-gray-500 transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6 md:p-8 space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Timeframe</div>
+                                    <div className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                                        <Clock size={16} className="text-[#800020]" />
+                                        {selectedItem.time}
+                                    </div>
+                                </div>
+                                <div className="p-4 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Location</div>
+                                    <div className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                                        <Grip size={16} className="text-[#800020]" />
+                                        {selectedItem.details.location}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase mb-2">Objective</h4>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                                        {selectedItem.details.purpose}. Critical path requires immediate attention to ensure {selectedItem.details.advantages.toLowerCase()}.
+                                    </p>
+                                </div>
+
+                                <div className="pt-4 border-t border-gray-100 dark:border-white/5">
+                                    <div className="flex items-center justify-between text-xs font-semibold text-gray-400">
+                                        <span>STATUS: {isCompleted(selectedItem) ? 'COMPLETED' : 'PENDING'}</span>
+                                        <span>PRIORITY: HIGH</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer Action */}
+                        {!isCompleted(selectedItem) && (
+                            <div className="p-4 bg-gray-50 dark:bg-white/[0.02] border-t border-gray-100 dark:border-white/5">
+                                <button
+                                    onClick={() => { handleMarkDone(selectedItem); setSelectedItem(null); }}
+                                    className="w-full py-4 bg-[#800020] hover:bg-[#600018] text-white font-bold uppercase tracking-widest rounded-xl shadow-lg transition-all active:scale-[0.98]"
+                                >
+                                    Initialize Protocol
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

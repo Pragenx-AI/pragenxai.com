@@ -101,6 +101,7 @@ export interface Record {
     size: number
     uploadedAt: string
     tags: string[]
+    category: 'Personal' | 'ID' | 'Bill' | 'Travel' | 'Education' | 'Work' | 'Other'
 }
 
 export interface Notification {
@@ -196,6 +197,8 @@ interface AppContextType extends AppState {
     logSleep: (sleep: Omit<SleepLog, 'id'>) => void
     logMood: (mood: Omit<MoodLog, 'id' | 'timestamp'>) => void
     addRecord: (record: Omit<Record, 'id' | 'uploadedAt'>) => void
+    updateRecord: (id: string, updates: Partial<Record>) => void
+    shareRecord: (id: string) => void
     deleteRecord: (id: string) => void
     markNotificationRead: (id: string) => void
     clearNotification: (id: string) => void
@@ -250,8 +253,9 @@ const initialState: AppState = {
     sleepLogs: [],
     moodLogs: [],
     records: [
-        { id: '1', name: 'Identity_Card.pdf', type: 'application/pdf', size: 1200000, uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Identity', 'Essential'] },
-        { id: '2', name: 'Rent_Agreement.pdf', type: 'application/pdf', size: 2500000, uploadedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Home', 'Legal'] },
+        { id: '1', name: 'Identity_Card.pdf', type: 'application/pdf', size: 1200000, uploadedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Identity', 'Essential'], category: 'ID' },
+        { id: '2', name: 'Rent_Agreement.pdf', type: 'application/pdf', size: 2500000, uploadedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Home', 'Legal'], category: 'Personal' },
+        { id: '3', name: 'Project_Alpha_Brief.mp4', type: 'video/mp4', size: 45000000, uploadedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), tags: ['Work'], category: 'Work' },
     ],
     notifications: [],
     chatMessages: [],
@@ -495,6 +499,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         showToast('File uploaded!')
     }
 
+    const updateRecord = (id: string, updates: Partial<Record>) => {
+        setState(s => ({
+            ...s,
+            records: s.records.map(r => r.id === id ? { ...r, ...updates } : r)
+        }))
+        showToast('File updated')
+    }
+
+    const shareRecord = (id: string) => {
+        showToast('Sharing link copied to clipboard', 'info')
+    }
+
     const deleteRecord = (id: string) => {
         setState(s => ({ ...s, records: s.records.filter(r => r.id !== id) }))
         showToast('Record deleted!')
@@ -598,6 +614,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setState(s => ({ ...s, sidebarOpen: !s.sidebarOpen }))
     }
 
+
     const addWater = () => {
         setState(s => {
             const newLog: ActivityLog = {
@@ -662,6 +679,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
             logSleep,
             logMood,
             addRecord,
+            updateRecord,
+            shareRecord,
             deleteRecord,
             markNotificationRead,
             clearNotification,
@@ -828,6 +847,49 @@ function generateAIResponse(userMessage: string, state: AppState): string | { co
             }
             return resp
         }
+    }
+
+    // 10. Health Pattern Analysis
+    if (lower.includes('analyze') && lower.includes('health') && lower.includes('pattern')) {
+        const waterProgress = (state.waterIntake / 8) * 100
+        const medsSummary = state.medications.map(m => m.takenToday).filter(Boolean).length
+        const totalMeds = state.medications.length
+        const latestSleep = state.sleepLogs.length > 0 ? state.sleepLogs[state.sleepLogs.length - 1] : null
+        const latestMood = state.moodLogs.length > 0 ? state.moodLogs[state.moodLogs.length - 1] : null
+
+        let response = `### 🧬 Health Pattern Analysis\n\n`
+
+        // Hydration Analysis
+        response += `**Hydration:** `
+        if (waterProgress >= 100) response += `Excellent work! You've hit 100% of your hydration goal today. 💧\n`
+        else if (waterProgress >= 50) response += `Good progress! You're at ${waterProgress}% of your goal. A few more glasses to go. 🥤\n`
+        else response += `You're currently at ${waterProgress}% of your goal. Try to increase your water intake for better energy levels. 🚰\n`
+
+        // Medication Analysis
+        response += `**Medications:** `
+        if (medsSummary === totalMeds) response += `Perfect adherence today! You've taken all ${totalMeds} scheduled medications. ✅\n`
+        else response += `You've taken ${medsSummary} out of ${totalMeds} medications. Don't forget your remaining doses! 💊\n`
+
+        // Sleep Analysis
+        if (latestSleep) {
+            const hours = Math.floor(latestSleep.duration / 60)
+            response += `**Sleep:** You got ${hours}h of sleep with a quality rating of ${latestSleep.quality}/5. `
+            if (hours < 7) response += `This is below the recommended 7-9 hours. Consider an earlier bedtime tonight. 😴\n`
+            else response += `Great sleep duration for recovery! 🌙\n`
+        }
+
+        // Mood & Energy Correlation
+        if (latestMood) {
+            response += `**Energy & Mood:** Your current energy is at ${latestMood.energy}% and you're feeling '${latestMood.mood}'. `
+            if (latestMood.energy < 40 && state.waterIntake < 4) {
+                response += `I noticed your energy is low and your hydration is also below 50%. Drinking more water might help boost your focus! ⚡\n`
+            } else {
+                response += `Keep maintaining these habits to stabilize your energy levels throughout the day. ✨\n`
+            }
+        }
+
+        response += `\n**Overall Recommendation:** Continue tracking these metrics to identify long-term correlations between your sleep quality and daily productivity.`
+        return response
     }
 
     // Default fallback

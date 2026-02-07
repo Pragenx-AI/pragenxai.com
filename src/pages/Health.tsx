@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useApp, Medication } from '../context/AppContext'
 import {
     Droplets, Heart, Pill, Sparkles, Plus, Check, Mic, MicOff,
@@ -13,8 +14,10 @@ export default function Health() {
     const {
         healthReminders, waterIntake, addWater, showToast,
         medications, takeMedication, deleteMedication, addMedication,
-        healthLogs
+        healthLogs, sleepLogs, moodLogs, setPendingQuestion
     } = useApp()
+
+    const navigate = useNavigate()
 
     const [activeTab, setActiveTab] = useState<HealthTab>('dashboard')
     const [isVoiceActive, setIsVoiceActive] = useState(false)
@@ -109,6 +112,27 @@ export default function Health() {
             startDate: new Date().toISOString().split('T')[0],
             notes: ''
         })
+    }
+
+    const handleAnalyzePatterns = () => {
+        const latestSleep = sleepLogs.length > 0 ? sleepLogs[sleepLogs.length - 1] : null
+        const latestMood = moodLogs.length > 0 ? moodLogs[moodLogs.length - 1] : null
+        const medsSummary = medications.map(m => `${m.name}: ${m.takenToday ? 'Taken' : 'Pending'}`).join(', ')
+
+        let analysisPrompt = `Can you analyze my health patterns based on the following data?
+- Hydration: ${waterIntake} glasses (Goal: ${waterGoal})
+- Medication Adherence: ${medsSummary}`
+
+        if (latestSleep) {
+            analysisPrompt += `\n- Latest Sleep: ${Math.floor(latestSleep.duration / 60)}h ${latestSleep.duration % 60}m (Quality: ${latestSleep.quality}/5)`
+        }
+
+        if (latestMood) {
+            analysisPrompt += `\n- Current Mood: ${latestMood.mood} (Energy Level: ${latestMood.energy}%)`
+        }
+
+        setPendingQuestion(analysisPrompt)
+        navigate('/chat')
     }
 
     const tabs: { id: HealthTab; label: string; icon: any }[] = [
@@ -467,7 +491,10 @@ export default function Health() {
                                     {[1, 2, 3, 4].map(s => <Sparkles key={s} size={16} className="text-amber-400 fill-amber-400" />)}
                                     <Sparkles size={16} className="text-gray-200 dark:text-gray-700" />
                                 </div>
-                                <button className="w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all">
+                                <button
+                                    onClick={handleAnalyzePatterns}
+                                    className="w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all"
+                                >
                                     Analyze Patterns
                                 </button>
                             </div>

@@ -4,18 +4,18 @@ import { useApp } from '../../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import {
     Send,
-    Sparkles,
     Mic,
     Plus,
-    History
+    History,
+    Paperclip,
+    Image as ImageIcon,
+    Telescope,
+    ShoppingBag,
+    Bot,
+    ChevronRight,
+    MoreHorizontal
 } from 'lucide-react'
 
-const suggestedPrompts = [
-    "What's due today?",
-    "Any bills coming up?",
-    "Prepare my day",
-    "Upcoming meetings?",
-]
 
 // Web Speech API types (unchanged)
 interface SpeechRecognitionEvent extends Event {
@@ -161,14 +161,6 @@ export default function ChatInput() {
     }
 
 
-    const handlePromptClick = (prompt: string) => {
-        addChatMessage({ role: 'user', content: prompt, silent: true })
-
-        // Redirect to GPT page if not already there
-        if (window.location.pathname !== '/chat') {
-            navigate('/chat')
-        }
-    }
 
     const toggleVoiceInput = () => {
         if (!recognitionRef.current) return
@@ -185,7 +177,6 @@ export default function ChatInput() {
     }
 
 
-    const hasMessages = chatMessages.length > 0
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -196,21 +187,63 @@ export default function ChatInput() {
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4 pb-8 bg-white dark:bg-black transition-colors duration-300">
-            <div className="relative flex flex-col gap-3">
-                {/* Suggested Prompts */}
-                {!hasMessages && location.pathname === '/chat' && (
-                    <div className="flex flex-wrap items-center justify-center gap-2 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300">
-                        {suggestedPrompts.map((prompt) => (
-                            <button
-                                key={prompt}
-                                onClick={() => handlePromptClick(prompt)}
-                                className="px-5 py-2.5 rounded-full bg-white dark:bg-dark-elevated border border-divider dark:border-dark-border text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-border transition-all duration-300 shadow-sm whitespace-nowrap flex items-center gap-2"
-                            >
-                                <Sparkles size={16} className="text-[#800020] dark:text-[#a0405b]" />
-                                {prompt}
+        <div className="w-full max-w-4xl mx-auto px-4">
+            <div className="relative flex flex-col">
+
+                {/* Attach Menu */}
+                {showAttachMenu && (
+                    <div
+                        ref={menuRef}
+                        className="absolute bottom-full left-4 mb-4 w-72 bg-white dark:bg-dark-elevated rounded-3xl shadow-2xl border border-divider dark:border-white/10 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                    >
+                        <div className="flex flex-col gap-1">
+                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                    <Paperclip size={18} />
+                                </div>
+                                <span className="font-medium text-sm">Add photos & files</span>
                             </button>
-                        ))}
+
+                            <div className="h-px bg-divider dark:bg-white/5 my-1 mx-2" />
+
+                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                    <ImageIcon size={18} />
+                                </div>
+                                <span className="font-medium text-sm">Create image</span>
+                            </button>
+
+                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                    <Telescope size={18} />
+                                </div>
+                                <span className="font-medium text-sm">Deep research</span>
+                            </button>
+
+                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                    <ShoppingBag size={18} />
+                                </div>
+                                <span className="font-medium text-sm">Shopping research</span>
+                            </button>
+
+                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                    <Bot size={18} />
+                                </div>
+                                <span className="font-medium text-sm">Agent mode</span>
+                            </button>
+
+                            <button className="flex items-center justify-between w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                        <MoreHorizontal size={18} />
+                                    </div>
+                                    <span className="font-medium text-sm">More</span>
+                                </div>
+                                <ChevronRight size={16} className="text-gray-400" />
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -237,12 +270,12 @@ export default function ChatInput() {
                         }}
                         onKeyDown={handleKeyDown}
                         placeholder="ask anything"
-                        className="flex-1 bg-transparent border-none focus:ring-0 text-[16px] text-gray-800 dark:text-gray-200 placeholder-gray-500 py-3 px-2 resize-none max-h-48 custom-scrollbar leading-relaxed lowercase"
+                        className="flex-1 bg-transparent border-none focus:ring-0 text-[16px] text-gray-800 dark:text-gray-200 placeholder-gray-500 py-3 px-2 resize-none max-h-48 hide-scrollbar leading-relaxed lowercase"
                         style={{ height: '44px' }}
                     />
 
                     {/* Right side icons */}
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 border-l-0 border-none">
                         {/* History Button */}
                         <button
                             onClick={() => navigate('/history')}
