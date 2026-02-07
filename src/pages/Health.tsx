@@ -482,8 +482,8 @@ export default function Health() {
                                 </h3>
                                 <div className="grid grid-cols-5 gap-3 mb-8">
                                     {['😊', '🙂', '😐', '🙁', '😢'].map((emoji, i) => (
-                                        <button key={i} className="aspect-square rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 text-2xl flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all focus:border-[#800020] focus:ring-1 focus:ring-[#800020]">
-                                            {emoji}
+                                        <button key={i} className="aspect-square rounded-2xl bg-transparent text-2xl flex items-center justify-center hover:scale-125 hover:drop-shadow-xl transition-all duration-300 focus:outline-none active:scale-95 group">
+                                            <span className="filter grayscale-[0.2] group-hover:grayscale-0 transition-all">{emoji}</span>
                                         </button>
                                     ))}
                                 </div>

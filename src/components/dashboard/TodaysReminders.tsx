@@ -47,13 +47,13 @@ export default function TodaysReminders() {
     if (reminders.length === 0) {
         return (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="bg-gradient-to-br from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 border border-primary/10 dark:border-primary-light/10 rounded-[2.5rem] p-8 lg:p-10 text-center relative overflow-hidden group">
+                <div className="bg-transparent border border-primary/10 dark:border-primary-light/10 rounded-[2.5rem] p-8 lg:p-10 text-center relative overflow-hidden group">
                     {/* Background Decorative Element */}
-                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
 
                     <div className="relative z-10 flex flex-col items-center max-w-md mx-auto space-y-6">
-                        <div className="p-4 bg-white dark:bg-dark-card rounded-3xl shadow-xl shadow-primary/10 scale-110 mb-2">
+                        <div className="p-4 bg-transparent scale-110 mb-2">
                             <Sparkles className="text-primary" size={32} />
                         </div>
 
