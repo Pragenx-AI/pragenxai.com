@@ -71,19 +71,19 @@ export default function Home() {
                 )}
 
                 {/* Hero Section */}
-                <section className="flex flex-col items-center justify-center text-center space-y-8 pt-6">
-                    <div className="space-y-3 animate-fade-in-up">
+                <section className="flex flex-col items-center justify-center text-center space-y-4 pt-6">
+                    <div className="space-y-2 animate-fade-in-up">
                         <h1 className="text-4xl lg:text-6xl font-medium tracking-tight text-gray-900 dark:text-gray-50">
                             Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 17 ? 'Afternoon' : 'Evening'}
                         </h1>
-                        <p className="text-lg text-gray-500 dark:text-gray-400 font-light">
+                        <p className="text-lg text-gray-500 dark:text-gray-400 font-light italic">
                             Ready to organize your day?
                         </p>
                     </div>
 
                     {/* Central Voice Hub */}
-                    <div className="relative group p-4">
-                        <VoiceAssistant variant="default" />
+                    <div className="relative group p-2">
+                        <VoiceAssistant variant="compact" />
                     </div>
 
 

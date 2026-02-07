@@ -10,8 +10,8 @@ export default function Chat() {
             {chatMessages.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center p-6 animate-in fade-in duration-1000">
                     <div className="w-full max-w-2xl flex flex-col items-center gap-12">
-                        <h2 className="text-4xl font-black tracking-tighter text-gray-900 dark:text-white uppercase">
-                            Experience the Power of <span className="text-[#800020]">PragenX</span>
+                        <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            ask anything. <span className="text-[#800020]">pragenx</span> handles it.
                         </h2>
 
                         <div className="w-full max-w-xl">

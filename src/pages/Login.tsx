@@ -36,13 +36,11 @@ export default function Login() {
             <div className="w-full max-w-md relative z-10">
                 {/* Logo Area */}
                 <div className="flex flex-col items-center mb-10 animate-fade-in-up">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 bg-white dark:bg-dark-card rounded-[1.25rem] shadow-xl flex items-center justify-center border border-gray-100 dark:border-dark-border group transition-all duration-500 hover:scale-110">
-                            <img src="/logo-new.png" alt="PragenX Logo" className="w-10 h-10 object-contain" />
-                        </div>
+                    <div className="flex items-center gap-3">
+                        <img src="/logo-spark.png" alt="PragenX Logo" className="w-12 h-12 object-contain" />
                         <span className="text-3xl font-bold text-gray-900 dark:text-gray-100 tracking-tighter">PragenX</span>
                     </div>
-                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight">Welcome Back</h1>
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight mt-6">Welcome Back</h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Sign in to your PragenX dashboard</p>
                 </div>
 

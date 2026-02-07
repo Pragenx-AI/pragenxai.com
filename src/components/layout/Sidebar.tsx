@@ -30,7 +30,6 @@ const navItems = [
     { icon: Plane, label: 'Travel', path: '/travel' },
     { icon: Heart, label: 'Health', path: '/health' },
     { icon: FileText, label: 'Docs', path: '/records' },
-    { icon: HistoryIcon, label: 'History', path: '/history' },
     { icon: Plug, label: 'Integrations', path: '/integrations' },
     { icon: Settings, label: 'Settings', path: '/settings' },
 ]
@@ -83,7 +82,7 @@ export default function Sidebar() {
 
                     {/* Open State: Logo + Text */}
                     <div className={`flex items-center gap-2 ${!sidebarOpen && 'hidden'}`}>
-                        <img src="/logo-new.png" alt="PragenX Logo" className="w-8 h-8 rounded-lg object-contain bg-white dark:bg-transparent" />
+                        <img src="/logo-spark.png" alt="PragenX Logo" className="w-8 h-8 object-contain" />
                         <span className="font-semibold text-gray-900 dark:text-gray-100 whitespace-nowrap">PragenX</span>
                     </div>
 

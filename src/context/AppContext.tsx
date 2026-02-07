@@ -112,12 +112,31 @@ export interface Notification {
     createdAt: string
 }
 
+export interface WeatherData {
+    location: string
+    currentTemp: number
+    condition: string
+    high: number
+    low: number
+    forecast: {
+        day: string
+        temp: number
+        low: number
+        condition: 'sunny' | 'cloudy' | 'rainy' | 'partly_cloudy'
+    }[]
+    hourly: {
+        time: string
+        temp: number
+    }[]
+}
+
 export interface ChatMessage {
     id: string
     role: 'user' | 'assistant'
     content: string
     timestamp: string
     silent?: boolean
+    weatherData?: WeatherData
 }
 
 export interface ChatSession {
@@ -181,7 +200,7 @@ interface AppContextType extends AppState {
     markNotificationRead: (id: string) => void
     clearNotification: (id: string) => void
     clearAllNotifications: () => void
-    addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
+    addChatMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'> & { weatherData?: WeatherData }) => void
     clearChat: () => void
     startNewChat: () => void
     loadChatSession: (id: string) => void
@@ -497,21 +516,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
         showToast('All notifications cleared!')
     }
 
-    const addChatMessage = (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
+    const addChatMessage = (message: Omit<ChatMessage, 'id' | 'timestamp'> & { weatherData?: WeatherData }) => {
         const newMessage = { ...message, id: generateId(), timestamp: new Date().toISOString() }
         setState(s => ({ ...s, chatMessages: [...s.chatMessages, newMessage] }))
 
         if (message.role === 'user') {
             setTimeout(() => {
                 const response = generateAIResponse(message.content, state)
+                const weatherRes = typeof response === 'object' ? response : { content: response }
+
                 setState(s => ({
                     ...s,
                     chatMessages: [...s.chatMessages, {
                         id: generateId(),
                         role: 'assistant',
-                        content: response,
+                        ...weatherRes,
                         timestamp: new Date().toISOString(),
-                        silent: message.silent // Propagate silence from user message to response
+                        silent: message.silent
                     }]
                 }))
             }, 500)
@@ -673,7 +694,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     )
 }
 
-function generateAIResponse(userMessage: string, state: AppState): string {
+function generateAIResponse(userMessage: string, state: AppState): string | { content: string, weatherData: WeatherData } {
     const lower = userMessage.toLowerCase()
     const today = new Date().toISOString().split('T')[0]
     const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0]
@@ -681,6 +702,43 @@ function generateAIResponse(userMessage: string, state: AppState): string {
     const tomorrowMeetings = state.meetings.filter(m => m.date === tomorrow)
     const upcomingBills = state.bills.filter(b => b.status === 'upcoming')
     const recentRecords = state.records.slice(-3)
+
+    // Weather Mock Response
+    if (lower.includes('weather')) {
+        const weatherData: WeatherData = {
+            location: 'London, Greater London, United Kingdom',
+            currentTemp: 10,
+            condition: 'Mostly cloudy; morning rain followed by a brief shower or two this afternoon',
+            high: 12,
+            low: 7,
+            forecast: [
+                { day: 'Sat', temp: 10, low: 7, condition: 'rainy' },
+                { day: 'Sun', temp: 11, low: 7, condition: 'partly_cloudy' },
+                { day: 'Mon', temp: 11, low: 7, condition: 'cloudy' },
+                { day: 'Tue', temp: 11, low: 9, condition: 'rainy' },
+                { day: 'Wed', temp: 12, low: 8, condition: 'rainy' },
+                { day: 'Thu', temp: 11, low: 4, condition: 'partly_cloudy' },
+                { day: 'Fri', temp: 7, low: 0, condition: 'sunny' },
+                { day: 'Sat', temp: 7, low: 2, condition: 'sunny' },
+                { day: 'Sun', temp: 7, low: 6, condition: 'partly_cloudy' },
+                { day: 'Mon', temp: 10, low: 6, condition: 'cloudy' },
+            ],
+            hourly: [
+                { time: '6pm', temp: 9 },
+                { time: '9pm', temp: 9 },
+                { time: '12am', temp: 8 },
+                { time: '3am', temp: 8 },
+                { time: '6am', temp: 7 },
+                { time: '9am', temp: 8 },
+                { time: '12pm', temp: 10 },
+                { time: '3pm', temp: 10 },
+            ]
+        }
+        return {
+            content: `Right now in **London, United Kingdom**, the weather is **cloudy with a temperature around 10°C (50 °F)** with a chance of rain through the day and generally **cool, overcast conditions**. Temperatures will stay around **10–11 °C** today with periods of showers.\n\nWould you like a short summary of the next few days' forecast too? (e.g., rain chances, temperatures) 🌦️`,
+            weatherData
+        }
+    }
 
     // 0. General / Utility Queries
     if (lower.includes('time now') || lower.includes('current time')) {

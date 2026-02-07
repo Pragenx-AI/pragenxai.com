@@ -16,6 +16,8 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Cross-Module Activity:** Centralized historical view for Bills, Travel, Meetings, and Health sections.
 - **Recent Health Activity:** Real-time logging and display of health habits and wellness activities.
 - **Meeting Records:** Archive of past meetings with quick access to previous discussions.
+- **Minimalist GPT UI:** Refined, pill-shaped chat interface with right-aligned, lowercase message bubbles and a focus on clean typography.
+- **Intelligent Weather Widget:** Structured real-time weather data visualization directly within chat responses.
 
 ### 🔌 Smart & Futuristic Integrations
 - **Expanded Ecosystem:** Native support for Google Meet, Microsoft Teams, Zoom, Webex, Skype, Discord, GoToMeeting, and Slack.
@@ -45,9 +47,8 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Transparent Icon Strategy:** Interactive elements such as mood selectors and dashboard widgets now utilize transparent backgrounds and glassmorphic hover effects for a more integrated and premium feel.
 - **Dynamic Animations:** Smooth transitions, hover lifts, and neon pulse effects that bring the interface to life.
 - **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
-- **Unified Command Center:** Centralized chat and search bar with "drop-up" attachment capabilities, interactive tool menus (Deep Research, Agent Mode), and integrated "New Chat" controls.
-- **Inline Chat Experience:** Persistent conversation window on the Home dashboard that allows for seamless multi-turn dialogue without leaving the main view.
-- **Silence Guarantee:** Intelligent interaction logic that ensures text-based searches remain silent, while preserving voice-guided assistance for mic-activated commands.
+- **Unified Command Center:** Minimalist, pill-shaped chat bar with "+" attachment capabilities, integrated voice/history/send icons, and a focus on essential functionality.
+- **Streamlined Dashboard:** Simplified home page layout with a compact "Tap to speak" Voice Assistant hub and prominent, high-impact greeting typography.
 - **Internationalization (GBP):** Fully localized for the UK with British Pounds (£) as the primary currency across all modules and AI interactions.
 
 ## 🛠️ Technical Deep Dive

@@ -50,7 +50,7 @@ declare global {
 type VoiceState = 'idle' | 'listening' | 'processing' | 'speaking'
 
 interface VoiceAssistantProps {
-    variant?: 'default' | 'large'
+    variant?: 'default' | 'large' | 'compact'
 }
 
 type FlowType = 'none' | 'travel' | 'bill' | 'meeting'
@@ -62,7 +62,7 @@ interface FlowData {
     transcript: string
 }
 
-export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceAssistantProps) {
+export default function VoiceAssistant({ variant = 'default' }: VoiceAssistantProps) {
     const [voiceState, setVoiceState] = useState<VoiceState>('idle')
     const [transcript, setTranscript] = useState('')
     const [isSupported, setIsSupported] = useState(true)
@@ -164,7 +164,10 @@ export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceA
             startMeetingFlow(cmd)
         } else {
             // General AI response handles the 18 specific questions and other queries
-            // No direct speakResponse here; it's handled by the effect on chatMessages
+            // Redirect to GPT page if not already there
+            if (window.location.pathname !== '/chat') {
+                navigate('/chat')
+            }
         }
     }, [flow, addChatMessage])
 
@@ -457,7 +460,7 @@ export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceA
                         className={`relative group rounded-full flex items-center justify-center transition-all duration-700 ${voiceState === 'listening' ? 'bg-red-500 scale-110 shadow-2xl shadow-red-500/40' :
                             voiceState === 'speaking' ? 'bg-green-500' :
                                 'bg-primary-600 hover:bg-primary-700 active:scale-95'
-                            } ${flow ? 'w-24 h-24' : 'w-36 h-36'}`}
+                            } ${flow ? 'w-24 h-24' : variant === 'compact' ? 'w-24 h-24' : 'w-36 h-36'}`}
                     >
                         {/* Interactive Ripple Effects on Hover */}
                         {voiceState === 'idle' && (
@@ -470,15 +473,15 @@ export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceA
 
                         {voiceState === 'listening' ? (
                             <>
-                                <Mic size={flow ? 32 : 48} className="text-white" />
+                                <Mic size={flow || variant === 'compact' ? 32 : 48} className="text-white" />
                                 <span className="absolute inset-0 rounded-full border-4 border-white animate-ping opacity-20" />
                             </>
                         ) : voiceState === 'processing' ? (
-                            <Loader2 size={flow ? 32 : 48} className="text-white animate-spin" />
+                            <Loader2 size={flow || variant === 'compact' ? 32 : 48} className="text-white animate-spin" />
                         ) : voiceState === 'speaking' ? (
-                            <Volume2 size={flow ? 32 : 48} className="text-white animate-bounce" />
+                            <Volume2 size={flow || variant === 'compact' ? 32 : 48} className="text-white animate-bounce" />
                         ) : (
-                            <Mic size={flow ? 32 : 48} className="text-white group-hover:scale-110 transition-all duration-500 ease-out" />
+                            <Mic size={flow || variant === 'compact' ? 32 : 48} className="text-white group-hover:scale-110 transition-all duration-500 ease-out" />
                         )}
 
                         {/* Ambient Glow */}
@@ -487,7 +490,7 @@ export default function VoiceAssistant({ variant: _variant = 'default' }: VoiceA
                         )}
                     </button>
 
-                    <h4 className={`mt-6 text-xl font-bold tracking-tight transition-colors ${voiceState === 'listening' ? 'text-red-500 animate-pulse' :
+                    <h4 className={`mt-6 ${variant === 'compact' ? 'text-lg' : 'text-xl'} font-bold tracking-tight transition-colors ${voiceState === 'listening' ? 'text-red-500 animate-pulse' :
                         voiceState === 'speaking' ? 'text-green-500' :
                             'text-gray-900 dark:text-gray-100'
                         }`}>
