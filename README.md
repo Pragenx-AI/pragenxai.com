@@ -49,7 +49,20 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Silence Guarantee:** Intelligent interaction logic that ensures text-based searches remain silent, while preserving voice-guided assistance for mic-activated commands.
 - **Internationalization (GBP):** Fully localized for the UK with British Pounds (£) as the primary currency across all modules and AI interactions.
 
-## 🛠️ Technology Stack
+## 🛠️ Technical Deep Dive
+
+### 💬 Reusable Chat Architecture
+The application now utilizes a centralized `ChatMessageList` component. This allows the dedicated GPT page and the new **Home Inline Chat** to share identical rendering logic, ensuring a consistent premium experience across the platform.
+
+### 🔇 The Silence Guarantee
+We've implemented a custom `silent` flag within our `ChatMessage` interface. 
+- **Auto-Detection**: The `ChatInput` automatically marks text-based submissions as silent.
+- **Smart Synthesis**: The `VoiceAssistant` component monitors the chat state and intelligently bypasses the Speech Synthesis API for any message marked as silent, ensuring a quiet search environment while maintaining full vocal capabilities for mic-initiated flows.
+
+### 📐 Layout Intelligence
+The `MainLayout` now features conditional rendering logic that manages the **Active Conversation** overlay. This overlay uses glassmorphism and smooth CSS transitions to provide a "picture-in-picture" chat experience that stays accessible while you navigate your dashboard.
+
+## ⚙️ Technology Stack
 - **Frontend:** React, TypeScript, Vite
 - **Styling:** CSS3 (Vanilla + Tailwind for layout), Lucide Icons
 - **APIs:** Web Speech API (Recognition & Synthesis)
