@@ -18,7 +18,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
     const isChatPage = location.pathname === '/chat'
     const showInlineChat = !isChatPage && chatMessages.length > 0 &&
-        !['/bills', '/meetings', '/travel', '/health', '/notifications', '/profile', '/integrations', '/history', '/records', '/today'].includes(location.pathname)
+        !['/bills', '/meetings', '/travel', '/health', '/notifications', '/profile', '/integrations', '/history', '/records', '/today', '/settings'].includes(location.pathname)
 
     return (
         <div className="flex h-screen bg-white dark:bg-dark-bg overflow-hidden transition-colors duration-300">
@@ -97,7 +97,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                     </div>
                 )}
 
-                {!['/chat', '/bills', '/meetings', '/travel', '/health', '/notifications', '/profile', '/integrations', '/history', '/records', '/today'].includes(location.pathname) && <ChatInput />}
+                {!['/chat', '/bills', '/meetings', '/travel', '/health', '/notifications', '/profile', '/integrations', '/history', '/records', '/today', '/settings'].includes(location.pathname) && <ChatInput />}
             </div>
         </div>
     )
