@@ -131,3 +131,7 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-muted-foreground/50;
 }
+
+html {
+  scroll-behavior: smooth;
+}

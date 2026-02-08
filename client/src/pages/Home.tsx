@@ -14,6 +14,11 @@ const Footer = lazy(() => import("@/components/Footer").then(module => ({ defaul
 
 export default function Home() {
   useEffect(() => {
+    // Only enable Lenis on desktop/non-touch devices for better mobile performance
+    if ('ontouchstart' in window || window.innerWidth <= 768) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou

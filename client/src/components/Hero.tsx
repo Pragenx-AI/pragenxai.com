@@ -35,6 +35,9 @@ export function Hero() {
 
   // Optimized mouse movement handler using requestAnimationFrame
   useEffect(() => {
+    // Disable parallax on mobile/tablet to save resources
+    if (typeof window !== 'undefined' && window.innerWidth <= 1024) return;
+
     let animationFrameId: number;
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -73,6 +76,7 @@ export function Hero() {
 
         {/* Moving Blobs - Adjusted for Dark Mode */}
         {/* We use mix-blend-multiply for light mode (subtractive) and mix-blend-screen for dark mode (additive) */}
+        {/* HIDDEN ON MOBILE FOR PERFORMANCE */}
         <motion.div
           animate={{
             x: [0, 100, 0],
@@ -81,7 +85,7 @@ export function Hero() {
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
           style={{ willChange: "transform" }}
-          className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/30 dark:via-rose-600/10"
+          className="hidden md:block absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/30 dark:via-rose-600/10"
         />
 
         <motion.div
@@ -92,7 +96,7 @@ export function Hero() {
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           style={{ willChange: "transform" }}
-          className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/20 dark:via-rose-500/10"
+          className="hidden md:block absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/20 dark:via-rose-500/10"
         />
 
         <motion.div
@@ -102,7 +106,7 @@ export function Hero() {
           }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
           style={{ willChange: "transform" }}
-          className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/15 dark:via-rose-600/10"
+          className="hidden md:block absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/15 dark:via-rose-600/10"
         />
 
         {/* Noise overlay for premium texture */}
