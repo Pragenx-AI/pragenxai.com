@@ -27,8 +27,10 @@ A comprehensive AI-powered dashboard for managing daily life, health, finance, a
 - **Enhanced Mobile Video Playback**:
   - iOS compatibility with `playsInline` and `webkit-playsinline` attributes.
   - Android WebView support via `x5-video-player-type` and `x5-playsinline`.
+  - **Intersection Observer** for visibility-based autoplay trigger.
+  - **Multiple retry attempts** at 100ms, 500ms, and 1000ms for reliable autoplay.
   - Touch event fallback for browsers that block autoplay.
-  - Automatic retry on `loadeddata` event for reliable playback.
+  - Event listeners on `loadeddata`, `canplay`, and `canplaythrough`.
 - **Performance Enhancements**:
   - Native smooth scrolling on touch devices for butter-smooth interactions.
   - Optimized animations (parallax disabled, background complexity reduced) to save battery and GPU usage.
