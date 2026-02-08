@@ -51,7 +51,7 @@ export function VideoSection() {
     };
 
     return (
-        <section className="py-24 relative overflow-hidden bg-black/5 border-y border-white/10">
+        <section className="py-24 relative overflow-hidden">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="relative max-w-5xl mx-auto text-center">
 
@@ -65,42 +65,33 @@ export function VideoSection() {
                         </p>
                     </div>
 
-                    {/* Standard HTML Video Player - No fancy wrappers */}
-                    <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/10 min-h-[300px] group">
+                    {/* Clean Video Player */}
+                    <div className="relative rounded-2xl overflow-hidden">
+                        <video
+                            ref={videoRef}
+                            className="w-full h-full object-cover rounded-2xl"
+                            loop
+                            muted
+                            playsInline
+                            // @ts-ignore - Required for iOS
+                            webkit-playsinline="true"
+                            preload="auto"
+                            poster="/dashboard-mockup.png"
+                            src={videoSrc}
+                            onClick={handleManualPlay}
+                        />
 
-                        {/* Ambient Glow Animation */}
-                        <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-
-                        <div className="relative w-full h-full rounded-3xl overflow-hidden">
-                            <video
-                                ref={videoRef}
-                                className="w-full h-full object-cover"
-                                loop
-                                muted
-                                playsInline
-                                // @ts-ignore - Required for iOS
-                                webkit-playsinline="true"
-                                preload="auto"
-                                poster="/dashboard-mockup.png"
-                                src={videoSrc}
-                                onClick={handleManualPlay}
-                            />
-
-                            {/* Play Button Fallback (visible if autoplay fails) */}
-                            {!isPlaying && (
-                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300">
-                                    <Button
-                                        onClick={handleManualPlay}
-                                        className="rounded-full w-20 h-20 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/50 text-white flex items-center justify-center group transition-all hover:scale-110"
-                                    >
-                                        <Play className="w-8 h-8 fill-white text-white ml-1 group-hover:scale-110 transition-transform" />
-                                    </Button>
-                                </div>
-                            )}
-
-                            {/* Gradient Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
-                        </div>
+                        {/* Play Button Fallback (visible if autoplay fails) */}
+                        {!isPlaying && (
+                            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 rounded-2xl">
+                                <Button
+                                    onClick={handleManualPlay}
+                                    className="rounded-full w-20 h-20 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/50 text-white flex items-center justify-center group transition-all hover:scale-110"
+                                >
+                                    <Play className="w-8 h-8 fill-white text-white ml-1 group-hover:scale-110 transition-transform" />
+                                </Button>
+                            </div>
+                        )}
                     </div>
 
                 </div>
