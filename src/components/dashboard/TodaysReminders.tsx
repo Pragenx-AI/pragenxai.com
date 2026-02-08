@@ -47,27 +47,27 @@ export default function TodaysReminders() {
     if (reminders.length === 0) {
         return (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="bg-transparent border border-primary/10 dark:border-primary-light/10 rounded-[2.5rem] p-8 lg:p-10 text-center relative overflow-hidden group">
+                <div className="bg-transparent border border-primary/10 dark:border-primary-light/10 rounded-2xl p-5 text-center relative group">
                     {/* Background Decorative Element */}
-                    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -top-16 -right-16 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute -bottom-16 -left-16 w-40 h-40 bg-primary/5 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700" />
 
-                    <div className="relative z-10 flex flex-col items-center max-w-md mx-auto space-y-6">
-                        <div className="p-4 bg-transparent scale-110 mb-2">
-                            <Sparkles className="text-primary" size={32} />
+                    <div className="relative z-10 flex flex-col items-center max-w-md mx-auto space-y-4">
+                        <div className="p-2 bg-transparent">
+                            <Sparkles className="text-primary" size={24} />
                         </div>
 
-                        <div className="space-y-2">
-                            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 italic tracking-tight">Your agenda is clear!</h2>
-                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
-                                Ready to take control? Tap the microphone or use the actions below to set up your first reminder.
+                        <div className="space-y-1">
+                            <h2 className="text-lg lg:text-xl font-bold text-gray-900 dark:text-gray-100 italic tracking-tight">Your agenda is clear!</h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Tap the microphone or use the actions below to set up your first reminder.
                             </p>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-center gap-3">
+                        <div className="flex flex-wrap items-center justify-center gap-2">
                             <button
                                 onClick={() => navigate('/chat')}
-                                className="px-6 py-3 bg-primary text-white font-bold rounded-2xl hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
+                                className="px-4 py-2 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-dark shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5"
                             >
                                 Ask PragenX
                             </button>
@@ -76,13 +76,13 @@ export default function TodaysReminders() {
                             <div className="relative" ref={menuRef}>
                                 <button
                                     onClick={() => setShowAddMenu(!showAddMenu)}
-                                    className="px-6 py-3 bg-white dark:bg-dark-card text-gray-700 dark:text-gray-200 font-bold border border-gray-100 dark:border-dark-border rounded-2xl hover:bg-gray-50 dark:hover:bg-dark-elevated shadow-sm transition-all flex items-center gap-2"
+                                    className="px-4 py-2 bg-white dark:bg-dark-card text-gray-700 dark:text-gray-200 text-sm font-bold border border-gray-100 dark:border-dark-border rounded-xl hover:bg-gray-50 dark:hover:bg-dark-elevated shadow-sm transition-all flex items-center gap-2"
                                 >
-                                    Add Reminder <ChevronDown size={18} className={`transition-transform duration-300 ${showAddMenu ? 'rotate-180' : ''}`} />
+                                    Add Reminder <ChevronDown size={16} className={`transition-transform duration-300 ${showAddMenu ? 'rotate-180' : ''}`} />
                                 </button>
 
                                 {showAddMenu && (
-                                    <div className="absolute top-full mt-2 right-0 w-48 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-2xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                    <div className="absolute top-full mt-2 right-0 w-44 bg-white dark:bg-dark-card border border-gray-100 dark:border-dark-border rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                                         <div className="py-1">
                                             {addActions.map((action) => (
                                                 <button
@@ -91,9 +91,9 @@ export default function TodaysReminders() {
                                                         navigate(action.path)
                                                         setShowAddMenu(false)
                                                     }}
-                                                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-primary transition-colors text-left"
+                                                    className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-dark-elevated hover:text-primary transition-colors text-left"
                                                 >
-                                                    <action.icon size={18} className={action.color} />
+                                                    <action.icon size={16} className={action.color} />
                                                     {action.label}
                                                 </button>
                                             ))}

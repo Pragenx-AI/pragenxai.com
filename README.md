@@ -9,6 +9,7 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Intelligent Extraction:** Automatically parses commands like *"Remind me tomorrow at 8am I need to travel to Ireland"* into structured data.
 - **Visual Step Tracking:** Real-time checklist in the main dashboard showing data collection progress.
 - **Contextual Responses:** Page-specific voice assistants for Health logging, Bill management, and Meeting scheduling.
+- **Smart Voice Replies:** When you use voice input, the assistant speaks its response aloud. Text input remains silent for a seamless experience.
 
 ### 🕰️ Unified History & Chat Sessions
 - **Multi-Session GPT:** Ability to maintain multiple independent chat sessions with automatic naming and history saving.
@@ -53,6 +54,9 @@ Pragenx AI is a premium, state-of-the-art personal assistant dashboard designed 
 - **Theme Awareness:** Fully adaptive UI that looks stunning in both Light (clean, executive) and Dark (cyber-futuristic) modes.
 - **Unified Command Center:** Minimalist, pill-shaped chat bar with "+" attachment capabilities, integrated voice/history/send icons, and a focus on essential functionality.
 - **Streamlined Dashboard:** Simplified home page layout with a compact "Tap to speak" Voice Assistant hub and prominent, high-impact greeting typography.
+- **Quick Add Deep Links:** Quick Add buttons directly open the add forms on Bills, Meetings, and Health pages via URL parameters.
+- **Persistent Sign Out:** Sign out icon remains visible in the collapsed sidebar for easy access.
+- **Minimized Empty States:** Compact, space-efficient "Your agenda is clear!" section with smaller footprint.
 - **Consistent Typography:** Unified font styles and sizes across Today, Meetings, and Travel pages for a cohesive reading experience.
 - **Internationalization (GBP):** Fully localized for the UK with British Pounds (£) as the primary currency across all modules and AI interactions.
 

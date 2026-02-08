@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useApp, Medication } from '../context/AppContext'
 import {
     Droplets, Heart, Pill, Sparkles, Plus, Check, Mic, MicOff,
@@ -18,6 +18,7 @@ export default function Health() {
     } = useApp()
 
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const [activeTab, setActiveTab] = useState<HealthTab>('dashboard')
     const [isVoiceActive, setIsVoiceActive] = useState(false)
@@ -36,6 +37,14 @@ export default function Health() {
 
     const waterGoal = 8
     const waterProgress = (waterIntake / waterGoal) * 100
+
+    // Auto-open add modal if action=add is in URL
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setShowAddMedModal(true)
+            setSearchParams({}) // Clear the param
+        }
+    }, [searchParams, setSearchParams])
 
     useEffect(() => {
         const checkHealth = () => {

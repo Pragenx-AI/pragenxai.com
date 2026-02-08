@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { X, Users, Calendar, Trash2, AlertTriangle, Mic, MicOff, Video, MessageSquare, FileText, Phone, Globe, Headphones, Monitor } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
@@ -16,6 +17,7 @@ const iconMap = {
 
 export default function Meetings() {
     const { meetings, addMeeting, deleteMeeting, showToast, integrations } = useApp()
+    const [searchParams, setSearchParams] = useSearchParams()
     const [showForm, setShowForm] = useState(false)
     const [formData, setFormData] = useState({
         title: '',
@@ -65,6 +67,14 @@ export default function Meetings() {
         const timer = setTimeout(checkUpcomingMeetings, 1000)
         return () => clearTimeout(timer)
     }, [meetings, showToast, today])
+
+    // Auto-open form if action=add is in URL
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setShowForm(true)
+            setSearchParams({}) // Clear the param
+        }
+    }, [searchParams, setSearchParams])
 
     const hasConflict = (meeting: typeof meetings[0]) => {
         return meetings.some(m =>

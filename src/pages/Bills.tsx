@@ -1,10 +1,12 @@
-import { useState, useRef, useMemo } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { Plus, X, Receipt, Check, Trash2, Mic, MicOff, Search, ArrowUpRight, Wallet, Calendar, PoundSterling } from 'lucide-react'
 import { speak, listen } from '../utils/voiceAssistant'
 
 export default function Bills() {
     const { bills, addBill, updateBill, deleteBill, showToast } = useApp()
+    const [searchParams, setSearchParams] = useSearchParams()
     const [showForm, setShowForm] = useState(false)
     const [filterCategory, setFilterCategory] = useState('All')
     const [searchQuery, setSearchQuery] = useState('')
@@ -36,6 +38,14 @@ export default function Bills() {
     }, [bills, filterCategory, searchQuery])
 
     const categories = ['All', 'Utilities', 'Loan', 'Entertainment', 'Insurance', 'Other']
+
+    // Auto-open form if action=add is in URL
+    useEffect(() => {
+        if (searchParams.get('action') === 'add') {
+            setShowForm(true)
+            setSearchParams({}) // Clear the param
+        }
+    }, [searchParams, setSearchParams])
 
     // Voice Assistant State
     const [isVoiceActive, setIsVoiceActive] = useState(false)

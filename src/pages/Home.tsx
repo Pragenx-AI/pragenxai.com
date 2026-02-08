@@ -270,21 +270,21 @@ export default function Home() {
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4">Quick Add</p>
                             <div className="grid grid-cols-2 gap-3">
                                 <button
-                                    onClick={() => navigate('/bills')}
+                                    onClick={() => navigate('/bills?action=add')}
                                     className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:text-primary dark:hover:text-primary-light transition-colors text-gray-600 dark:text-gray-400 group"
                                 >
                                     <Receipt size={20} className="mb-2 group-hover:scale-110 transition-transform" />
                                     <span className="text-xs font-medium">Bill</span>
                                 </button>
                                 <button
-                                    onClick={() => navigate('/meetings')}
+                                    onClick={() => navigate('/meetings?action=add')}
                                     className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary dark:hover:text-primary-light transition-colors text-gray-600 dark:text-gray-400 group"
                                 >
                                     <Calendar size={20} className="mb-2 group-hover:scale-110 transition-transform" />
                                     <span className="text-xs font-medium">Meeting</span>
                                 </button>
                                 <button
-                                    onClick={() => navigate('/health')}
+                                    onClick={() => navigate('/health?action=add')}
                                     className="flex flex-col items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-dark-elevated hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors text-gray-600 dark:text-gray-400 group"
                                 >
                                     <Heart size={20} className="mb-2 group-hover:scale-110 transition-transform" />

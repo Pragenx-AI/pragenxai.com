@@ -187,14 +187,15 @@ export default function Sidebar() {
                     )}
                 </nav>
 
-                <div className={`p-4 border-t border-divider dark:border-dark-border flex flex-col gap-4 ${!sidebarOpen && 'lg:hidden'}`}>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 pl-1">PragenX v1.0</p>
+                <div className={`p-4 border-t border-divider dark:border-dark-border flex flex-col gap-4 ${!sidebarOpen && 'lg:items-center'}`}>
+                    <p className={`text-xs text-gray-400 dark:text-gray-500 pl-1 ${!sidebarOpen && 'lg:hidden'}`}>PragenX v1.0</p>
                     <button
                         onClick={logout}
-                        className="flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors w-full text-left"
+                        className={`flex items-center gap-3 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors ${sidebarOpen ? 'w-full text-left' : 'lg:justify-center'}`}
+                        title="Sign Out"
                     >
                         <LogOut size={20} />
-                        <span className="font-medium">Sign Out</span>
+                        <span className={`font-medium ${!sidebarOpen && 'lg:hidden'}`}>Sign Out</span>
                     </button>
                 </div>
             </aside>

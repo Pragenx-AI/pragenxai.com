@@ -8,12 +8,7 @@ import {
     Plus,
     History,
     Paperclip,
-    Image as ImageIcon,
-    Telescope,
-    ShoppingBag,
-    Bot,
-    ChevronRight,
-    MoreHorizontal
+    Image as ImageIcon
 } from 'lucide-react'
 
 
@@ -72,6 +67,7 @@ export default function ChatInput() {
     const navigate = useNavigate()
     const [message, setMessage] = useState('')
     const [isListening, setIsListening] = useState(false)
+    const [isVoiceMessage, setIsVoiceMessage] = useState(false)
     const [showAttachMenu, setShowAttachMenu] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null)
     const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -107,6 +103,7 @@ export default function ChatInput() {
             }
 
             setMessage(finalTranscript || interimTranscript)
+            setIsVoiceMessage(true)
         }
 
         recognition.onerror = () => {
@@ -151,8 +148,9 @@ export default function ChatInput() {
     const handleSubmit = () => {
         if (!message.trim()) return
 
-        addChatMessage({ role: 'user', content: message, silent: true })
+        addChatMessage({ role: 'user', content: message, silent: !isVoiceMessage })
         setMessage('')
+        setIsVoiceMessage(false)
 
         // Redirect to GPT page if not already there
         if (window.location.pathname !== '/chat') {
@@ -194,7 +192,7 @@ export default function ChatInput() {
                 {showAttachMenu && (
                     <div
                         ref={menuRef}
-                        className="absolute bottom-full left-4 mb-4 w-72 bg-white dark:bg-dark-elevated rounded-3xl shadow-2xl border border-divider dark:border-white/10 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300"
+                        className="absolute bottom-full left-4 mb-4 w-60 bg-white dark:bg-dark-elevated rounded-3xl shadow-2xl border border-divider dark:border-white/10 p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-300"
                     >
                         <div className="flex flex-col gap-1">
                             <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
@@ -211,37 +209,6 @@ export default function ChatInput() {
                                     <ImageIcon size={18} />
                                 </div>
                                 <span className="font-medium text-sm">Create image</span>
-                            </button>
-
-                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
-                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
-                                    <Telescope size={18} />
-                                </div>
-                                <span className="font-medium text-sm">Deep research</span>
-                            </button>
-
-                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
-                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
-                                    <ShoppingBag size={18} />
-                                </div>
-                                <span className="font-medium text-sm">Shopping research</span>
-                            </button>
-
-                            <button className="flex items-center gap-3 w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
-                                <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
-                                    <Bot size={18} />
-                                </div>
-                                <span className="font-medium text-sm">Agent mode</span>
-                            </button>
-
-                            <button className="flex items-center justify-between w-full p-3 hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-colors text-gray-700 dark:text-gray-200 group">
-                                <div className="flex items-center gap-3">
-                                    <div className="p-1.5 bg-gray-50 dark:bg-white/5 rounded-lg group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
-                                        <MoreHorizontal size={18} />
-                                    </div>
-                                    <span className="font-medium text-sm">More</span>
-                                </div>
-                                <ChevronRight size={16} className="text-gray-400" />
                             </button>
                         </div>
                     </div>
@@ -265,6 +232,7 @@ export default function ChatInput() {
                         value={message}
                         onChange={(e) => {
                             setMessage(e.target.value)
+                            setIsVoiceMessage(false)
                             e.target.style.height = 'auto'
                             e.target.style.height = `${e.target.scrollHeight}px`
                         }}

@@ -1,6 +1,7 @@
 import { useApp } from '../context/AppContext'
 import ChatInput from '../components/layout/ChatInput'
 import ChatMessageList from '../components/chat/ChatMessageList'
+import VoiceAssistant from '../components/voice/VoiceAssistant'
 
 export default function Chat() {
     const { chatMessages } = useApp()
@@ -32,6 +33,11 @@ export default function Chat() {
                     </div>
                 </>
             )}
+
+            {/* Hidden VoiceAssistant for speech synthesis */}
+            <div className="sr-only">
+                <VoiceAssistant variant="compact" />
+            </div>
         </div>
     )
 }
