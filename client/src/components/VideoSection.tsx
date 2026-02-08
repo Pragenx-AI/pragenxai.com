@@ -22,43 +22,62 @@ export function VideoSection() {
         return () => window.removeEventListener('resize', updateSource);
     }, []);
 
-    // Handle autoplay with mobile-specific handling
+    // Autoplay function with retries
+    const attemptPlay = () => {
+        if (!videoRef.current || isPlaying) return;
+
+        const video = videoRef.current;
+        video.muted = true;
+
+        video.play()
+            .then(() => setIsPlaying(true))
+            .catch(e => {
+                console.log("Autoplay attempt failed:", e);
+                setIsPlaying(false);
+            });
+    };
+
+    // Handle autoplay with Intersection Observer for visibility-based trigger
     useEffect(() => {
-        if (videoRef.current && videoSrc) {
-            const video = videoRef.current;
+        if (!videoRef.current || !videoSrc) return;
 
-            // Ensure muted for autoplay policy compliance
-            video.muted = true;
-            video.playbackRate = 1.0;
+        const video = videoRef.current;
+        video.muted = true;
+        video.playbackRate = 1.0;
+        video.load();
 
-            // Force load for mobile
-            video.load();
+        // Try playing on various events
+        video.addEventListener('loadeddata', attemptPlay);
+        video.addEventListener('canplaythrough', attemptPlay);
+        video.addEventListener('canplay', attemptPlay);
 
-            const attemptPlay = () => {
-                const playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise
-                        .then(() => {
-                            setIsPlaying(true);
-                        })
-                        .catch(e => {
-                            console.log("Autoplay blocked or failed:", e);
-                            setIsPlaying(false);
-                        });
-                }
-            };
+        // Intersection Observer - play when video is visible
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        attemptPlay();
+                    }
+                });
+            },
+            { threshold: 0.25 }
+        );
+        observer.observe(video);
 
-            // Small delay for mobile browsers to properly load
-            const timer = setTimeout(attemptPlay, 100);
+        // Multiple retry attempts
+        const timers = [
+            setTimeout(attemptPlay, 100),
+            setTimeout(attemptPlay, 500),
+            setTimeout(attemptPlay, 1000),
+        ];
 
-            // Also try on loadeddata event for better mobile compatibility
-            video.addEventListener('loadeddata', attemptPlay);
-
-            return () => {
-                clearTimeout(timer);
-                video.removeEventListener('loadeddata', attemptPlay);
-            };
-        }
+        return () => {
+            video.removeEventListener('loadeddata', attemptPlay);
+            video.removeEventListener('canplaythrough', attemptPlay);
+            video.removeEventListener('canplay', attemptPlay);
+            observer.disconnect();
+            timers.forEach(clearTimeout);
+        };
     }, [videoSrc]);
 
     const handleManualPlay = () => {
