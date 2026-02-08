@@ -54,6 +54,7 @@ export function VideoSection() {
                                 preload="auto"
                                 poster="/dashboard-mockup.png"
                             >
+                                <source src="/demo-video-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
                                 <source src="/demo-video-optimized.mp4" type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
