@@ -5,8 +5,17 @@ export function VideoSection() {
 
     useEffect(() => {
         if (videoRef.current) {
+            // Ensure muted is set for autoplay support on mobile
+            videoRef.current.muted = true;
             videoRef.current.playbackRate = 2.0;
-            videoRef.current.play().catch(e => console.log("Autoplay blocked", e));
+
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log("Autoplay blocked or failed:", e);
+                    // Video will show poster if autoplay fails
+                });
+            }
         }
     }, []);
 
@@ -38,10 +47,14 @@ export function VideoSection() {
                                 className="w-full h-full object-cover pointer-events-none"
                                 loop
                                 muted
-                                playsInline
                                 autoPlay
+                                playsInline
+                                // @ts-ignore - Required for iOS
+                                webkit-playsinline="true"
+                                preload="auto"
+                                poster="/dashboard-mockup.png"
                             >
-                                <source src={`/demo-video-optimized.mp4?v=${Date.now()}`} type="video/mp4" />
+                                <source src="/demo-video-optimized.mp4" type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
 
