@@ -28,7 +28,9 @@ A comprehensive AI-powered dashboard for managing daily life, health, finance, a
   - iOS compatibility with `playsInline` and `webkit-playsinline` attributes.
   - Android WebView support via `x5-video-player-type` and `x5-playsinline`.
   - **Intersection Observer** for visibility-based autoplay trigger.
-  - **Multiple retry attempts** at 100ms, 500ms, and 1000ms for reliable autoplay.
+  - **Multiple retry attempts** at 100ms, 300ms, 600ms, 1000ms, and 2000ms.
+  - **`playing` event detection** for accurate playback state tracking.
+  - **`useCallback`** to prevent stale closure issues in event handlers.
   - Touch event fallback for browsers that block autoplay.
   - Event listeners on `loadeddata`, `canplay`, and `canplaythrough`.
 - **Performance Enhancements**:
