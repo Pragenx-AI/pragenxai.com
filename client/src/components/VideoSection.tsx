@@ -1,23 +1,54 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import { Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function VideoSection() {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [videoSrc, setVideoSrc] = useState("");
 
+    // Handle source selection based on viewport
     useEffect(() => {
-        if (videoRef.current) {
-            // Ensure muted is set for autoplay support on mobile
+        const updateSource = () => {
+            const isMobile = window.innerWidth <= 768;
+            setVideoSrc(isMobile ? "/demo-video-mobile.mp4" : "/demo-video-optimized.mp4");
+        };
+
+        // Initial check
+        updateSource();
+
+        // Listener
+        window.addEventListener('resize', updateSource);
+        return () => window.removeEventListener('resize', updateSource);
+    }, []);
+
+    // Handle autoplay
+    useEffect(() => {
+        if (videoRef.current && videoSrc) {
             videoRef.current.muted = true;
-            videoRef.current.playbackRate = 2.0;
+            videoRef.current.playbackRate = 1.0;
 
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
-                playPromise.catch(e => {
-                    console.log("Autoplay blocked or failed:", e);
-                    // Video will show poster if autoplay fails
-                });
+                playPromise
+                    .then(() => {
+                        setIsPlaying(true);
+                    })
+                    .catch(e => {
+                        console.log("Autoplay blocked or failed:", e);
+                        setIsPlaying(false);
+                    });
             }
         }
-    }, []);
+    }, [videoSrc]);
+
+    const handleManualPlay = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = false;
+            videoRef.current.play();
+            setIsPlaying(true);
+        }
+    };
 
     return (
         <section className="py-24 relative overflow-hidden bg-black/5 border-y border-white/10">
@@ -35,7 +66,6 @@ export function VideoSection() {
                     </div>
 
                     {/* Standard HTML Video Player - No fancy wrappers */}
-                    {/* Standard HTML Video Player - No fancy wrappers */}
                     <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-black border border-white/10 min-h-[300px] group">
 
                         {/* Ambient Glow Animation */}
@@ -44,20 +74,29 @@ export function VideoSection() {
                         <div className="relative w-full h-full rounded-3xl overflow-hidden">
                             <video
                                 ref={videoRef}
-                                className="w-full h-full object-cover pointer-events-none"
+                                className="w-full h-full object-cover"
                                 loop
                                 muted
-                                autoPlay
                                 playsInline
                                 // @ts-ignore - Required for iOS
                                 webkit-playsinline="true"
                                 preload="auto"
                                 poster="/dashboard-mockup.png"
-                            >
-                                <source src="/demo-video-mobile.mp4" media="(max-width: 768px)" type="video/mp4" />
-                                <source src="/demo-video-optimized.mp4" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
+                                src={videoSrc}
+                                onClick={handleManualPlay}
+                            />
+
+                            {/* Play Button Fallback (visible if autoplay fails) */}
+                            {!isPlaying && (
+                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm transition-opacity duration-300">
+                                    <Button
+                                        onClick={handleManualPlay}
+                                        className="rounded-full w-20 h-20 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/50 text-white flex items-center justify-center group transition-all hover:scale-110"
+                                    >
+                                        <Play className="w-8 h-8 fill-white text-white ml-1 group-hover:scale-110 transition-transform" />
+                                    </Button>
+                                </div>
+                            )}
 
                             {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
