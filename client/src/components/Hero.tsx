@@ -33,13 +33,27 @@ export function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const { clientX, clientY } = e;
-    const { innerWidth, innerHeight } = window;
-    const x = (clientX - innerWidth / 2) / 40;
-    const y = (clientY - innerHeight / 2) / 40;
-    setMousePos({ x, y });
-  };
+  // Optimized mouse movement handler using requestAnimationFrame
+  useEffect(() => {
+    let animationFrameId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // cancelAnimationFrame(animationFrameId); // Optional: Debounce slightly if needed, but rAF is usually enough
+      animationFrameId = requestAnimationFrame(() => {
+        const { clientX, clientY } = e;
+        const { innerWidth, innerHeight } = window;
+        const x = (clientX - innerWidth / 2) / 40;
+        const y = (clientY - innerHeight / 2) / 40;
+        setMousePos({ x, y });
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +64,6 @@ export function Hero() {
 
   return (
     <section
-      onMouseMove={handleMouseMove}
       className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-background"
     >
       {/* RICH ANIMATED BACKGROUND */}
@@ -67,6 +80,7 @@ export function Hero() {
             scale: [1, 1.2, 1]
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          style={{ willChange: "transform" }}
           className="absolute -top-[20%] -right-[10%] w-[1000px] h-[1000px] bg-gradient-to-br from-primary/20 via-rose-500/10 to-transparent rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/30 dark:via-rose-600/10"
         />
 
@@ -77,6 +91,7 @@ export function Hero() {
             scale: [1, 1.3, 1]
           }}
           transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          style={{ willChange: "transform" }}
           className="absolute top-[20%] -left-[10%] w-[800px] h-[800px] bg-gradient-to-tr from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[80px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/20 dark:via-rose-500/10"
         />
 
@@ -86,6 +101,7 @@ export function Hero() {
             rotate: [0, 180, 360]
           }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+          style={{ willChange: "transform" }}
           className="absolute bottom-[0%] right-[20%] w-[600px] h-[600px] bg-gradient-to-tl from-primary/15 via-rose-500/10 to-transparent rounded-full blur-[90px] mix-blend-multiply dark:mix-blend-screen dark:from-primary/15 dark:via-rose-600/10"
         />
 

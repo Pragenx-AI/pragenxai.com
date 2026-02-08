@@ -1,37 +1,49 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { Button } from "@/components/ui/button";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { Check, X } from "lucide-react";
-import { Features } from "@/components/Features";
-import { WhyPragenx } from "@/components/WhyPragenx";
-import { DetailedComparison } from "@/components/DetailedComparison";
-import { BackgroundSplashes } from "@/components/ui/BackgroundSplashes";
+import { motion } from "framer-motion";
+import Lenis from "lenis";
+import { VideoSection } from "@/components/VideoSection";
 
-// Lazy load heavy sections (keep heavy interactive sections lazy if needed, but text content should be eager for mobile scroll)
+// Lazy load heavy sections
+const Features = lazy(() => import("@/components/Features").then(module => ({ default: module.Features })));
+const WhyPragenx = lazy(() => import("@/components/WhyPragenx").then(module => ({ default: module.WhyPragenx })));
+const DetailedComparison = lazy(() => import("@/components/DetailedComparison").then(module => ({ default: module.DetailedComparison })));
 const WaitlistSection = lazy(() => import("@/components/WaitlistSection").then(module => ({ default: module.WaitlistSection })));
 const Footer = lazy(() => import("@/components/Footer").then(module => ({ default: module.Footer })));
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const backgroundColor = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    ["rgb(255, 255, 255)", "rgb(255, 245, 245)", "rgb(255, 255, 255)"]
-  );
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <motion.div
-      className="min-h-screen text-foreground relative overflow-hidden"
-      style={{ backgroundColor }}
+      className="min-h-screen text-foreground relative overflow-hidden bg-background"
     >
-      {/* Dynamic Background Elements */}
-      {/* Dynamic Background Elements */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
+      {/* Dynamic Background Elements - Removed global splashes to reduce GPU overdraw with Hero */}
+      {/* <div className="fixed inset-0 z-0 pointer-events-none">
         <BackgroundSplashes />
-      </div>
+      </div> */}
 
       <div className="relative z-10">
         <Navbar />
@@ -46,32 +58,40 @@ export default function Home() {
           </motion.div>
 
           {/* Static sections for smooth scroll */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <Features />
-          </motion.div>
+          <Suspense fallback={<div className="h-96" />}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <Features />
+            </motion.div>
+          </Suspense>
 
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <WhyPragenx />
-          </motion.div>
+          <VideoSection />
 
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <DetailedComparison />
-          </motion.div>
+          <Suspense fallback={<div className="h-96" />}>
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <WhyPragenx />
+            </motion.div>
+          </Suspense>
+
+          <Suspense fallback={<div className="h-96" />}>
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <DetailedComparison />
+            </motion.div>
+          </Suspense>
 
           {/* Lazy loaded interactive sections */}
           <Suspense fallback={<div className="h-96" />}>
