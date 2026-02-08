@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -22,28 +22,41 @@ export function VideoSection() {
         return () => window.removeEventListener('resize', updateSource);
     }, []);
 
-    // Autoplay function with retries
-    const attemptPlay = () => {
-        if (!videoRef.current || isPlaying) return;
-
+    // Autoplay function - uses ref to avoid stale closure
+    const attemptPlay = useCallback(() => {
         const video = videoRef.current;
+        if (!video) return;
+
         video.muted = true;
+        video.play().catch(e => {
+            console.log("Autoplay attempt failed:", e);
+        });
+    }, []);
 
-        video.play()
-            .then(() => setIsPlaying(true))
-            .catch(e => {
-                console.log("Autoplay attempt failed:", e);
-                setIsPlaying(false);
-            });
-    };
-
-    // Handle autoplay with Intersection Observer for visibility-based trigger
+    // Handle autoplay with multiple strategies
     useEffect(() => {
         if (!videoRef.current || !videoSrc) return;
 
         const video = videoRef.current;
         video.muted = true;
         video.playbackRate = 1.0;
+
+        // Detect when video actually starts playing
+        const handlePlaying = () => {
+            setIsPlaying(true);
+        };
+
+        const handlePause = () => {
+            // Only set to false if video is paused and not at the end
+            if (video.paused && !video.ended) {
+                setIsPlaying(false);
+            }
+        };
+
+        video.addEventListener('playing', handlePlaying);
+        video.addEventListener('pause', handlePause);
+
+        // Force load for mobile
         video.load();
 
         // Try playing on various events
@@ -64,25 +77,29 @@ export function VideoSection() {
         );
         observer.observe(video);
 
-        // Multiple retry attempts
+        // Multiple retry attempts with increasing delays
         const timers = [
             setTimeout(attemptPlay, 100),
-            setTimeout(attemptPlay, 500),
+            setTimeout(attemptPlay, 300),
+            setTimeout(attemptPlay, 600),
             setTimeout(attemptPlay, 1000),
+            setTimeout(attemptPlay, 2000),
         ];
 
         return () => {
+            video.removeEventListener('playing', handlePlaying);
+            video.removeEventListener('pause', handlePause);
             video.removeEventListener('loadeddata', attemptPlay);
             video.removeEventListener('canplaythrough', attemptPlay);
             video.removeEventListener('canplay', attemptPlay);
             observer.disconnect();
             timers.forEach(clearTimeout);
         };
-    }, [videoSrc]);
+    }, [videoSrc, attemptPlay]);
 
     const handleManualPlay = () => {
         if (videoRef.current) {
-            videoRef.current.muted = true; // Keep muted for reliable playback
+            videoRef.current.muted = true;
             videoRef.current.play()
                 .then(() => setIsPlaying(true))
                 .catch(e => console.log("Manual play failed:", e));
