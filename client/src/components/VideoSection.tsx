@@ -22,31 +22,51 @@ export function VideoSection() {
         return () => window.removeEventListener('resize', updateSource);
     }, []);
 
-    // Handle autoplay
+    // Handle autoplay with mobile-specific handling
     useEffect(() => {
         if (videoRef.current && videoSrc) {
-            videoRef.current.muted = true;
-            videoRef.current.playbackRate = 1.0;
+            const video = videoRef.current;
 
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise
-                    .then(() => {
-                        setIsPlaying(true);
-                    })
-                    .catch(e => {
-                        console.log("Autoplay blocked or failed:", e);
-                        setIsPlaying(false);
-                    });
-            }
+            // Ensure muted for autoplay policy compliance
+            video.muted = true;
+            video.playbackRate = 1.0;
+
+            // Force load for mobile
+            video.load();
+
+            const attemptPlay = () => {
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            setIsPlaying(true);
+                        })
+                        .catch(e => {
+                            console.log("Autoplay blocked or failed:", e);
+                            setIsPlaying(false);
+                        });
+                }
+            };
+
+            // Small delay for mobile browsers to properly load
+            const timer = setTimeout(attemptPlay, 100);
+
+            // Also try on loadeddata event for better mobile compatibility
+            video.addEventListener('loadeddata', attemptPlay);
+
+            return () => {
+                clearTimeout(timer);
+                video.removeEventListener('loadeddata', attemptPlay);
+            };
         }
     }, [videoSrc]);
 
     const handleManualPlay = () => {
         if (videoRef.current) {
-            videoRef.current.muted = false;
-            videoRef.current.play();
-            setIsPlaying(true);
+            videoRef.current.muted = true; // Keep muted for reliable playback
+            videoRef.current.play()
+                .then(() => setIsPlaying(true))
+                .catch(e => console.log("Manual play failed:", e));
         }
     };
 
@@ -70,15 +90,19 @@ export function VideoSection() {
                         <video
                             ref={videoRef}
                             className="w-full h-full object-cover rounded-2xl"
+                            autoPlay
                             loop
                             muted
                             playsInline
-                            // @ts-ignore - Required for iOS
+                            // @ts-ignore - Required for iOS and Android WebViews
                             webkit-playsinline="true"
+                            x5-video-player-type="h5"
+                            x5-playsinline="true"
                             preload="auto"
                             poster="/dashboard-mockup.png"
                             src={videoSrc}
                             onClick={handleManualPlay}
+                            onTouchStart={handleManualPlay}
                         />
 
                         {/* Play Button Fallback (visible if autoplay fails) */}
