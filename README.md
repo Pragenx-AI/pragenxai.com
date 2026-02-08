@@ -32,6 +32,11 @@ A comprehensive AI-powered dashboard for managing daily life, health, finance, a
     ```bash
     npm run dev
     ```
+    The server will start on **port 5001** (e.g., `http://localhost:5001`).
+
+3.  **Database Setup (Optional)**
+    To enable persistent storage, create an `.env` file and set `DATABASE_URL`.
+    If not set, the application will fallback to in-memory storage.
 
 3.  **Build for Production**
     ```bash
