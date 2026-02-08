@@ -21,6 +21,13 @@ A comprehensive AI-powered dashboard for managing daily life, health, finance, a
 - **Database**: PostgreSQL with Drizzle ORM
 - **Authentication**: Passport.js
 
+## Mobile Optimization
+
+- **Adaptive Video Streaming**: Automatically serves a lightweight 720p video (`< 5MB`) on mobile devices while maintaining 4K quality on desktops.
+- **Performance Enhancements**:
+  - Native smooth scrolling on touch devices for butter-smooth interactions.
+  - Optimized animations (parallax disabled, background complexity reduced) to save battery and GPU usage.
+
 ## Getting Started
 
 1.  **Install Dependencies**
