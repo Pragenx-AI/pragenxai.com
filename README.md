@@ -24,6 +24,11 @@ A comprehensive AI-powered dashboard for managing daily life, health, finance, a
 ## Mobile Optimization
 
 - **Adaptive Video Streaming**: Automatically serves a lightweight 720p video (`< 5MB`) on mobile devices while maintaining 4K quality on desktops.
+- **Enhanced Mobile Video Playback**:
+  - iOS compatibility with `playsInline` and `webkit-playsinline` attributes.
+  - Android WebView support via `x5-video-player-type` and `x5-playsinline`.
+  - Touch event fallback for browsers that block autoplay.
+  - Automatic retry on `loadeddata` event for reliable playback.
 - **Performance Enhancements**:
   - Native smooth scrolling on touch devices for butter-smooth interactions.
   - Optimized animations (parallax disabled, background complexity reduced) to save battery and GPU usage.
